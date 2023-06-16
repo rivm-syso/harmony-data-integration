@@ -1,40 +1,51 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="424px" preserveAspectRatio="none" style="width:1439px;height:424px;background:#FFFFFF;" version="1.1" viewBox="0 0 1439 424" width="1439px" zoomAndPan="magnify"><defs/><g><!--MD5=[6e830fbf2e6241f62d93f250fa593f9e]
-cluster cons--><g id="cluster_cons"><rect height="325" rx="2.5" ry="2.5" style="stroke:#444444;stroke-width:1.0;fill:none;stroke-dasharray:7.0,7.0;" width="460" x="7" y="93"/><text fill="#444444" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="185" x="144.5" y="126.1629">Consortium member</text><text fill="#444444" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="26" x="224" y="141.0787">[8x]</text></g><!--MD5=[c6445852c1d393e220094cdb3c405287]
-cluster dre--><g id="cluster_dre"><rect height="324" rx="2.5" ry="2.5" style="stroke:#444444;stroke-width:1.0;fill:none;stroke-dasharray:7.0,7.0;" width="886" x="547" y="7"/><text fill="#444444" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="36" x="972" y="40.1629">DRE</text><text fill="#444444" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="62" x="959" y="55.0787">[anDREa]</text></g><!--MD5=[5cb8ccdd9596a87c61c1a4eca4ab7787]
-entity cons_tech--><g id="elem_cons_tech"><rect fill="#08427B" height="102.9401" rx="2.5" ry="2.5" style="stroke:#073B6F;stroke-width:0.5;" width="171" x="23" y="160.5"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="67" x="75" y="183.4951">«person»</text><image height="48" width="48" x="84.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAABuUlEQVR42u2Yv0oEMRDGp/QRfIR7BVs7Gx9AH0CwtrtKLNXSRsRSG8HCxkbQVrSykoOrzlILC9v4gwMRNptMMsnu3nHDFMcSLh/f/PsmsrY5HpTLUgHaOri8uHt+eJm8vs/wm8e38fn9aPekB0D7p7df3z+uxYC4sXfWEaD17SPIcAqDreqAQBMgpmnHV091ASm5+W8EtxYgQuCyDF7LA+JPXa5RieUBwbwzWHlAVLIFEB2rMKCk4rK0AC0gZzN9/S8soOnHpwWQvhtpATE4h5XUlrKnIKp06uxCS5poCzs6stvjzuF1XfmRVG4ZkihHMSp5SuXGJGG5LEAVPSIpb4qJfIQzQeF6OMORGXSHbCjLuAb1CYhti7whQHQ5PLrlcHh+kiAyN/RxFE0/9OYvH+dJw33gw/nB4bYa5Ltmokl4MTXqMi+sMFtSfFBEDWoD67bUkPSa+d/Gk3i7i6tvxE4LyLhgGOeu9ELPXzLFAVHJrkNrZreUFfN28S9l1x27upVSLwp5hlIYFqBm8a8ADRxQJIfszy72ZxrpeKxGR6xnltEbupkbXtkpbQsh6ozhV8kDCni1dcT8F2bsoAKLcdt7AAAAAElFTkSuQmCC" y="186.7969"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="151" x="33" y="249.6629">Data contributor</text></g><!--MD5=[206d5beed28f65afff7bd6003b5a60df]
-entity cons_db--><g id="elem_cons_db"><rect fill="#438DD5" height="68.9088" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="133" x="318" y="160.5"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="86" x="341.5" y="183.4951">«container»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="86" x="341.5" y="201.6629">Database</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="113" x="328" y="216.5787">[unknown system]</text></g><!--MD5=[13667c3cc77eef8b4369a09bdfceffb1]
-entity researcher--><g id="elem_researcher"><rect fill="#08427B" height="102.9401" rx="2.5" ry="2.5" style="stroke:#073B6F;stroke-width:0.5;" width="123" x="47" y="298.5"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="67" x="75" y="321.4951">«person»</text><image height="48" width="48" x="84.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAABuUlEQVR42u2Yv0oEMRDGp/QRfIR7BVs7Gx9AH0CwtrtKLNXSRsRSG8HCxkbQVrSykoOrzlILC9v4gwMRNptMMsnu3nHDFMcSLh/f/PsmsrY5HpTLUgHaOri8uHt+eJm8vs/wm8e38fn9aPekB0D7p7df3z+uxYC4sXfWEaD17SPIcAqDreqAQBMgpmnHV091ASm5+W8EtxYgQuCyDF7LA+JPXa5RieUBwbwzWHlAVLIFEB2rMKCk4rK0AC0gZzN9/S8soOnHpwWQvhtpATE4h5XUlrKnIKp06uxCS5poCzs6stvjzuF1XfmRVG4ZkihHMSp5SuXGJGG5LEAVPSIpb4qJfIQzQeF6OMORGXSHbCjLuAb1CYhti7whQHQ5PLrlcHh+kiAyN/RxFE0/9OYvH+dJw33gw/nB4bYa5Ltmokl4MTXqMi+sMFtSfFBEDWoD67bUkPSa+d/Gk3i7i6tvxE4LyLhgGOeu9ELPXzLFAVHJrkNrZreUFfN28S9l1x27upVSLwp5hlIYFqBm8a8ADRxQJIfszy72ZxrpeKxGR6xnltEbupkbXtkpbQsh6ozhV8kDCni1dcT8F2bsoAKLcdt7AAAAAElFTkSuQmCC" y="324.7969"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="103" x="57" y="387.6629">Researcher</text></g><!--MD5=[727c1040af9be188ab17d19c49f9ac10]
-entity ds--><g id="elem_ds"><rect fill="#08427B" height="102.9401" rx="2.5" ry="2.5" style="stroke:#073B6F;stroke-width:0.5;" width="143" x="563" y="74.5"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="67" x="601" y="97.4951">«person»</text><image height="48" width="48" x="610.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAABuUlEQVR42u2Yv0oEMRDGp/QRfIR7BVs7Gx9AH0CwtrtKLNXSRsRSG8HCxkbQVrSykoOrzlILC9v4gwMRNptMMsnu3nHDFMcSLh/f/PsmsrY5HpTLUgHaOri8uHt+eJm8vs/wm8e38fn9aPekB0D7p7df3z+uxYC4sXfWEaD17SPIcAqDreqAQBMgpmnHV091ASm5+W8EtxYgQuCyDF7LA+JPXa5RieUBwbwzWHlAVLIFEB2rMKCk4rK0AC0gZzN9/S8soOnHpwWQvhtpATE4h5XUlrKnIKp06uxCS5poCzs6stvjzuF1XfmRVG4ZkihHMSp5SuXGJGG5LEAVPSIpb4qJfIQzQeF6OMORGXSHbCjLuAb1CYhti7whQHQ5PLrlcHh+kiAyN/RxFE0/9OYvH+dJw33gw/nB4bYa5Ltmokl4MTXqMi+sMFtSfFBEDWoD67bUkPSa+d/Gk3i7i6tvxE4LyLhgGOeu9ELPXzLFAVHJrkNrZreUFfN28S9l1x27upVSLwp5hlIYFqBm8a8ADRxQJIfszy72ZxrpeKxGR6xnltEbupkbXtkpbQsh6ozhV8kDCni1dcT8F2bsoAKLcdt7AAAAAElFTkSuQmCC" y="100.7969"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="123" x="573" y="163.6629">Datamanager</text></g><!--MD5=[df19d650caf9be3acec081ea74f2e43a]
-entity devops--><g id="elem_devops"><rect fill="#08427B" height="102.9401" rx="2.5" ry="2.5" style="stroke:#073B6F;stroke-width:0.5;" width="89" x="903.5" y="74.5"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="67" x="914.5" y="97.4951">«person»</text><image height="48" width="48" x="924" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAABuUlEQVR42u2Yv0oEMRDGp/QRfIR7BVs7Gx9AH0CwtrtKLNXSRsRSG8HCxkbQVrSykoOrzlILC9v4gwMRNptMMsnu3nHDFMcSLh/f/PsmsrY5HpTLUgHaOri8uHt+eJm8vs/wm8e38fn9aPekB0D7p7df3z+uxYC4sXfWEaD17SPIcAqDreqAQBMgpmnHV091ASm5+W8EtxYgQuCyDF7LA+JPXa5RieUBwbwzWHlAVLIFEB2rMKCk4rK0AC0gZzN9/S8soOnHpwWQvhtpATE4h5XUlrKnIKp06uxCS5poCzs6stvjzuF1XfmRVG4ZkihHMSp5SuXGJGG5LEAVPSIpb4qJfIQzQeF6OMORGXSHbCjLuAb1CYhti7whQHQ5PLrlcHh+kiAyN/RxFE0/9OYvH+dJw33gw/nB4bYa5Ltmokl4MTXqMi+sMFtSfFBEDWoD67bUkPSa+d/Gk3i7i6tvxE4LyLhgGOeu9ELPXzLFAVHJrkNrZreUFfN28S9l1x27upVSLwp5hlIYFqBm8a8ADRxQJIfszy72ZxrpeKxGR6xnltEbupkbXtkpbQsh6ozhV8kDCni1dcT8F2bsoAKLcdt7AAAAAElFTkSuQmCC" y="100.7969"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="69" x="913.5" y="163.6629">DevOps</text></g><!--MD5=[e5ea1aeb28a618cffa33f15266a5b5b1]
-entity landingZone--><g id="elem_landingZone"><rect fill="#438DD5" height="101.5026" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="141" x="564" y="213"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="86" x="591.5" y="235.9951">«container»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="121" x="574" y="254.1629">Landing Zone</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="47" x="611" y="269.0787">[Folder]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4" x="632.5" y="284.9039"> </text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="17" x="626" y="301.2008">8x</text></g><!--MD5=[729741a9f26e9090dd33beaa3e1aa367]
-entity dataPrep--><g id="elem_dataPrep"><rect fill="#438DD5" height="101.5026" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="202" x="847" y="213"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="86" x="905" y="235.9951">«container»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="182" x="857" y="254.1629">Harmonization Zone</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="47" x="924.5" y="269.0787">[Folder]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4" x="946" y="284.9039"> </text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="17" x="939.5" y="301.2008">8x</text></g><!--MD5=[7468467f3b6b392f1d176d828c753b77]
-entity db--><g id="elem_db"><rect fill="#438DD5" height="101.5026" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="163" x="1254" y="213"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="86" x="1292.5" y="235.9951">«container»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="143" x="1264" y="254.1629">Integrated data</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="61" x="1305" y="269.0787">[Postgres]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4" x="1333.5" y="284.9039"> </text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="17" x="1327" y="301.2008">1x</text></g><!--MD5=[78ee0187d853a306fad40bfc2a99491e]
-link cons_db to landingZone--><g id="link_cons_db_landingZone"><path d="M451.31,213.31 C483.46,222.25 522.36,233.08 555.94,242.42 " fill="none" id="cons_db-to-landingZone" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="563.91,244.64,557.0072,239.605,555.3986,245.3853,563.91,244.64" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="46" x="484" y="221.1387">import</text></g><!--MD5=[e7d4039014ec5bcc4e85d23f33439f0e]
-link cons_tech to cons_db--><g id="link_cons_tech_cons_db"><path d="M194.32,206.74 C231.13,204.45 273.85,201.8 309.38,199.6 " fill="none" id="cons_tech-to-cons_db" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="317.77,199.08,309.5982,196.5858,309.9731,202.5741,317.77,199.08" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="62" x="225" y="198.1387">manages</text></g><!--MD5=[7553c67a345309cf7a8a174d6ee26358]
-link cons_tech to landingZone--><g id="link_cons_tech_landingZone"><path d="M194.16,236.96 C231.73,246.82 276.71,256.99 318,262 C398.7,271.8 491.86,270.91 555.91,268.43 " fill="none" id="cons_tech-to-landingZone" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="563.97,268.1,555.8536,265.4308,556.0998,271.4258,563.97,268.1" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="113" x="328" y="259.1387">Performs upload</text></g><!--MD5=[f0f846d7da4bd1844dc48af178121c80]
-link landingZone to dataPrep--><g id="link_landingZone_dataPrep"><path d="M705.02,264 C744.35,264 794.39,264 838.75,264 " fill="none" id="landingZone-to-dataPrep" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="846.97,264,838.97,261,838.97,267,846.97,264" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="68" x="740.5" y="247.1387">validation</text><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="79" x="737" y="261.1074">(automatic)</text></g><!--MD5=[205b0de1cd086350e930cc0f227af2a3]
-link dataPrep to db--><g id="link_dataPrep_db"><path d="M1049.03,264 C1109.86,264 1186.86,264 1245.56,264 " fill="none" id="dataPrep-to-db" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="1253.72,264,1245.72,261,1245.72,267,1253.72,264" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="77" x="1113" y="261.1387">integration</text></g><!--MD5=[ae793904fafb4be673427ce36e2e1839]
-link ds to dataPrep--><g id="link_ds_dataPrep"><path d="M706.18,157.31 C745.47,174.72 795.16,196.73 839.19,216.24 " fill="none" id="ds-to-dataPrep" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="846.78,219.6,840.6825,213.615,838.2506,219.1001,846.78,219.6" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="73" x="740" y="168.1387">Harmonize</text></g><!--MD5=[c571e13024f20f0c4704778239168abf]
-link devops to db--><g id="link_devops_db"><path d="M992.85,141.7 C1054.21,163.66 1167.07,204.06 1246.23,232.4 " fill="none" id="devops-to-db" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="1253.78,235.11,1247.2498,229.6004,1245.2372,235.2527,1253.78,235.11" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="143" x="1080" y="172.1387">Performs integration</text></g><!--MD5=[edf3f0c2e32f7791c15a136268a85555]
-link researcher to db--><g id="link_researcher_db"><path d="M170.1,356.27 C225.57,361.47 309.97,368 383.5,368 C383.5,368 383.5,368 949,368 C1053.72,368 1169.08,331.79 1246.06,302.1 " fill="none" id="researcher-to-db" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="1253.86,299.06,1245.3166,299.1636,1247.4913,304.7556,1253.86,299.06" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="60" x="604.5" y="365.1387">Analyzes</text></g><!--MD5=[9d19d5ba9f152ae5be6e25e63a4c4b50]
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="680px" preserveAspectRatio="none" style="width:1747px;height:680px;background:#FFFFFF;" version="1.1" viewBox="0 0 1747 680" width="1747px" zoomAndPan="magnify"><defs/><g><!--MD5=[6e830fbf2e6241f62d93f250fa593f9e]
+cluster cons--><g id="cluster_cons"><rect height="325" rx="2.5" ry="2.5" style="stroke:#444444;stroke-width:1.0;fill:none;stroke-dasharray:7.0,7.0;" width="433" x="7" y="349.5"/><text fill="#444444" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="185" x="131" y="382.6484">Consortium member</text><text fill="#444444" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="26" x="210.5" y="397.5605">[8x]</text></g><!--MD5=[c6445852c1d393e220094cdb3c405287]
+cluster dre--><g id="cluster_dre"><rect height="323" rx="2.5" ry="2.5" style="stroke:#444444;stroke-width:1.0;fill:none;stroke-dasharray:7.0,7.0;" width="902" x="520" y="264.5"/><text fill="#444444" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="36" x="953" y="297.6484">DRE</text><text fill="#444444" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="75" x="933.5" y="312.5605">[Provider?]</text></g><!--MD5=[ede20bec987cd9e178030ee7de86a668]
+cluster hosting--><g id="cluster_hosting"><rect height="153" rx="2.5" ry="2.5" style="stroke:#444444;stroke-width:1.0;fill:none;stroke-dasharray:7.0,7.0;" width="158" x="1583" y="94.5"/><text fill="#444444" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="142" x="1591" y="127.6484">Data repository</text><text fill="#444444" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="55" x="1634.5" y="142.5605">[DANS?]</text></g><!--MD5=[5cb8ccdd9596a87c61c1a4eca4ab7787]
+entity cons_tech--><g id="elem_cons_tech"><rect fill="#08427B" height="102.9219" rx="2.5" ry="2.5" style="stroke:#073B6F;stroke-width:0.5;" width="144" x="23" y="417"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="67" x="61.5" y="439.9951">«person»</text><image height="48" width="48" x="71" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAABuUlEQVR42u2Yv0oEMRDGp/QRfIR7BVs7Gx9AH0CwtrtKLNXSRsRSG8HCxkbQVrSykoOrzlILC9v4gwMRNptMMsnu3nHDFMcSLh/f/PsmsrY5HpTLUgHaOri8uHt+eJm8vs/wm8e38fn9aPekB0D7p7df3z+uxYC4sXfWEaD17SPIcAqDreqAQBMgpmnHV091ASm5+W8EtxYgQuCyDF7LA+JPXa5RieUBwbwzWHlAVLIFEB2rMKCk4rK0AC0gZzN9/S8soOnHpwWQvhtpATE4h5XUlrKnIKp06uxCS5poCzs6stvjzuF1XfmRVG4ZkihHMSp5SuXGJGG5LEAVPSIpb4qJfIQzQeF6OMORGXSHbCjLuAb1CYhti7whQHQ5PLrlcHh+kiAyN/RxFE0/9OYvH+dJw33gw/nB4bYa5Ltmokl4MTXqMi+sMFtSfFBEDWoD67bUkPSa+d/Gk3i7i6tvxE4LyLhgGOeu9ELPXzLFAVHJrkNrZreUFfN28S9l1x27upVSLwp5hlIYFqBm8a8ADRxQJIfszy72ZxrpeKxGR6xnltEbupkbXtkpbQsh6ozhV8kDCni1dcT8F2bsoAKLcdt7AAAAAElFTkSuQmCC" y="443.2969"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="124" x="33" y="506.1484">Data provider</text></g><!--MD5=[206d5beed28f65afff7bd6003b5a60df]
+entity cons_db--><g id="elem_cons_db"><rect fill="#438DD5" height="68.8906" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="133" x="291" y="417"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="86" x="314.5" y="439.9951">«container»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="86" x="314.5" y="458.1484">Database</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="113" x="301" y="473.0605">[unknown system]</text></g><!--MD5=[13667c3cc77eef8b4369a09bdfceffb1]
+entity researcher--><g id="elem_researcher"><rect fill="#08427B" height="102.9219" rx="2.5" ry="2.5" style="stroke:#073B6F;stroke-width:0.5;" width="122" x="34" y="555"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="67" x="61.5" y="577.9951">«person»</text><image height="48" width="48" x="71" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAABuUlEQVR42u2Yv0oEMRDGp/QRfIR7BVs7Gx9AH0CwtrtKLNXSRsRSG8HCxkbQVrSykoOrzlILC9v4gwMRNptMMsnu3nHDFMcSLh/f/PsmsrY5HpTLUgHaOri8uHt+eJm8vs/wm8e38fn9aPekB0D7p7df3z+uxYC4sXfWEaD17SPIcAqDreqAQBMgpmnHV091ASm5+W8EtxYgQuCyDF7LA+JPXa5RieUBwbwzWHlAVLIFEB2rMKCk4rK0AC0gZzN9/S8soOnHpwWQvhtpATE4h5XUlrKnIKp06uxCS5poCzs6stvjzuF1XfmRVG4ZkihHMSp5SuXGJGG5LEAVPSIpb4qJfIQzQeF6OMORGXSHbCjLuAb1CYhti7whQHQ5PLrlcHh+kiAyN/RxFE0/9OYvH+dJw33gw/nB4bYa5Ltmokl4MTXqMi+sMFtSfFBEDWoD67bUkPSa+d/Gk3i7i6tvxE4LyLhgGOeu9ELPXzLFAVHJrkNrZreUFfN28S9l1x27upVSLwp5hlIYFqBm8a8ADRxQJIfszy72ZxrpeKxGR6xnltEbupkbXtkpbQsh6ozhV8kDCni1dcT8F2bsoAKLcdt7AAAAAElFTkSuQmCC" y="581.2969"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="102" x="44" y="644.1484">Researcher</text></g><!--MD5=[727c1040af9be188ab17d19c49f9ac10]
+entity ds--><g id="elem_ds"><rect fill="#08427B" height="102.9219" rx="2.5" ry="2.5" style="stroke:#073B6F;stroke-width:0.5;" width="137" x="538" y="332"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="67" x="573" y="354.9951">«person»</text><image height="48" width="48" x="582.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAABuUlEQVR42u2Yv0oEMRDGp/QRfIR7BVs7Gx9AH0CwtrtKLNXSRsRSG8HCxkbQVrSykoOrzlILC9v4gwMRNptMMsnu3nHDFMcSLh/f/PsmsrY5HpTLUgHaOri8uHt+eJm8vs/wm8e38fn9aPekB0D7p7df3z+uxYC4sXfWEaD17SPIcAqDreqAQBMgpmnHV091ASm5+W8EtxYgQuCyDF7LA+JPXa5RieUBwbwzWHlAVLIFEB2rMKCk4rK0AC0gZzN9/S8soOnHpwWQvhtpATE4h5XUlrKnIKp06uxCS5poCzs6stvjzuF1XfmRVG4ZkihHMSp5SuXGJGG5LEAVPSIpb4qJfIQzQeF6OMORGXSHbCjLuAb1CYhti7whQHQ5PLrlcHh+kiAyN/RxFE0/9OYvH+dJw33gw/nB4bYa5Ltmokl4MTXqMi+sMFtSfFBEDWoD67bUkPSa+d/Gk3i7i6tvxE4LyLhgGOeu9ELPXzLFAVHJrkNrZreUFfN28S9l1x27upVSLwp5hlIYFqBm8a8ADRxQJIfszy72ZxrpeKxGR6xnltEbupkbXtkpbQsh6ozhV8kDCni1dcT8F2bsoAKLcdt7AAAAAElFTkSuQmCC" y="358.2969"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="117" x="548" y="421.1484">Datasteward</text></g><!--MD5=[df19d650caf9be3acec081ea74f2e43a]
+entity devops--><g id="elem_devops"><rect fill="#08427B" height="102.9219" rx="2.5" ry="2.5" style="stroke:#073B6F;stroke-width:0.5;" width="89" x="874.5" y="332"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="67" x="885.5" y="354.9951">«person»</text><image height="48" width="48" x="895" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAABuUlEQVR42u2Yv0oEMRDGp/QRfIR7BVs7Gx9AH0CwtrtKLNXSRsRSG8HCxkbQVrSykoOrzlILC9v4gwMRNptMMsnu3nHDFMcSLh/f/PsmsrY5HpTLUgHaOri8uHt+eJm8vs/wm8e38fn9aPekB0D7p7df3z+uxYC4sXfWEaD17SPIcAqDreqAQBMgpmnHV091ASm5+W8EtxYgQuCyDF7LA+JPXa5RieUBwbwzWHlAVLIFEB2rMKCk4rK0AC0gZzN9/S8soOnHpwWQvhtpATE4h5XUlrKnIKp06uxCS5poCzs6stvjzuF1XfmRVG4ZkihHMSp5SuXGJGG5LEAVPSIpb4qJfIQzQeF6OMORGXSHbCjLuAb1CYhti7whQHQ5PLrlcHh+kiAyN/RxFE0/9OYvH+dJw33gw/nB4bYa5Ltmokl4MTXqMi+sMFtSfFBEDWoD67bUkPSa+d/Gk3i7i6tvxE4LyLhgGOeu9ELPXzLFAVHJrkNrZreUFfN28S9l1x27upVSLwp5hlIYFqBm8a8ADRxQJIfszy72ZxrpeKxGR6xnltEbupkbXtkpbQsh6ozhV8kDCni1dcT8F2bsoAKLcdt7AAAAAElFTkSuQmCC" y="358.2969"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="69" x="884.5" y="421.1484">DevOps</text></g><!--MD5=[e5ea1aeb28a618cffa33f15266a5b5b1]
+entity landingZone--><g id="elem_landingZone"><rect fill="#438DD5" height="101.4844" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="141" x="536" y="470"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="86" x="563.5" y="492.9951">«container»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="121" x="546" y="511.1484">Landing Zone</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="47" x="583" y="526.0605">[Folder]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4" x="604.5" y="541.8857"> </text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="17" x="598" y="558.1826">8x</text></g><!--MD5=[729741a9f26e9090dd33beaa3e1aa367]
+entity dataPrep--><g id="elem_dataPrep"><rect fill="#438DD5" height="101.4844" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="202" x="818" y="470"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="86" x="876" y="492.9951">«container»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="182" x="828" y="511.1484">Harmonization Zone</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="47" x="895.5" y="526.0605">[Folder]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4" x="917" y="541.8857"> </text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="17" x="910.5" y="558.1826">8x</text></g><!--MD5=[7468467f3b6b392f1d176d828c753b77]
+entity db--><g id="elem_db"><rect fill="#438DD5" height="101.4844" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="163" x="1243" y="422"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="86" x="1281.5" y="444.9951">«container»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="143" x="1253" y="463.1484">Integrated data</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="83" x="1283" y="478.0605">[JSON/SQLite]</text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4" x="1322.5" y="493.8857"> </text><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="17" x="1316" y="510.1826">1x</text></g><!--MD5=[954d510445ed2c32755e601507986b45]
+entity catalogue--><g id="elem_catalogue"><rect fill="#438DD5" height="68.8906" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="111" x="1606" y="162"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="86" x="1618.5" y="184.9951">«container»</text><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="91" x="1616" y="203.1484">Catalogue</text><text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="76" x="1623.5" y="218.0605">[Dataverse?]</text></g><!--MD5=[9695feb9a0a53a2663be2ae49af568d8]
+entity ext_researcher--><g id="elem_ext_researcher"><rect fill="#08427B" height="102.9219" rx="2.5" ry="2.5" style="stroke:#073B6F;stroke-width:0.5;" width="199" x="1225" y="7"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="67" x="1291" y="29.9951">«person»</text><image height="48" width="48" x="1300.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAABuUlEQVR42u2Yv0oEMRDGp/QRfIR7BVs7Gx9AH0CwtrtKLNXSRsRSG8HCxkbQVrSykoOrzlILC9v4gwMRNptMMsnu3nHDFMcSLh/f/PsmsrY5HpTLUgHaOri8uHt+eJm8vs/wm8e38fn9aPekB0D7p7df3z+uxYC4sXfWEaD17SPIcAqDreqAQBMgpmnHV091ASm5+W8EtxYgQuCyDF7LA+JPXa5RieUBwbwzWHlAVLIFEB2rMKCk4rK0AC0gZzN9/S8soOnHpwWQvhtpATE4h5XUlrKnIKp06uxCS5poCzs6stvjzuF1XfmRVG4ZkihHMSp5SuXGJGG5LEAVPSIpb4qJfIQzQeF6OMORGXSHbCjLuAb1CYhti7whQHQ5PLrlcHh+kiAyN/RxFE0/9OYvH+dJw33gw/nB4bYa5Ltmokl4MTXqMi+sMFtSfFBEDWoD67bUkPSa+d/Gk3i7i6tvxE4LyLhgGOeu9ELPXzLFAVHJrkNrZreUFfN28S9l1x27upVSLwp5hlIYFqBm8a8ADRxQJIfszy72ZxrpeKxGR6xnltEbupkbXtkpbQsh6ozhV8kDCni1dcT8F2bsoAKLcdt7AAAAAElFTkSuQmCC" y="33.2969"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="179" x="1235" y="96.1484">External researcher</text></g><!--MD5=[d5ecb8904872f433df16bafd6dd11a10]
+entity access_committee--><g id="elem_access_committee"><rect fill="#08427B" height="102.9219" rx="2.5" ry="2.5" style="stroke:#073B6F;stroke-width:0.5;" width="184" x="1232.5" y="145"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="67" x="1291" y="167.9951">«person»</text><image height="48" width="48" x="1300.5" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAABuUlEQVR42u2Yv0oEMRDGp/QRfIR7BVs7Gx9AH0CwtrtKLNXSRsRSG8HCxkbQVrSykoOrzlILC9v4gwMRNptMMsnu3nHDFMcSLh/f/PsmsrY5HpTLUgHaOri8uHt+eJm8vs/wm8e38fn9aPekB0D7p7df3z+uxYC4sXfWEaD17SPIcAqDreqAQBMgpmnHV091ASm5+W8EtxYgQuCyDF7LA+JPXa5RieUBwbwzWHlAVLIFEB2rMKCk4rK0AC0gZzN9/S8soOnHpwWQvhtpATE4h5XUlrKnIKp06uxCS5poCzs6stvjzuF1XfmRVG4ZkihHMSp5SuXGJGG5LEAVPSIpb4qJfIQzQeF6OMORGXSHbCjLuAb1CYhti7whQHQ5PLrlcHh+kiAyN/RxFE0/9OYvH+dJw33gw/nB4bYa5Ltmokl4MTXqMi+sMFtSfFBEDWoD67bUkPSa+d/Gk3i7i6tvxE4LyLhgGOeu9ELPXzLFAVHJrkNrZreUFfN28S9l1x27upVSLwp5hlIYFqBm8a8ADRxQJIfszy72ZxrpeKxGR6xnltEbupkbXtkpbQsh6ozhV8kDCni1dcT8F2bsoAKLcdt7AAAAAElFTkSuQmCC" y="171.2969"/><text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="164" x="1242.5" y="234.1484">Access committee</text></g><!--MD5=[78ee0187d853a306fad40bfc2a99491e]
+link cons_db to landingZone--><g id="link_cons_db_landingZone"><path d="M424.04,469.81 C455.93,478.72 494.48,489.49 527.84,498.81 " fill="none" id="cons_db-to-landingZone" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="535.76,501.02,528.8572,495.985,527.2486,501.7653,535.76,501.02" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="46" x="457" y="476.6387">import</text></g><!--MD5=[e7d4039014ec5bcc4e85d23f33439f0e]
+link cons_tech to cons_db--><g id="link_cons_tech_cons_db"><path d="M167.18,463.85 C203.04,461.51 246.46,458.68 282.68,456.32 " fill="none" id="cons_tech-to-cons_db" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="290.76,455.79,282.5835,453.3113,282.9697,459.2988,290.76,455.79" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="62" x="198" y="455.6387">manages</text></g><!--MD5=[7553c67a345309cf7a8a174d6ee26358]
+link cons_tech to landingZone--><g id="link_cons_tech_landingZone"><path d="M167.41,491.28 C203.96,501.8 249.41,513.12 291,518.5 C371.23,528.88 463.94,527.92 527.81,525.26 " fill="none" id="cons_tech-to-landingZone" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="535.84,524.91,527.7189,522.2553,527.9758,528.2498,535.84,524.91" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="113" x="301" y="515.6387">Performs upload</text></g><!--MD5=[f0f846d7da4bd1844dc48af178121c80]
+link landingZone to dataPrep--><g id="link_landingZone_dataPrep"><path d="M677.18,520.5 C716.23,520.5 765.79,520.5 809.78,520.5 " fill="none" id="landingZone-to-dataPrep" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="817.93,520.5,809.93,517.5,809.93,523.5,817.93,520.5" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="68" x="711.5" y="503.6387">validation</text><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="79" x="708" y="517.6074">(automatic)</text></g><!--MD5=[205b0de1cd086350e930cc0f227af2a3]
+link dataPrep to db--><g id="link_dataPrep_db"><path d="M1020,508.6 C1085.91,500.76 1171.46,490.59 1234.92,483.04 " fill="none" id="dataPrep-to-db" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="1242.94,482.08,1234.6421,480.0439,1235.3494,486.0021,1242.94,482.08" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="77" x="1084" y="484.6387">integration</text></g><!--MD5=[ae793904fafb4be673427ce36e2e1839]
+link ds to dataPrep--><g id="link_ds_dataPrep"><path d="M675.26,413.4 C714.81,430.85 765.61,453.26 810.51,473.07 " fill="none" id="ds-to-dataPrep" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="817.95,476.36,811.8384,470.3894,809.4195,475.8801,817.95,476.36" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="73" x="711" y="425.6387">Harmonize</text></g><!--MD5=[c571e13024f20f0c4704778239168abf]
+link devops to db--><g id="link_devops_db"><path d="M963.56,393.11 C1028.22,407.37 1150.95,434.44 1234.96,452.97 " fill="none" id="devops-to-db" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="1242.97,454.74,1235.8068,450.0829,1234.5109,455.9413,1242.97,454.74" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="143" x="1051" y="409.6387">Performs integration</text></g><!--MD5=[edf3f0c2e32f7791c15a136268a85555]
+link researcher to db--><g id="link_researcher_db"><path d="M156.19,613.02 C208.94,618.18 287.71,624.5 356.5,624.5 C356.5,624.5 356.5,624.5 920,624.5 C1034.45,624.5 1156.11,570.29 1235.55,526.62 " fill="none" id="researcher-to-db" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="1242.62,522.69,1234.1694,523.9497,1237.0814,529.1957,1242.62,522.69" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="60" x="576.5" y="621.6387">Analyzes</text></g><!--MD5=[d443ca59d9d7434b0e4b642312cc56aa]
+link db to catalogue--><g id="link_db_catalogue"><path d="M1386.94,421.88 C1451.82,368.42 1552.77,285.26 1612.19,236.3 " fill="none" id="db-to-catalogue" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="1618.52,231.09,1610.4352,233.8533,1614.2457,238.488,1618.52,231.09" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="51" x="1485" y="275.6387">Publish</text></g><!--MD5=[48022446f0c1431b022a1abf383a83e1]
+link ext_researcher to catalogue--><g id="link_ext_researcher_catalogue"><path d="M1424.2,99.16 C1480.44,122.33 1549.21,150.66 1598.03,170.76 " fill="none" id="ext_researcher-to-catalogue" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="1605.69,173.92,1599.432,168.103,1597.1502,173.6522,1605.69,173.92" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="111" x="1455" y="112.6387">Requests access</text></g><!--MD5=[f70cd41a9043b516e211f6a037800937]
+link access_committee to catalogue--><g id="link_access_committee_catalogue"><path d="M1416.6,196.5 C1473.86,196.5 1546.28,196.5 1597.29,196.5 " fill="none" id="access_committee-to-catalogue" style="stroke:#666666;stroke-width:1.0;"/><polygon fill="#666666" points="1605.6,196.5,1597.6,193.5,1597.6,199.5,1605.6,196.5" style="stroke:#666666;stroke-width:1.0;"/><text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="109" x="1456" y="193.6387">Manages access</text></g><!--MD5=[873666d876120d1088c114bdbd9450a5]
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
 LAYOUT_LANDSCAPE()
 
 Boundary(cons, "Consortium member", "8x") {
-    Person(cons_tech, "Data contributor", "")
+    Person(cons_tech, "Data provider", "")
     Container(cons_db, "Database", "unknown system", "")
     Person(researcher, "Researcher", "")
 }
 
-Boundary(dre, "DRE", "anDREa") {
-    Person(ds, "Datamanager", "")
+Boundary(dre, "DRE", "Provider?") {
+    Person(ds, "Datasteward", "")
     Person(devops, "DevOps", "")
 
     Container(landingZone, "Landing Zone", "Folder", "8x")
     Container(dataPrep, "Harmonization Zone", "Folder", "8x")
-    Container(db, "Integrated data", "Postgres", "1x")
+    Container(db, "Integrated data", "JSON/SQLite", "1x")
+}
+
+Boundary(hosting, "Data repository", "DANS?") {
+    Container(catalogue, "Catalogue", "Dataverse?")
 }
 
 Rel(cons_db, landingZone, "import")
@@ -48,6 +59,15 @@ Rel(ds, dataPrep, "Harmonize")
 Rel(devops, db, "Performs integration")
 
 Rel(researcher, db, "Analyzes")
+
+Rel(db, catalogue, "Publish")
+
+Person(ext_researcher, "External researcher", "")
+Rel(ext_researcher, catalogue, "Requests access")
+
+
+Person(access_committee, "Access committee", "")
+Rel(access_committee, catalogue, "Manages access")
 
 @enduml
 
@@ -97,6 +117,10 @@ skinparam database {
 }
 
 skinparam queue {
+    StereotypeFontSize 12
+}
+
+skinparam participant {
     StereotypeFontSize 12
 }
 
@@ -216,6 +240,7 @@ skinparam package {
 
 
 
+
 skinparam rectangle<<boundary>> {
     FontColor #444444
     BackgroundColor transparent
@@ -238,6 +263,16 @@ skinparam person<<boundary>> {
 }
 skinparam actor<<boundary>> {
     FontColor transparent
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam participant<<boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam sequencebox<<boundary>> {
+    FontColor #444444
     BackgroundColor transparent
     BorderColor #444444
 }
@@ -266,6 +301,16 @@ skinparam person<<enterprise_boundary>> {
 }
 skinparam actor<<enterprise_boundary>> {
     FontColor transparent
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam participant<<enterprise_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam sequencebox<<enterprise_boundary>> {
+    FontColor #444444
     BackgroundColor transparent
     BorderColor #444444
 }
@@ -298,6 +343,16 @@ skinparam actor<<system_boundary>> {
     BackgroundColor transparent
     BorderColor #444444
 }
+skinparam participant<<system_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam sequencebox<<system_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
 skinparam package<<system_boundary>>StereotypeFontColor transparent
 skinparam rectangle<<system_boundary>>StereotypeFontColor transparent
 
@@ -324,6 +379,16 @@ skinparam person<<container_boundary>> {
 }
 skinparam actor<<container_boundary>> {
     FontColor transparent
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam participant<<container_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam sequencebox<<container_boundary>> {
+    FontColor #444444
     BackgroundColor transparent
     BorderColor #444444
 }
@@ -395,6 +460,18 @@ skinparam actor<<person>> {
     BackgroundColor #08427B
     BorderColor #073B6F
 }
+skinparam participant<<person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
+skinparam sequencebox<<person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
 
 skinparam rectangle<<external_person>> {
     StereotypeFontColor #FFFFFF
@@ -423,6 +500,18 @@ skinparam person<<external_person>> {
 skinparam actor<<external_person>> {
     StereotypeFontColor #686868
     FontColor #686868
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+skinparam participant<<external_person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+skinparam sequencebox<<external_person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
     BackgroundColor #686868
     BorderColor #8A8A8A
 }
@@ -457,6 +546,18 @@ skinparam actor<<system>> {
     BackgroundColor #1168BD
     BorderColor #3C7FC0
 }
+skinparam participant<<system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #1168BD
+    BorderColor #3C7FC0
+}
+skinparam sequencebox<<system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #1168BD
+    BorderColor #3C7FC0
+}
 
 skinparam rectangle<<external_system>> {
     StereotypeFontColor #FFFFFF
@@ -488,6 +589,18 @@ skinparam actor<<external_system>> {
     BackgroundColor #999999
     BorderColor #8A8A8A
 }
+skinparam participant<<external_system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #999999
+    BorderColor #8A8A8A
+}
+skinparam sequencebox<<external_system>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #999999
+    BorderColor #8A8A8A
+}
 
 
 skinparam rectangle<<system_boundary>> {
@@ -512,6 +625,16 @@ skinparam person<<system_boundary>> {
 }
 skinparam actor<<system_boundary>> {
     FontColor transparent
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam participant<<system_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam sequencebox<<system_boundary>> {
+    FontColor #444444
     BackgroundColor transparent
     BorderColor #444444
 }
@@ -541,6 +664,16 @@ skinparam person<<enterprise_boundary>> {
 }
 skinparam actor<<enterprise_boundary>> {
     FontColor transparent
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam participant<<enterprise_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam sequencebox<<enterprise_boundary>> {
+    FontColor #444444
     BackgroundColor transparent
     BorderColor #444444
 }
@@ -789,6 +922,18 @@ skinparam actor<<person>> {
     BackgroundColor #08427B
     BorderColor #073B6F
 }
+skinparam participant<<person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
+skinparam sequencebox<<person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #08427B
+    BorderColor #073B6F
+}
 
 
 skinparam rectangle<<external_person>> {
@@ -821,7 +966,18 @@ skinparam actor<<external_person>> {
     BackgroundColor #686868
     BorderColor #8A8A8A
 }
-
+skinparam participant<<external_person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
+skinparam sequencebox<<external_person>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #686868
+    BorderColor #8A8A8A
+}
 
 
 
@@ -878,6 +1034,18 @@ skinparam actor<<container>> {
     BackgroundColor #438DD5
     BorderColor #3C7FC0
 }
+skinparam participant<<container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #438DD5
+    BorderColor #3C7FC0
+}
+skinparam sequencebox<<container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #438DD5
+    BorderColor #3C7FC0
+}
 
 skinparam rectangle<<external_container>> {
     StereotypeFontColor #FFFFFF
@@ -909,6 +1077,18 @@ skinparam actor<<external_container>> {
     BackgroundColor #B3B3B3
     BorderColor #A6A6A6
 }
+skinparam participant<<external_container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #B3B3B3
+    BorderColor #A6A6A6
+}
+skinparam sequencebox<<external_container>> {
+    StereotypeFontColor #FFFFFF
+    FontColor #FFFFFF
+    BackgroundColor #B3B3B3
+    BorderColor #A6A6A6
+}
 
 
 skinparam rectangle<<container_boundary>> {
@@ -936,9 +1116,18 @@ skinparam actor<<container_boundary>> {
     BackgroundColor transparent
     BorderColor #444444
 }
+skinparam participant<<container_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
+skinparam sequencebox<<container_boundary>> {
+    FontColor #444444
+    BackgroundColor transparent
+    BorderColor #444444
+}
 skinparam package<<container_boundary>>StereotypeFontColor transparent
 skinparam rectangle<<container_boundary>>StereotypeFontColor transparent
-
 
 
 
@@ -959,18 +1148,22 @@ skinparam rectangle<<container_boundary>>StereotypeFontColor transparent
 left to right direction
 
 rectangle "== Consortium member\n<size:12>[8x]</size>" <<boundary>> as cons  {
-    rectangle "<$person>\n== Data contributor" <<person>> as cons_tech 
-    rectangle "== Database\n//<size:12>[unknown system]</size>//" <<container>> as cons_db 
+    rectangle "<$person>\n== Data provider" <<person>> as cons_tech 
+      rectangle "== Database\n//<size:12>[unknown system]</size>//" <<container>> as cons_db
     rectangle "<$person>\n== Researcher" <<person>> as researcher 
 }
 
-rectangle "== DRE\n<size:12>[anDREa]</size>" <<boundary>> as dre  {
-    rectangle "<$person>\n== Datamanager" <<person>> as ds 
+rectangle "== DRE\n<size:12>[Provider?]</size>" <<boundary>> as dre  {
+    rectangle "<$person>\n== Datasteward" <<person>> as ds 
     rectangle "<$person>\n== DevOps" <<person>> as devops 
 
-    rectangle "== Landing Zone\n//<size:12>[Folder]</size>//\n\n8x" <<container>> as landingZone 
-    rectangle "== Harmonization Zone\n//<size:12>[Folder]</size>//\n\n8x" <<container>> as dataPrep 
-    rectangle "== Integrated data\n//<size:12>[Postgres]</size>//\n\n1x" <<container>> as db 
+      rectangle "== Landing Zone\n//<size:12>[Folder]</size>//\n\n8x" <<container>> as landingZone
+      rectangle "== Harmonization Zone\n//<size:12>[Folder]</size>//\n\n8x" <<container>> as dataPrep
+      rectangle "== Integrated data\n//<size:12>[JSON/SQLite]</size>//\n\n1x" <<container>> as db
+}
+
+rectangle "== Data repository\n<size:12>[DANS?]</size>" <<boundary>> as hosting  {
+      rectangle "== Catalogue\n//<size:12>[Dataverse?]</size>//" <<container>> as catalogue
 }
 
 cons_db - ->> landingZone : **import**
@@ -984,6 +1177,15 @@ ds - ->> dataPrep : **Harmonize**
 devops - ->> db : **Performs integration**
 
 researcher - ->> db : **Analyzes**
+
+db - ->> catalogue : **Publish**
+
+rectangle "<$person>\n== External researcher" <<person>> as ext_researcher 
+ext_researcher - ->> catalogue : **Requests access**
+
+
+rectangle "<$person>\n== Access committee" <<person>> as access_committee 
+access_committee - ->> catalogue : **Manages access**
 
 @enduml
 
