@@ -1,0 +1,66 @@
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table BindingAbs {
+  study_id integer
+  record_id integer [primary key]
+  assay_name varchar [note: 'used test/immunoassay to measure Abs in (B)AU/ml']
+  assay_location varchar
+  var_unit varchar [note: 'e.g. in (B)AU/ml']
+  anti_s1 integer
+  anti_s1_dte date
+  anti_n integer
+  anti_n_dte date
+  anti_rbd integer
+  anti_rbd_dte date
+  timepoint varchar [note: 'T0,T1,T2,T3,... = unified event-time-categorization in relation to vaccines, e.g. 28 days after 1st vacc.,...']
+  var_id integer [note: 'if row has a value, then gets an unique varID for lookup-table']
+}
+
+Table NeutralizingAbs {
+  study_id integer
+  record_id integer [primary key]
+  assay_name varchar [note: 'used test/immunoassay to measure PRNT50 titer [IU/ml] or IC50 dilution']
+  assay_location varchar
+  against_variant varchar [note: 'Wildtype | Delta | Omicron | XBB']
+  var_unit varchar [note: 'e.g. in IU/ml']
+  anti_neu integer
+  anti_neu_dte date
+  timepoint varchar [note: 'T0,T1,T2,T3,... = unified event-time-categorization in relation to vaccines, e.g. 28 days after 1st vacc.,...']
+  var_id integer [note: 'if row has a value, then gets an unique varID for lookup-table']
+}
+
+Table TCellAnalysis {
+ study_id integer
+  record_id integer [primary key]
+  assay_name varchar [note: 'EliSpot SFCs per 1x10^6 PBMC | IGRA IFN-y prod. [IU/mL]']
+  assay_location varchar
+  var_unit varchar [note: 'in IU/ml or SFC/10^6 PBMC']
+  ifny_s1 integer
+  ifny_s1_dte date
+  ifny_s2 integer
+  ifny_s2_dte date
+  igra_ag2 integer
+  igra_ag2_dte date
+  timepoint varchar [note: 'T0,T1,T2,T3,... = unified event-time-categorization in relation to vaccines, e.g. 28 days after 1st vacc.,...']
+  var_id integer [note: 'if row has a value, then gets an unique varID for lookup-table']
+}
+
+Table VariableDefintions {
+  var_id integer [note: 'in this lookup-table find var-name of original dataset before unified re-naming']
+  var_originalname varchar
+  var_definition varchar
+}
+Ref: VariableDefintions.var_id < BindingAbs.var_id // many-to-one
+Ref: VariableDefintions.var_id < NeutralizingAbs.var_id // many-to-one
+Ref: VariableDefintions.var_id < TCellAnalysis.var_id // many-to-one
+
+Table Demographics {
+  participant_id integer [primary key]
+  birthyear date
+  gender integer
+  subgroup integer
+  dropout_dte date
+}
+Ref: Demographics.participant_id < BindingAbs.record_id // many-to-one
+Ref: Demographics.participant_id < NeutralizingAbs.record_id // many-to-one
+Ref: Demographics.participant_id < TCellAnalysis.record_id // many-to-one
