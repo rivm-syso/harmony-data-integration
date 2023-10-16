@@ -1,0 +1,81 @@
+// data model in DBML (database markup language)
+// full syntax docs: https://dbml.dbdiagram.io/docs
+
+// link to data model in dbdiagram.io: https://dbdiagram.io/d/T2B-652d347dffbf5169f0c6891f
+
+Table "Main excel file" {
+  REGISTRATION_ID text [primary key]
+  group text [note: 'values: Healthy controls, controls, patients']
+  AGE integer [note: 'check age at what time']
+  SEX text [note: 'values: Male, Female']
+}
+
+Table "MEMIC_Overview_active subjects_20231013_12_03" {
+  REGISTRATION_ID text [primary key]
+  "LOF date" date [note: 'exclude pts with LOF date']
+}
+
+Table "MEMIC_Overview_Tubenumbers_20231013_11_34" {
+  REGISTRATION_ID text
+  Attribute text [note: "attribute contains text which timepoint the tube was taken"]
+  "Tube Number" text
+  Note: 'This table has been pivoted, see PBI or ask AvO.'
+}
+
+Table "tbl_report_T2B_FP_RBD_IgG_20230"{
+  sampleID text [primary key]
+  dateProcessed date
+  titer_final decimal
+}
+
+Table "tbl_report_T2B_FP_S_IgG_2023012"{
+  sampleID text [primary key]
+  dateProcessed date
+  titer_final decimal
+}
+
+Table "tbl_report_T2B_PBMC_S_IgG_20230"{
+  sampleID text [primary key]
+  dateProcessed date
+  titer_final decimal
+
+  note: "Linkage table to be received"
+}
+
+Table "tbl_report_T2B_PBMC_RBD_IgG_202"{
+  sampleID text [primary key]
+  dateProcessed date
+  titer_final decimal
+
+  note: "Linkage table to be received"
+}
+
+Table "T2B_immunity_against_SARS-CoV2__COVID_re-_infection_export_20231013" {
+  "Participant Id" text
+  RI_PCR_date date [note: "only contains data when test was positive"]
+  RI_selftest_date date [note: "only contains data when test was positive"]
+}
+
+Table "T2B_immunity_against_SARS-CoV2__export_20231013" {
+  "Participant Id" text [primary key]
+  EOS_date_consent_withdrawn date
+  EOS_date_investigator_decision date
+  EOS_datelastcontact date
+  EOS_dateofdeath date
+  vacc_brand_1 text [note: "is ints, combined with categorized text."]
+  vacc_brand_2 integer
+  vacc_brand_3 integer
+  vacc_brand_4 integer
+  vacc_date_1 date
+  vacc_date_2 date
+  vacc_date_3 date
+  vacc_date_4 date
+}
+
+
+Ref: "Main excel file".REGISTRATION_ID - "MEMIC_Overview_active subjects_20231013_12_03".REGISTRATION_ID
+Ref: "Main excel file".REGISTRATION_ID < "MEMIC_Overview_Tubenumbers_20231013_11_34".REGISTRATION_ID
+Ref: "tbl_report_T2B_FP_RBD_IgG_20230"."sampleID" < "MEMIC_Overview_Tubenumbers_20231013_11_34"."Tube Number"
+Ref: "tbl_report_T2B_FP_S_IgG_2023012"."sampleID" < "MEMIC_Overview_Tubenumbers_20231013_11_34"."Tube Number"
+Ref: "Main excel file".REGISTRATION_ID < "T2B_immunity_against_SARS-CoV2__COVID_re-_infection_export_20231013"."Participant Id"
+Ref: "Main excel file".REGISTRATION_ID - "T2B_immunity_against_SARS-CoV2__export_20231013"."Participant Id"
