@@ -1,4 +1,7 @@
-// Docs: https://dbml.dbdiagram.io/docs
+// data model in DBML (database markup language)
+// full syntax docu for DBML: https://dbml.dbdiagram.io/docs
+
+// link to this data model in dbdiagram.io: https://dbdiagram.io/d/HMNY_DataModelTemplate_v1-0-6512f621ffbf5169f0892ba7
 
 Table BindingAbs {
   study_id integer
