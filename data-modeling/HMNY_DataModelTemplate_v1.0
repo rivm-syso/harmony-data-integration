@@ -59,7 +59,7 @@ Ref: VariableDefintions.var_id < TCellAnalysis.var_id // many-to-one
 
 Table Demographics {
   participant_id integer [primary key]
-  birthyear date
+  age_at_vacc integer
   gender integer
   subgroup integer
   dropout_dte date
