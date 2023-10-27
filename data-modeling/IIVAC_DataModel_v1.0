@@ -1,0 +1,34 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table Data {
+  ID integer
+  Age_Vacc_COVID1 integer
+  alggeslacht integer [note:'1=male, 2=female, 3=other']
+  schermvacdate1 date [note: 'd/m/yyyy']
+  schermvacnaam1 string [note: 'clean categorical text']
+  schermvacdate2 date [note: 'd/m/yyyy']
+  schermvacnaam2 string [note: 'clean categorical text']
+  vacdatebooster date [note: 'd/m/yyyy']
+  vacnamebooster string [note: 'clean categorical text']
+  positive_date1 string [note: 'messy text, some (partial) dates']
+  positive_date2 date [note: 'yyyy-mm-dd']
+  positive_date3 date [note: 'yyyy-mm-dd']
+  positive_date4 date [note: 'yyyy-mm-dd']
+  positive_date5 date [note: 'yyyy-mm-dd']
+  "T0 sample date" date [note: 'yyyy-mm-dd']
+  "MIA_CoV19_N_BAU_Titer.1" decimal
+  "MIA_CoV19_S1_BAU_Titer.1" decimal
+  "T2 sample date" date [note: 'yyyy-mm-dd']
+  "MIA_CoV19_N_BAU_Titer.2" decimal
+  "MIA_CoV19_S1_BAU_Titer.2" decimal
+  "T3 sample date" date [note: 'yyyy-mm-dd']
+  "MIA_CoV19_N_BAU_Titer.3" decimal
+  "MIA_CoV19_S1_BAU_Titer.3" decimal
+  "B0 sample date" date [note: 'yyyy-mm-dd']
+  "MIA_CoV19_N_BAU_Titer.4" decimal
+  "MIA_CoV19_S1_BAU_Titer.4" decimal
+  "B1 sample date" date [note: 'yyyy-mm-dd']
+  "MIA_CoV19_N_BAU_Titer.5" decimal
+  "MIA_CoV19_S1_BAU_Titer.5" decimal
+}
