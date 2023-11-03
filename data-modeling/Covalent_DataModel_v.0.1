@@ -1,0 +1,52 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table "RespondersIGRA-cleaned.txt" {
+  record_id integer
+  redcap_event_name text [note: 'values are vacc1_arm_1 or vacc2_28_days_arm_1']
+  demo_age integer [note: 'check age at what time']
+  anti_sval decimal [note: 'RBD?']
+}
+
+Table "Antibodies_test.csv" {
+  record_id integer
+  redcap_event_name text [note: 'sot__3_months_arm_2; sot__6_months_arm_2; vacc1_arm_1; vacc1_arm_2; vacc1_arm_3; vacc2__12_months_arm_1; vacc2__12_months_arm_2; vacc2__12_months_arm_3; vacc2__28_days_arm_1; vacc2__28_days_arm_2; vacc2__28_days_arm_3; vacc2__6_months_arm_1; vacc2__6_months_arm_2; vacc2__6_months_arm_3; vacc2_arm_1; vacc2_arm_2; vacc2_arm_3; vacc3__28days_arm_1']
+  anti_sval decimal
+  anti_nval decimal
+  anti_neuval decimal
+}
+
+Table "COVALENT-Antibodies_DATA_2023-07-11_1608" {
+  record_id integer
+  redcap_event_name text [note: 'sot__3_months_arm_2; sot__6_months_arm_2; vacc1_arm_1; vacc1_arm_2; vacc1_arm_3; vacc2__12_months_arm_1; vacc2__12_months_arm_2; vacc2__12_months_arm_3; vacc2__28_days_arm_1; vacc2__28_days_arm_2; vacc2__28_days_arm_3; vacc2__6_months_arm_1; vacc2__6_months_arm_2; vacc2__6_months_arm_3; vacc2_arm_1; vacc2_arm_2; vacc2_arm_3; vacc3__28days_arm_1']
+  anti_sval decimal
+  anti_nval decimal
+  anti_neuval decimal
+}
+
+Table "COVALENT-Covid19InfectiesVrag_DATA_2023-07-11-1607" {
+  record_id integer
+  redcap_event_name text [note: 'sot__3_months_arm_2; sot__6_months_arm_2; vacc1_arm_1; vacc1_arm_2; vacc1_arm_3; vacc2__12_months_arm_1; vacc2__12_months_arm_2; vacc2__12_months_arm_3; vacc2__28_days_arm_1; vacc2__28_days_arm_2; vacc2__28_days_arm_3; vacc2__6_months_arm_1; vacc2__6_months_arm_2; vacc2__6_months_arm_3; vacc2_arm_1; vacc2_arm_2; vacc2_arm_3; vacc3__28days_arm_1']
+  cov_01_3_ext1_res integer [note: '#1 result']
+  cov_01_2__ext1_dte date [note: '#1 date, only include if result is 1' ]
+  cov_01_3_ext2_res integer [note: '#2 result']
+  cov_01_2__ext2_dte date [note: '#2 date, only include if result is 1' ]
+  cov_01_3_ext3_res integer [note: '#3 result']
+  cov_01_2__ext3_dte date [note: '#3 date, only include if result is 1' ]
+}
+
+Table "RespondersIGRAresult_DATA_2023-07-11-1605.csv" {
+  record_id integer
+  redcap_event_name text [note: 'values are vacc1_arm_1 or vacc2_28_days_arm_1']
+  demo_age integer [note: 'check age at what time']
+  anti_sval decimal [note: 'RBD?']
+}
+
+
+
+/*Ref: "Main excel file".REGISTRATION_ID - "MEMIC_Overview_active subjects_20231013_12_03".REGISTRATION_ID
+Ref: "Main excel file".REGISTRATION_ID < "MEMIC_Overview_Tubenumbers_20231013_11_34".REGISTRATION_ID
+Ref: "tbl_report_T2B_FP_RBD_IgG_20230"."sampleID" < "MEMIC_Overview_Tubenumbers_20231013_11_34"."Tube Number"
+Ref: "tbl_report_T2B_FP_S_IgG_2023012"."sampleID" < "MEMIC_Overview_Tubenumbers_20231013_11_34"."Tube Number"
+Ref: "Main excel file".REGISTRATION_ID < "T2B_immunity_against_SARS-CoV2__COVID_re-_infection_export_20231013"."Participant Id"
+Ref: "Main excel file".REGISTRATION_ID - "T2B_immunity_against_SARS-CoV2__export_20231013"."Participant Id"*/
