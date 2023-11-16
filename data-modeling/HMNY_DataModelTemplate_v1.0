@@ -5,7 +5,7 @@
 
 Table BindingAbs {
   study_id integer
-  record_id integer [primary key]
+  participant_id integer
   assay_name varchar [note: 'used test/immunoassay to measure Abs in (B)AU/ml']
   assay_location varchar
   var_unit varchar [note: 'e.g. in (B)AU/ml']
@@ -21,7 +21,7 @@ Table BindingAbs {
 
 Table NeutralizingAbs {
   study_id integer
-  record_id integer [primary key]
+  participant_id integer
   assay_name varchar [note: 'used test/immunoassay to measure PRNT50 titer [IU/ml] or IC50 dilution']
   assay_location varchar
   against_variant varchar [note: 'Wildtype | Delta | Omicron | XBB']
@@ -34,8 +34,8 @@ Table NeutralizingAbs {
 
 Table TCellAnalysis {
  study_id integer
-  record_id integer [primary key]
-  assay_name varchar [note: 'EliSpot SFCs per 1x10^6 PBMC | IGRA IFN-y prod. [IU/mL]']
+  participant_id integer
+  assay_name varchar [note: 'EliSpot SFCs per 1x10^6 PBMC | IGRA IFN-y prod. Eurimmune [IU/mL] | IGRA IFN-y prod. Qiagen [IU/mL]']
   assay_location varchar
   var_unit varchar [note: 'in IU/ml or SFC/10^6 PBMC']
   ifny_s1 integer
@@ -49,21 +49,59 @@ Table TCellAnalysis {
 }
 
 Table VariableDefintions {
-  var_id integer [note: 'in this lookup-table find var-name of original dataset before unified re-naming']
-  var_originalname varchar
+  var_id integer [primary key, note: 'in this lookup-table find var-name of original dataset before unified re-naming']
   var_definition varchar
+  ontology [varchar]
+  URI [varchar]
+  var_name_cobrakai varchar
+  var_name_covih varchar
+  var_name_covalent varchar
+  var_name_hcw varchar
+  var_name_iivac varchar
+  var_name_pride varchar
+  var_name_recovacir varchar
+  var_name_recovarrv varchar
+  var_name_switch varchar
+  var_name_switchon varchar
+  var_name_target2b varchar
+  var_name_vacopid varchar
+  var_name_vital varchar
+  var_name_vocaal varchar
+  var_name_voice varchar
 }
-Ref: VariableDefintions.var_id < BindingAbs.var_id // many-to-one
-Ref: VariableDefintions.var_id < NeutralizingAbs.var_id // many-to-one
-Ref: VariableDefintions.var_id < TCellAnalysis.var_id // many-to-one
 
 Table Demographics {
   participant_id integer [primary key]
-  age_at_vacc integer
-  gender integer
+  age integer [note: 'as defined by study criteria, either at informed consent, or at 1st vaccination']
+  gender integer [note: 'encoding as 1 = male, 2 = female, 3 = other']
   subgroup integer
   dropout_dte date
 }
-Ref: Demographics.participant_id < BindingAbs.record_id // many-to-one
-Ref: Demographics.participant_id < NeutralizingAbs.record_id // many-to-one
-Ref: Demographics.participant_id < TCellAnalysis.record_id // many-to-one
+
+Table Vaccinations {
+  study_id integer
+  participant_id integer
+  vaccination_dte date
+  vaccination_brand varchar [note: 'Pfizer, Moderna, AstraZeneca, Janssen, unknown, Moderna - SWITCH ON, Pfizer - SWITCH ON']
+}
+
+Table Infections {
+  study_id integer
+  participant_id integer
+  infection_dte date
+}
+
+Table Timepoints {
+  timepoint_abbr varchar [note: 'T0, T1, etc.']
+  timepoint_expl varchar [note: 'e.g. 28 days after second vaccination']
+}
+
+Ref: Timepoints.timepoint_abbr < BindingAbs.timepoint // many-to-one
+Ref: Timepoints.timepoint_abbr < NeutralizingAbs.timepoint // many-to-one
+Ref: Timepoints.timepoint_abbr < TCellAnalysis.timepoint // many-to-one
+
+Ref: Demographics.participant_id < BindingAbs.participant_id // many-to-one
+Ref: Demographics.participant_id < NeutralizingAbs.participant_id // many-to-one
+Ref: Demographics.participant_id < TCellAnalysis.participant_id // many-to-one
+Ref: Demographics.participant_id < Vaccinations.participant_id // many-to-one
+Ref: Demographics.participant_id < Infections.participant_id // many-to-one
