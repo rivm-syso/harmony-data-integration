@@ -1,8 +1,9 @@
 ## fn2_convert_newfiles.py
 
-Main-Functions in this Python script:
+2x Main-Functions in this Python script:
 
-1. ### `check_file_formats()`
+### 1.
+### `check_file_formats()`
 
 #### Purpose: 
 
@@ -10,26 +11,22 @@ Main-Functions in this Python script:
 
 #### Description:
 
--   Loops through files in a directory.
+> Loops through files in a directory. Based on file extensions, calls corresponding Sub-functions to
+    handle conversion or cleaning
 
--   Based on file extensions, calls corresponding sub-functions to
-    handle conversion or cleaning:
+#### Sub-functions:
 
-1.1. #### `text_to_csv(filename)`
+- **`text_to_csv(filename)`**
+*Based on different separator scenarios (e.g., ';' or '\t'), converts TXT to CSV format.*
 
-> Based on different separator scenarios (e.g., ';' or '\t'), converts
-> TXT to CSV format.
+- **`clean_csv_inconsistencies(filename)`**
+*Cleans row-level inconsistencies (line by line) in CSV files by removing unwanted characters or spaces.*
 
-1.2. ##### `clean_csv_inconsistencies(filename)`
+- **`excel_to_csv(filename)`**
+*Converts data from the first sheet of XLSX files to CSV format.*
 
-> Cleans row-level inconsistencies (line by line) in CSV files by
-> removing unwanted characters or spaces.
-
-1.3. ##### `excel_to_csv(filename)`
-
-> Converts data from the first sheet of XLSX files to CSV format.
-
-2. ### `csv_formatting()`
+### 2.
+### `csv_formatting()`
 
 #### Purpose: 
 
@@ -37,18 +34,16 @@ Main-Functions in this Python script:
 
 #### Description:
 
--   Iterates through CSV files in a temporary directory.
+> Iterates through CSV files in a temporary directory. Detects encoding (e.g., ascii, utf-8, etc.) and reads CSV into
+    pandas dataframe accordingly. Performs sub-tasks like checking & adjusting decimal separators
+    (e.g., replace ‘,’ with ‘.’). Saves modified CSV files in unified format to output directory.
 
--   Detects encoding (e.g., ascii, utf-8, etc.) and reads CSV into
-    pandas dataframe accordingly.
-
--   Performs sub-tasks like checking + adjusting decimal separators
-    (e.g., replace ‘,’ with ‘.’).
-
--   Saves modified CSV files in unified format to output directory.
+<br/>
 
 ---
 
-&nbsp; text
-&ensp; text
 &emsp; text
+<br/>
+text
+<br/>
+text
