@@ -1,4 +1,4 @@
-## [study-prefixes](fn-inputs/study-prefixes.ps1)
+
 ## [fn2_convert_newfiles.py](fn2_convert.py)
 
 2x Main-Functions in this Python script:
@@ -42,6 +42,11 @@
 <br/>
 
 ---
+
+<br/>
+
+a relative path link:
+[study-prefixes](fn-inputs/study-prefixes.ps1)
 
 &emsp; text
 <br/>
