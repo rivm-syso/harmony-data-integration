@@ -2,7 +2,7 @@
 
 Main-Functions in this Python script:
 
-1. ### `check_file_formats()` {#1.}
+1. ### `check_file_formats()`
 
 #### Purpose: 
 
@@ -15,17 +15,17 @@ Main-Functions in this Python script:
 -   Based on file extensions, calls corresponding sub-functions to
     handle conversion or cleaning:
 
-&emsp; ##### `text_to_csv(filename)`
+1.1. ##### `text_to_csv(filename)`
 
-&emsp; > Based on different separator scenarios (e.g., ';' or '\t'), converts
+> Based on different separator scenarios (e.g., ';' or '\t'), converts
 > TXT to CSV format.
 
-&emsp; ##### `clean_csv_inconsistencies(filename)`
+1.2. ##### `clean_csv_inconsistencies(filename)`
 
 > Cleans row-level inconsistencies (line by line) in CSV files by
 > removing unwanted characters or spaces.
 
-&emsp; ##### `excel_to_csv(filename)`
+1.3. ##### `excel_to_csv(filename)`
 
 > Converts data from the first sheet of XLSX files to CSV format.
 
