@@ -2,7 +2,7 @@
 
 Main-Functions in this Python script:
 
-1. ## check_file_formats()
+## 1. `check_file_formats()`
 
 ### Purpose: 
 
