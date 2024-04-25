@@ -1,0 +1,48 @@
+## fn2_convert_newfiles.py
+
+Main-Functions in this Python script:
+
+### <span class="mark">check_file_formats()</span>
+
+#### Purpose: 
+
+> Checks input file formats (.txt, .csv, .xlsx, other).
+
+#### Description:
+
+-   Loops through files in a directory.
+
+-   Based on file extensions, calls corresponding sub-functions to
+    handle conversion or cleaning:
+
+##### text_to_csv(filename)
+
+> Based on different separator scenarios (e.g., ';' or '\t'), converts
+> TXT to CSV format.
+
+##### clean_csv_inconsistencies(filename)
+
+> Cleans row-level inconsistencies (line by line) in CSV files by
+> removing unwanted characters or spaces.
+
+##### excel_to_csv(filename)
+
+> Converts data from the first sheet of XLSX files to CSV format.
+
+### <span class="mark">csv_formatting()</span>
+
+#### Purpose: 
+
+> Corrects and formats CSV files.
+
+#### Description:
+
+-   Iterates through CSV files in a temporary directory.
+
+-   Detects encoding (e.g., ascii, utf-8, etc.) and reads CSV into
+    pandas dataframe accordingly.
+
+-   Performs sub-tasks like checking + adjusting decimal separators
+    (e.g., replace ‘,’ with ‘.’).
+
+-   Saves modified CSV files in unified format to output directory.
