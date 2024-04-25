@@ -15,7 +15,7 @@ Main-Functions in this Python script:
 -   Based on file extensions, calls corresponding sub-functions to
     handle conversion or cleaning:
 
-1.1. ##### `text_to_csv(filename)`
+1.1. #### `text_to_csv(filename)`
 
 > Based on different separator scenarios (e.g., ';' or '\t'), converts
 > TXT to CSV format.
