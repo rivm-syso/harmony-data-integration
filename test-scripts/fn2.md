@@ -2,7 +2,7 @@
 
 Main-Functions in this Python script:
 
-## check_file_formats()
+1. ## check_file_formats()
 
 ### Purpose: 
 
@@ -29,7 +29,7 @@ Main-Functions in this Python script:
 
 > Converts data from the first sheet of XLSX files to CSV format.
 
-## <span class="mark">csv_formatting()</span>
+2. ## csv_formatting()
 
 ### Purpose: 
 
