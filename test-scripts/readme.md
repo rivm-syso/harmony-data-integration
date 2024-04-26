@@ -1,9 +1,61 @@
+## [inbox-backup.ps1](0_inbox-backup.ps1)
+
+This PowerShell script first sets up file system watchers for monitoring
+changes in two folders to be backed up regularly (Z:\inbox\\ and
+Z:\QuickHMNY\data_in). One contains uploaded raw files, the other the
+converted & mapped files. Then the script calls 2x BackupFunctions:
+
+### 1.
+
+### `inboxSourceFolder`
+
+#### Description:
+
+1.  Defines a function `Copy-ItemIfNew` to copy items if they are new.
+
+2.  Registers an event for newly created files in the inbox source
+    folder.
+
+3.  Copies existing items to the backup folder if they haven't been
+    copied yet.
+
+### 2.
+
+### `MappedFiles`
+
+#### Description: 
+
+> Same function, but for the mapped files folder.
+
+## [fn1_unzip.ps1](fn1_unzip.ps1)
+
+This PowerShell script has 2x short Functions:
+
+### 1.
+
+### `Expand-Archive`
+
+#### Description:
+
+> Searches for ZIP files in a folder ($inFolder) and its subdirectories.
+> For each ZIP file found, extracts its content (list of files).
+
+### 2.
+
+### `Copy-Item`
+
+#### Description: 
+
+> Retrieves files with extensions .csv, .xlsx, .tsv, and .txt from the
+> extracted folder content and copies files to a destination folder
+> ($outFolder).
 
 ## [fn2_convert_newfiles.py](fn2_convert.py)
 
-2x Main-Functions in this Python script:
+This Python script has 2x Main-Functions:
 
 ### 1.
+
 ### `check_file_formats()`
 
 #### Purpose: 
@@ -12,21 +64,27 @@
 
 #### Description:
 
-> Loops through files in a directory. Based on file extensions, calls corresponding Sub-functions to
-    handle conversion or cleaning
+> Loops through files in a directory. Based on file extensions, calls
+> corresponding Sub-functions to handle conversion or cleaning
 
 #### Sub-functions:
 
-- **`text_to_csv(filename)`**
-*Based on different separator scenarios (e.g., ';' or '\t'), converts TXT to CSV format.*
+-   **`text_to_csv(filename)`**
 
-- **`clean_csv_inconsistencies(filename)`**
-*Cleans row-level inconsistencies (line by line) in CSV files by removing unwanted characters or spaces.*
+*Based on different separator scenarios (e.g., ';' or '\t'), converts
+TXT to CSV format.*
 
-- **`excel_to_csv(filename)`**
+-   **`clean_csv_inconsistencies(filename)`**
+
+*Cleans row-level inconsistencies (line by line) in CSV files by
+removing unwanted characters or spaces.*
+
+-   **`excel_to_csv(filename)`**
+
 *Converts data from the first sheet of XLSX files to CSV format.*
 
 ### 2.
+
 ### `csv_formatting()`
 
 #### Purpose: 
@@ -35,9 +93,154 @@
 
 #### Description:
 
-> Iterates through CSV files in a temporary directory. Detects encoding (e.g., ascii, utf-8, etc.) and reads CSV into
-    pandas dataframe accordingly. Performs sub-tasks like checking & adjusting decimal separators
-    (e.g., replace ‘,’ with ‘.’). Saves modified CSV files in unified format to output directory.
+> Iterates through CSV files in a temporary directory. Detects encoding
+> (e.g., ascii, utf-8, etc.) and reads CSV into pandas dataframe
+> accordingly. Performs sub-tasks like checking & adjusting decimal
+> separators (e.g., replace ‘,’ with ‘.’). Saves modified CSV files in
+> unified format to output directory.
+
+## [fn3_prefix.ps1](fn3_prefix.ps1)
+
+This PowerShell script contains first 2x GUIs (Windows Forms) for user
+input and then 2x Main-Function blocks for file processing:
+
+### 1.
+
+### `InputForm - StudyPrefixes`
+
+#### Purpose: 
+
+> Input form for selecting study prefixes.
+
+#### Description:
+
+1.  Loads a list of study prefixes from a sub-function named
+    `‘study-prefixes.ps1’` (here used as Schema).
+
+2.  Creates a GUI with a ComboBox to display the list of prefixes for
+    selection.
+
+3.  Includes a "Confirm" button to close the form and return the
+    selected prefix.
+
+4.  If the form is closed without confirmation, the script exits.
+
+### 2.
+
+### `InputForm - SelectFiles`
+
+#### Purpose: 
+
+> Input form for selecting files using OpenFileDialog.
+
+#### Description:
+
+1.  Creates an OpenFileDialog to allow users to select multiple files.
+
+2.  If files are selected, captures the filenames into the
+    $selectedFiles variable.
+
+3.  Exits the script if the OpenFileDialog is canceled.
+
+### 3.
+
+### `MainFunction - Prefix & StudySubfolders`
+
+#### Description:
+
+1.  Retrieves the selected study prefix from the ComboBox.
+
+2.  Constructs the path for the study subfolder using the selected
+    prefix.
+
+3.  Checks if the subfolder already exists; if not, creates it.
+
+### 4.
+
+### `MainFunction – Rename based on HeaderName pattern`
+
+#### Description:
+
+1.  Loads an array of header names from a sub-function named
+    `‘headername-patterns.ps1’` (here used as Schema).
+
+2.  Scans the first two rows of selected files to identify header name
+    patterns.
+
+3.  Matches header names to predefined regular expressions (e.g.,
+    $regexImmun) to categorize files.
+
+4.  Renames and copies files to a new subdirectory based on their
+    category and prefix.
+
+## [study-prefixes.ps1 (schema)](fn-inputs/study-prefixes.ps1)
+
+### `$prefixList (variable)`
+
+#### Purpose:
+
+> Used as a Schema/Template in `fn3_prefix.ps1`. Defines a list of
+> study prefixes (for customization based on future project
+> requirements).
+
+## [headername-patterns.ps1 (schema)](fn-inputs/headername-patterns.ps1)
+
+### `$regex… (variable)`
+
+#### Purpose:
+
+> Used as a Schema/Template in `fn3_prefix.ps1`. Defines regular
+> expression patterns for header string matching (for customization
+> based on future project requirements).
+
+#### Description:
+
+-   Defines arrays of header strings to be checked for specific data
+    categories (e.g., immunological variables, demographic info, date
+    columns).
+
+-   Constructs regular expression patterns from these arrays to match
+    corresponding header strings in the files.
+
+## [extract_metadata_v2.py]
+
+This Python script first requires custom user-inputs (file paths and
+filenames) and then calls following 2x Main-Functions:
+
+### 1.
+
+### `extract_metadata(csv_file)`
+
+#### Purpose: 
+
+> Extracts metadata from a CSV file, including file-level and
+> column-level information. Calculates basic summary statistics for
+> numeric columns (e.g., min, max, and avg. values). Constructs a
+> metadata dictionary for the CSV file, ready to be saved as a JSON
+> file.
+
+#### Sub-functions:
+
+-   **`counts_per_column(column_data, row_count)`**
+
+*Counts null values, actual values, distinct values, and unique values
+per column in a DataFrame and returns the counts to the main function as
+a tuple.*
+
+-   **`get_data_type(py_dtype, column_data)`**
+
+*Maps inferred pandas data types to labels, with additional checks for
+string and integer types to determine the data type of a column in a
+DataFrame.*
+
+### 2.
+
+### `save_json_file(json_output, metadata)`
+
+#### Purpose: 
+
+> This function saves the provided metadata dictionary as a JSON file
+> with specified output path and indentation.
 
 <br/>
 
