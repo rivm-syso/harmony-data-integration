@@ -1,3 +1,5 @@
+//Work in progress - update to final data model
+
 // data model in DBML (database markup language)
 // full syntax docu for DBML: https://dbml.dbdiagram.io/docs
 
@@ -48,11 +50,11 @@ Table TCellAnalysis {
   var_id integer [note: 'if row has a value, then gets an unique varID for lookup-table']
 }
 
-Table VariableDefintions {
+/*Table VariableDefintions {
   var_id integer [primary key, note: 'in this lookup-table find var-name of original dataset before unified re-naming']
   var_definition varchar
-  ontology [varchar]
-  URI [varchar]
+  ontology varchar
+  URI varchar
   var_name_cobrakai varchar
   var_name_covih varchar
   var_name_covalent varchar
@@ -68,40 +70,42 @@ Table VariableDefintions {
   var_name_vital varchar
   var_name_vocaal varchar
   var_name_voice varchar
-}
+}*/
 
 Table Demographics {
-  participant_id integer [primary key]
-  age integer [note: 'as defined by study criteria, either at informed consent, or at 1st vaccination']
-  gender integer [note: 'encoding as 1 = male, 2 = female, 3 = other']
-  subgroup integer
-  dropout_dte date
+  "Study Id" varchar [note: "https://loinc.org/82786-5"]
+  "Participant Id" integer [primary key, note: "https://loinc.org/82787-3/"]
+  Birthyear year [note: "https://loinc.org/80904-6/"]
+  Gender integer [note: "https://loinc.org/46098-0/"]
+  Subgroup varchar
+  "Dropout Dte" date [note: "https://loinc.org/82789-9"]
 }
 
 Table Vaccinations {
-  study_id integer
-  participant_id integer
-  vaccination_dte date
-  vaccination_brand varchar [note: 'Pfizer, Moderna, AstraZeneca, Janssen, unknown, Moderna - SWITCH ON, Pfizer - SWITCH ON']
+  "Study Id" varchar [note: "https://loinc.org/82786-5"]
+  "Participant Id" integer [primary key, note: "https://loinc.org/82787-3/"]
+  "Vaccination Dte [n]" date
+  "Vaccination Brand [n]" integer [note: "https://loinc.org/30956-7/"]
 }
 
 Table Infections {
-  study_id integer
-  participant_id integer
-  infection_dte date
+  "Study Id" varchar [note: "https://loinc.org/82786-5"]
+  "Participant Id" integer [primary key, note: "https://loinc.org/82787-3/"]
+  "Infection Dte [n]" date [note: "https://loinc.org/99350-1"]
+  "Infection Dte [n] (Remarks)" varchar
 }
 
-Table Timepoints {
+/*Table Timepoints {
   timepoint_abbr varchar [note: 'T0, T1, etc.']
   timepoint_expl varchar [note: 'e.g. 28 days after second vaccination']
-}
+}*/
 
-Ref: Timepoints.timepoint_abbr < BindingAbs.timepoint // many-to-one
+/*Ref: Timepoints.timepoint_abbr < BindingAbs.timepoint // many-to-one
 Ref: Timepoints.timepoint_abbr < NeutralizingAbs.timepoint // many-to-one
-Ref: Timepoints.timepoint_abbr < TCellAnalysis.timepoint // many-to-one
+Ref: Timepoints.timepoint_abbr < TCellAnalysis.timepoint // many-to-one*/
 
-Ref: Demographics.participant_id < BindingAbs.participant_id // many-to-one
+/*Ref: Demographics.participant_id < BindingAbs.participant_id // many-to-one
 Ref: Demographics.participant_id < NeutralizingAbs.participant_id // many-to-one
 Ref: Demographics.participant_id < TCellAnalysis.participant_id // many-to-one
 Ref: Demographics.participant_id < Vaccinations.participant_id // many-to-one
-Ref: Demographics.participant_id < Infections.participant_id // many-to-one
+Ref: Demographics.participant_id < Infections.participant_id // many-to-one*/
