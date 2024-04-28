@@ -299,6 +299,10 @@ a tuple.*
 string and integer types to determine the data type of a column in a
 DataFrame.*
 
+-	**{ `is_date_string(s)` }**
+
+&emsp;&emsp; *Currently not in use ! Still needs correct integration ! (For now, only to test 'date_pattern' recognition True/False)*
+
 ### 2.
 
 ### `save_json_file(json_output, metadata)`
@@ -309,16 +313,3 @@ DataFrame.*
 > with specified output path and indentation.
 
 <br/>
-
----
-
-<br/>
-
-a relative path link:
-[study-prefixes](fn-inputs/study-prefixes.ps1)
-
-&emsp; text
-<br/>
-text
-<br/>
-text
