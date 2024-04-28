@@ -1,3 +1,57 @@
+# Data-preparation Scripts 
+**Incl. their (sub-)functions for ETL pipeline**
+
+## Intro
+
+After receiving the first dataset (via DRE upload), co-developed a few 
+smaller scripts (in PowerShell & Python) to check source data quality 
+and test essential preparatory steps needed before the data enters an 
+automated ETL pipeline (Extract>Transform>Load). This involves:
+
+-   File management of raw data (e.g., backups, unzipping, structuring &
+    naming conventions)
+
+-   Data formatting and pre-cleaning (e.g., encoding, correct
+    inconsistency, format conversion)
+
+## Current status
+
+> Unfortunately, the vast amount of inconsistencies between source files
+> and often poor data quality did not qualify for an automated scripting
+> pipeline based on code. Hence, we decided to utilize Power BI Power
+> Query to perform the remaining ETL procedures.
+
+**Storage location in DRE/VM – Latest script versions:**
+
+-   `Z:\DataETL\FileCont1-mpd\test\(scripts)\..` \> Data-prep scripts
+
+-   `Z:\QuickHMNY\data_out\metadata\..` \> Metadata script
+
+## Overview of scripts (in ordered sequence)
+
+Put together, they would constitute the first part of the pipeline – from file
+uploads to uniform CSV converted (except metadata, which is for final
+dataset after ETL via Power BI):
+
+| Script-name          | Type \| Lines of code        |
+|----------------------|------------------------------|
+| inbox-backup         | .ps1 \| 95                   |
+| fn1_unzip            | .ps1 \| 19                   |
+| fn2_convert_NewFiles | .py \| 139                   |
+| fn3_prefix           | .ps1 \| 155                  |
+| study-prefixes       | .ps1 (schema)                |
+| headername-patterns  | .ps1 (schema)                |
+| extract_metadata_v2  | .py \| 165                   |
+|                      |              **= 573 lines** |
+
+<br/>
+
+**Following sections explain the Scripts:**
+
+---
+
+<br/>
+
 ## [inbox-backup.ps1](0_inbox-backup.ps1)
 
 This PowerShell script first sets up file system watchers for monitoring
@@ -27,6 +81,8 @@ converted & mapped files. Then the script calls 2x BackupFunctions:
 
 > Same function, but for the mapped files folder.
 
+<br/>
+
 ## [fn1_unzip.ps1](fn1_unzip.ps1)
 
 This PowerShell script has 2x short Functions:
@@ -50,7 +106,9 @@ This PowerShell script has 2x short Functions:
 > extracted folder content and copies files to a destination folder
 > ($outFolder).
 
-## [fn2_convert_newfiles.py](fn2_convert.py)
+<br/>
+
+## [fn2_convert_NewFiles.py](fn2_convert.py)
 
 This Python script has 2x Main-Functions:
 
@@ -71,17 +129,17 @@ This Python script has 2x Main-Functions:
 
 -   **`text_to_csv(filename)`**
 
-*Based on different separator scenarios (e.g., ';' or '\t'), converts
+&emsp;&emsp; *Based on different separator scenarios (e.g., ';' or '\t'), converts
 TXT to CSV format.*
 
 -   **`clean_csv_inconsistencies(filename)`**
 
-*Cleans row-level inconsistencies (line by line) in CSV files by
+&emsp;&emsp; *Cleans row-level inconsistencies (line by line) in CSV files by
 removing unwanted characters or spaces.*
 
 -   **`excel_to_csv(filename)`**
 
-*Converts data from the first sheet of XLSX files to CSV format.*
+&emsp;&emsp; *Converts data from the first sheet of XLSX files to CSV format.*
 
 ### 2.
 
@@ -99,9 +157,11 @@ removing unwanted characters or spaces.*
 > separators (e.g., replace ‘,’ with ‘.’). Saves modified CSV files in
 > unified format to output directory.
 
+<br/>
+
 ## [fn3_prefix.ps1](fn3_prefix.ps1)
 
-This PowerShell script contains first 2x GUIs (Windows Forms) for user
+This PowerShell script first contains 2x GUIs (Windows Forms) for user
 input and then 2x Main-Function blocks for file processing:
 
 ### 1.
@@ -162,7 +222,7 @@ input and then 2x Main-Function blocks for file processing:
 #### Description:
 
 1.  Loads an array of header names from a sub-function named
-    `‘headername-patterns.ps1’` (here used as Schema).
+    `headername-patterns.ps1` (here used as Schema).
 
 2.  Scans the first two rows of selected files to identify header name
     patterns.
@@ -173,6 +233,8 @@ input and then 2x Main-Function blocks for file processing:
 4.  Renames and copies files to a new subdirectory based on their
     category and prefix.
 
+<br/>
+
 ## [study-prefixes.ps1 (schema)](fn-inputs/study-prefixes.ps1)
 
 ### `$prefixList (variable)`
@@ -182,6 +244,8 @@ input and then 2x Main-Function blocks for file processing:
 > Used as a Schema/Template in `fn3_prefix.ps1`. Defines a list of
 > study prefixes (for customization based on future project
 > requirements).
+
+<br/>
 
 ## [headername-patterns.ps1 (schema)](fn-inputs/headername-patterns.ps1)
 
@@ -201,6 +265,8 @@ input and then 2x Main-Function blocks for file processing:
 
 -   Constructs regular expression patterns from these arrays to match
     corresponding header strings in the files.
+
+<br/>
 
 ## [extract_metadata_v2.py]
 
@@ -223,13 +289,13 @@ filenames) and then calls following 2x Main-Functions:
 
 -   **`counts_per_column(column_data, row_count)`**
 
-*Counts null values, actual values, distinct values, and unique values
+&emsp;&emsp; *Counts null values, actual values, distinct values, and unique values
 per column in a DataFrame and returns the counts to the main function as
 a tuple.*
 
 -   **`get_data_type(py_dtype, column_data)`**
 
-*Maps inferred pandas data types to labels, with additional checks for
+&emsp;&emsp; *Maps python data types to labels, with extra checks for
 string and integer types to determine the data type of a column in a
 DataFrame.*
 
