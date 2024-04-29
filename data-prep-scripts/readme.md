@@ -52,7 +52,7 @@ dataset after ETL via Power BI):
 
 <br/>
 
-## [inbox-backup.ps1](0_inbox-backup.ps1)
+## [inbox-backup.ps1](inbox-backup.ps1)
 
 This PowerShell script first sets up file system watchers for monitoring
 changes in two folders to be backed up regularly (Z:\inbox\\ and
@@ -108,7 +108,7 @@ This PowerShell script has 2x short Functions:
 
 <br/>
 
-## [fn2_convert_NewFiles.py](fn2_convert.py)
+## [fn2_convert_NewFiles.py](fn2_convert_NewFiles.py)
 
 This Python script has 2x Main-Functions:
 
@@ -268,7 +268,7 @@ input and then 2x Main-Function blocks for file processing:
 
 <br/>
 
-## [extract_metadata_v2.py]
+## [extract_Metadata_v2.py](extract_Metadata_v2.py)
 
 This Python script first requires custom user-inputs (file paths and
 filenames) and then calls following 2x Main-Functions:
