@@ -46,9 +46,7 @@ dataset after ETL via Power BI):
 
 <br/>
 
-**Following sections explain the Scripts:**
-
----
+## **Following sections explain the Scripts:**
 
 <br/>
 
