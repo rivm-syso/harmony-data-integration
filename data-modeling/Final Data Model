@@ -1,7 +1,9 @@
+//Work in progress - update to final data model
+
 // data model in DBML (database markup language)
 // full syntax docu for DBML: https://dbml.dbdiagram.io/docs
 
-// link to this data model in dbdiagram.io: https://dbdiagram.io/d/HMNY_DataModelTemplate_v1-0-6512f621ffbf5169f0892ba7
+// link to this data model: https://dbdiagram.io/d/664716caf84ecd1d226fc4e9
 
 Table BindingAbs {
   "Harmony Id" varchar [primary key]
