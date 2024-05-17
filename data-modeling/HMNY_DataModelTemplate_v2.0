@@ -1,80 +1,65 @@
-//Work in progress - update to final data model
-
 // data model in DBML (database markup language)
 // full syntax docu for DBML: https://dbml.dbdiagram.io/docs
 
 // link to this data model in dbdiagram.io: https://dbdiagram.io/d/HMNY_DataModelTemplate_v1-0-6512f621ffbf5169f0892ba7
 
 Table BindingAbs {
-  study_id integer
-  participant_id integer
-  assay_name varchar [note: 'used test/immunoassay to measure Abs in (B)AU/ml']
-  assay_location varchar
-  var_unit varchar [note: 'e.g. in (B)AU/ml']
-  anti_s1 integer
-  anti_s1_dte date
-  anti_n integer
-  anti_n_dte date
-  anti_rbd integer
-  anti_rbd_dte date
-  timepoint varchar [note: 'T0,T1,T2,T3,... = unified event-time-categorization in relation to vaccines, e.g. 28 days after 1st vacc.,...']
-  var_id integer [note: 'if row has a value, then gets an unique varID for lookup-table']
+  "Harmony Id" varchar [primary key]
+  "Study Id" varchar [note: "https://loinc.org/82786-5"]
+  "Participant Id" integer [note: "https://loinc.org/82787-3/"]
+  "Sample Dte" date [note: "https://loinc.org/33882-2/"]
+  "Anti S1 (Tn)" decimal [note: "https://loinc.org/94505-5"]
+  "Anti RBD (Tn)" decimal [note: "https://loinc.org/94505-5"]
+  "Anti N (Tn)" decimal [note: "https://loinc.org/94505-5"]
+  "Anti N (Tn) Qualitative" varchar [note: "https://loinc.org/94505-5"]
+  "Min Normalized OD (Tn)" decimal
+  "Unit" varchar
+  "Anti S1 Unit" varchar [note: "Only used if the S1, N, and RBD have different units"]
+  "Anti N Unit" varchar [note: "Only used if the S1, N, and RBD have different units"]
+  "Anti RBD Unit" varchar [note: "Only used if the S1, N, and RBD have different units"]
+  "Test Used" varchar
+  "Test Used Anti S1" varchar [note: "Only used if the test or location differ between S1, N, and RBD variables."]
+  "Test Used Anti N" varchar [note: "Only used if the test or location differ between S1, N, and RBD variables."]
+  "Test Used Anti RBD" varchar [note: "Only used if the test or location differ between S1, N, and RBD variables."]
 }
 
 Table NeutralizingAbs {
-  study_id integer
-  participant_id integer
-  assay_name varchar [note: 'used test/immunoassay to measure PRNT50 titer [IU/ml] or IC50 dilution']
-  assay_location varchar
-  against_variant varchar [note: 'Wildtype | Delta | Omicron | XBB']
-  var_unit varchar [note: 'e.g. in IU/ml']
-  anti_neu integer
-  anti_neu_dte date
-  timepoint varchar [note: 'T0,T1,T2,T3,... = unified event-time-categorization in relation to vaccines, e.g. 28 days after 1st vacc.,...']
-  var_id integer [note: 'if row has a value, then gets an unique varID for lookup-table']
-}
+  "Harmony Id" varchar [primary key]
+  "Study Id" varchar [note: "https://loinc.org/82786-5"]
+  "Participant Id" integer [note: "https://loinc.org/82787-3/"]
+  "Sample Dte" date [note: "https://loinc.org/33882-2/"]
+  "PRNT50 Wiltdtype (Tn)" integer [note: "https://loinc.org/95410-7"]
+  "PRNT50 Omicron (Tn)" integer [note: "https://loinc.org/95410-7"]
+  "PRNT50 Omicron BA.1 (Tn)" integer [note: "https://loinc.org/95410-7"]
+  "PRNT50 Omicron BA.5 (Tn)" integer [note: "https://loinc.org/95410-7"]
+  "PRNT50 Delta (Tn)" integer [note: "https://loinc.org/95410-7"]
+  "IC50 Wildtype (Tn)" integer [note: "https://loinc.org/95410-7"]
+  "IC50 Omicron (Tn)" integer [note: "https://loinc.org/95410-7"]
+  "IC50 Delta (Tn)" integer [note: "https://loinc.org/95410-7"]
+  "ID50 Wiltdtype (Tn)" integer [note: "https://loinc.org/95410-7"]
+  "ID50 Omicron (Tn)" integer [note: "https://loinc.org/95410-7"]
+  "ID50 Omicron BA.1 (Tn)" integer [note: "https://loinc.org/95410-7"]
+  "ID50 Omicron BA.2 (Tn)" integer [note: "https://loinc.org/95410-7"]
+  "ID50 Omicron BA.5 (Tn)" integer [note: "https://loinc.org/95410-7"]
+  "ID50 Delta (Tn)" integer [note: "https://loinc.org/95410-7"]
+  }
 
-Table TCellAnalysis {
- study_id integer
-  participant_id integer
-  assay_name varchar [note: 'EliSpot SFCs per 1x10^6 PBMC | IGRA IFN-y prod. Eurimmune [IU/mL] | IGRA IFN-y prod. Qiagen [IU/mL]']
-  assay_location varchar
-  var_unit varchar [note: 'in IU/ml or SFC/10^6 PBMC']
-  ifny_s1 integer
-  ifny_s1_dte date
-  ifny_s2 integer
-  ifny_s2_dte date
-  igra_ag2 integer
-  igra_ag2_dte date
-  timepoint varchar [note: 'T0,T1,T2,T3,... = unified event-time-categorization in relation to vaccines, e.g. 28 days after 1st vacc.,...']
-  var_id integer [note: 'if row has a value, then gets an unique varID for lookup-table']
+Table TCells {
+  "Harmony Id" varchar [primary key]
+  "Study Id" varchar [note: "https://loinc.org/82786-5"]
+  "Participant Id" integer [note: "https://loinc.org/82787-3/"]
+  "Sample Dte" date [note: "https://loinc.org/33882-2/"] 
+  "IGRA Ag1 (Tn)" decimal [note: "https://loinc.org/98847-7"]
+  "IGRA Ag2 (Tn)" decimal [note: "https://loinc.org/98847-7"]
+  "IGRA Ag3 (Tn)" decimal [note: "https://loinc.org/98847-7"]
+  "ELISPOT IFNy S1 (Tn)" decimal [note: "https://loinc.org/99773-4"]
+  "ELISPOT IFNy S2 (Tn)" decimal [note: "https://loinc.org/99773-4"]
 }
-
-/*Table VariableDefintions {
-  var_id integer [primary key, note: 'in this lookup-table find var-name of original dataset before unified re-naming']
-  var_definition varchar
-  ontology varchar
-  URI varchar
-  var_name_cobrakai varchar
-  var_name_covih varchar
-  var_name_covalent varchar
-  var_name_hcw varchar
-  var_name_iivac varchar
-  var_name_pride varchar
-  var_name_recovacir varchar
-  var_name_recovarrv varchar
-  var_name_switch varchar
-  var_name_switchon varchar
-  var_name_target2b varchar
-  var_name_vacopid varchar
-  var_name_vital varchar
-  var_name_vocaal varchar
-  var_name_voice varchar
-}*/
 
 Table Demographics {
+  "Harmony Id" varchar [primary key]
   "Study Id" varchar [note: "https://loinc.org/82786-5"]
-  "Participant Id" integer [primary key, note: "https://loinc.org/82787-3/"]
+  "Participant Id" integer [note: "https://loinc.org/82787-3/"]
   Birthyear year [note: "https://loinc.org/80904-6/"]
   Gender integer [note: "https://loinc.org/46098-0/"]
   Subgroup varchar
@@ -82,30 +67,23 @@ Table Demographics {
 }
 
 Table Vaccinations {
+  "Harmony Id" varchar [primary key]
   "Study Id" varchar [note: "https://loinc.org/82786-5"]
-  "Participant Id" integer [primary key, note: "https://loinc.org/82787-3/"]
-  "Vaccination Dte [n]" date
-  "Vaccination Brand [n]" integer [note: "https://loinc.org/30956-7/"]
+  "Participant Id" integer [note: "https://loinc.org/82787-3/"]
+  "Vaccination Dte n" date
+  "Vaccination Brand n" integer [note: "https://loinc.org/30956-7/"]
 }
 
 Table Infections {
+  "Harmony Id" varchar [primary key]
   "Study Id" varchar [note: "https://loinc.org/82786-5"]
-  "Participant Id" integer [primary key, note: "https://loinc.org/82787-3/"]
-  "Infection Dte [n]" date [note: "https://loinc.org/99350-1"]
-  "Infection Dte [n] (Remarks)" varchar
+  "Participant Id" integer [note: "https://loinc.org/82787-3/"]
+  "Infection Dte n" date [note: "https://loinc.org/99350-1"]
+  "Infection Dte n (Remarks)" varchar
 }
 
-/*Table Timepoints {
-  timepoint_abbr varchar [note: 'T0, T1, etc.']
-  timepoint_expl varchar [note: 'e.g. 28 days after second vaccination']
-}*/
-
-/*Ref: Timepoints.timepoint_abbr < BindingAbs.timepoint // many-to-one
-Ref: Timepoints.timepoint_abbr < NeutralizingAbs.timepoint // many-to-one
-Ref: Timepoints.timepoint_abbr < TCellAnalysis.timepoint // many-to-one*/
-
-/*Ref: Demographics.participant_id < BindingAbs.participant_id // many-to-one
-Ref: Demographics.participant_id < NeutralizingAbs.participant_id // many-to-one
-Ref: Demographics.participant_id < TCellAnalysis.participant_id // many-to-one
-Ref: Demographics.participant_id < Vaccinations.participant_id // many-to-one
-Ref: Demographics.participant_id < Infections.participant_id // many-to-one*/
+Ref: Demographics."Harmony Id" < BindingAbs."Harmony Id"
+Ref: Demographics."Harmony Id" < NeutralizingAbs."Harmony Id"
+Ref: Demographics."Harmony Id" < Vaccinations."Harmony Id"
+Ref: Demographics."Harmony Id" < TCells."Harmony Id"
+Ref: Demographics."Harmony Id" < Infections."Harmony Id"
