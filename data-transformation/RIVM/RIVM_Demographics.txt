@@ -1,0 +1,5 @@
+let
+    Source = Table.Combine({VITAL_mixed_data_1, VOCAL_mixed_data_1, IIVAC_mixed_data_1}),
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"Participant Id", "Gender", "Birthyear", "Study Id"})
+in
+    #"Removed Other Columns"

@@ -1,0 +1,4 @@
+let
+    Source = Table.Combine({VITAL_mixed_data_1, VOCAL_mixed_data_1, IIVAC_mixed_data_1})
+in
+    Source

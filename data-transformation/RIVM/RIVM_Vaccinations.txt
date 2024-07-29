@@ -1,0 +1,5 @@
+let
+    Source = Table.Combine({VITAL_mixed_data_1, VOCAL_mixed_data_1, IIVAC_mixed_data_1}),
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"Participant Id", "Vaccination Dte 1", "Vaccination Dte 2", "Vaccination Dte 3", "Vaccination Dte 4", "Study Id", "Vaccine Brand 1", "Vaccine Brand 2", "Vaccine Brand 3", "Vaccine Brand 4"})
+in
+    #"Removed Other Columns"
