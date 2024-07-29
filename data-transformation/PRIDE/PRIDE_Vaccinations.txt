@@ -1,0 +1,22 @@
+let
+    Source = #"230131 Harmonized data  PRIDE study_cleaned_vacc",
+
+//=== remove empty columns
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"Particpant Id", "Vaccination Date 1", "Vaccine Brand 1", "Vaccination Date 2", "Vaccine Brand 2", "Booster Date 1", "Booster Brand 1", "Booster Date 2", "Booster Brand 2"}),
+    
+//=== replace inconsistencies in date & brand columns
+    #"Replaced Value ""unknown""" = Table.ReplaceValue(#"Removed Other Columns", "unknown","",Replacer.ReplaceValue,{"Vaccination Date 1", "Vaccine Brand 1", "Vaccination Date 2", "Vaccine Brand 2", "Booster Brand 1", "Booster Brand 2"}),
+    #"Replaced Value1 ""no second...""" = Table.ReplaceValue(#"Replaced Value ""unknown""","no second vaccin","",Replacer.ReplaceText,{"Vaccination Date 2", "Vaccine Brand 2"}),
+    #"Replaced Value2 ""2996-01-01""" = Table.ReplaceValue(#"Replaced Value1 ""no second...""","2996-01-01","",Replacer.ReplaceText,{"Vaccination Date 2"}),
+    
+//=== added StudyID col
+    #"Added Custom" = Table.AddColumn(#"Replaced Value2 ""2996-01-01""", "Study Id", each "PRIDE"),
+    
+//=== re-detect dataTypes
+    #"Changed Type" = Table.TransformColumnTypes(#"Added Custom",{{"Particpant Id", type text}, {"Vaccination Date 1", type date}, {"Vaccine Brand 1", Int64.Type}, {"Vaccination Date 2", type date}, {"Vaccine Brand 2", Int64.Type}, {"Booster Date 1", type date}, {"Booster Brand 1", Int64.Type}, {"Booster Date 2", type date}, {"Booster Brand 2", Int64.Type}, {"Study Id", type text}}),
+    
+//=== rename headers to align with harmonized data
+    #"Renamed Columns" = Table.RenameColumns(#"Changed Type",{{"Vaccination Date 1", "Vaccination Dte 1"}, {"Vaccination Date 2", "Vaccination Dte 2"}, {"Booster Date 1", "Vaccination Dte 4"}, {"Booster Brand 1", "Vaccine Brand 4"}, {"Booster Date 2", "Vaccination Dte 5"}, {"Booster Brand 2", "Vaccine Brand 5"}})
+
+in
+    #"Renamed Columns"
