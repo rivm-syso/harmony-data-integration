@@ -1,0 +1,123 @@
+let
+    Source = COBRA_mixed_data_1,
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"participant_id", "bl_cohort", "vac1dat", "vac2dat", "vac3dat", "T5_vac3dat", "T5_vac4dat", "T5_vacdat", "T6_vacdat", "T5_vac4name", "T6_vacnsname", "T9_vacdat", "T9_vacnsname"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Other Columns",{{"vac1dat", "Vaccination Dte 1"}, {"vac2dat", "Vaccination Dte 2"}, {"participant_id", "Participant Id"}}),
+    
+    /* ----- VACCINATIE 3 -----
+    vac3dat (vaccinatie dte3 ingevuld tijdens T3) en T5_vac3dat (vaccinatie dte3 ingevuld tijdens T5) uitpuzzelen
+    1) if vac3dat == T5_vac3dat -> vac3dat
+    2) if T5_vac3dat == empty -> vac3dat
+    3) if vac3dat == empty -> T5_vac3dat 
+    4) if vac3dat < > T5_vac3dat -> vac3dat is leading
+    else null
+    */
+
+    #"Added Vaccination Dte 3" = Table.AddColumn(#"Renamed Columns", "Vaccination Dte 3", each 
+    if [vac3dat] = [T5_vac3dat] then [vac3dat] 
+    else if [T5_vac3dat] = null then [vac3dat] 
+    else if [vac3dat] = null then [T5_vac3dat] 
+    else if [vac3dat] <> [T5_vac3dat] then [vac3dat] 
+    else null),
+    #"Changed Type" = Table.TransformColumnTypes(#"Added Vaccination Dte 3",{{"Vaccination Dte 3", type date}}),
+    
+    /* ----- VACCINATIE 4 -----
+    deze staat in T5_vacdat (A), T5_vac4dat (B), of T6_vacdat (C)
+   1) A = null, B = null, C = null
+   2) A = date, B = null, C = null
+   3) A = null, B = date, C = null
+   4) A = null, B = null, C = date
+   5) A = date, B = date, C = null
+    5a) check date match
+   6) A = date, B = null, C = date
+    6a) check date match
+   7) A = null, B = date, C = date
+    7a) check date match
+   8) A = date, B = date, C = date
+    8a) check date match
+   */
+   
+    #"Added Vaccination Dte 4 Prep" = Table.AddColumn(#"Changed Type", "Vaccination Dte 4 prep", each 
+      /*1*/ if ([T5_vacdat] = null and [T5_vac4dat] = null and [T6_vacdat] = null) then null 
+      /*2*/ else if ([T5_vacdat] <> null and [T5_vac4dat] = null and [T6_vacdat] = null) then [T5_vacdat]
+      /*3*/ else if ([T5_vacdat] = null and [T5_vac4dat] <> null and [T6_vacdat] = null) then [T5_vac4dat]
+      /*4*/ else if ([T5_vacdat] = null and [T5_vac4dat] = null and [T6_vacdat] <> null) then [T6_vacdat]
+      /*5a*/ else if ([T5_vacdat] = [T5_vac4dat] and [T6_vacdat] = null) then [T5_vacdat]
+      /*6a*/ else if ([T5_vacdat] = [T6_vacdat] and [T5_vac4dat] = null) then [T5_vacdat]
+      /*7*/ else if ([T5_vac4dat] = [T6_vacdat] and [T5_vacdat] = null) then [T5_vac4dat]
+      /*8*/ else if ([T5_vacdat] = [T5_vac4dat] and [T5_vacdat] = [T6_vacdat]) then [T5_vacdat]
+      else 99),
+    #"Added Vaccination Dte 4" = Table.AddColumn(#"Added Vaccination Dte 4 Prep", "Vaccination Dte 4", each if [Vaccination Dte 4 prep] <> 99 then [Vaccination Dte 4 prep] else [T5_vac4dat]),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Added Vaccination Dte 4",{{"Vaccination Dte 4", type date}}),
+    #"Added Vaccination Dte 5 Prep" = Table.AddColumn(#"Changed Type1", "Vaccination Dte 5 prep", each if [Vaccination Dte 4 prep] = 99 then [T5_vacdat] else null),
+    
+    /* ----- VACCINATIE T9 -----
+    - T9 is de meest recente vaccinatie
+    - T9 kan zijn de 4e, 5e, of 6e vaccinatie
+    - T9 kan een vaccinatie zijn die al eerder geregistreerd is als zijnde vaccinatie 4/5/6
+    - T9 kan een vaccinatie zijn die nog niet geregistreerd is
+    - T9 kan ook een typefout zijn van een vaccinatie die al eerder (foutief) geregistreerd is.*/
+    
+   /*1 als: T9 == vac4 & !registered: dan vac1, vac2 full & vac4 empty
+     2 als: T9 == vac5 & !registered: dan vac1, vac2, vac4 full & vac5prep empty
+     3 als: T9 == vac6 & !registered: dan vac1, vac2, vac4, vac5prep full*/
+    
+    /*1*/ #"T9_Vaccination Dte 4" = Table.AddColumn(#"Added Vaccination Dte 5 Prep", "Vaccination Dte 4 prep 2", each 
+    if [Vaccination Dte 1] <> null and [Vaccination Dte 2] <> null and [Vaccination Dte 4] = null and [Vaccination Dte 2] <> [T9_vacdat] and [Vaccination Dte 3] <> [T9_vacdat] then [T9_vacdat] 
+    else null),
+    /*2*/ #"T9_Vaccination Dte 5" = Table.AddColumn(#"T9_Vaccination Dte 4", "Vaccination Dte 5 prep 2", each 
+    if [Vaccination Dte 1] <> null and [Vaccination Dte 2] <> null and [Vaccination Dte 4] <> null and [Vaccination Dte 5 prep] = null and [Vaccination Dte 4] <> [T9_vacdat] then [T9_vacdat] 
+    else null),
+    /*3*/ #"T9_Vaccination Dte 6" = Table.AddColumn(#"T9_Vaccination Dte 5", "Vaccination Dte 6", each 
+    if [Vaccination Dte 1] <> null and [Vaccination Dte 2] <> null and [Vaccination Dte 4] <> null and [Vaccination Dte 5 prep] <> null and [Vaccination Dte 5 prep] <> [T9_vacdat] then [T9_vacdat]
+    else null),
+
+    // ----- finalize vaccination 4 -----
+    #"Finalize vaccination 4" = Table.AddColumn(#"T9_Vaccination Dte 6", "Vaccination Dte 4 Final", each
+    if [Vaccination Dte 4] <> null then [Vaccination Dte 4]
+    else [Vaccination Dte 4 prep 2]),
+
+    // ----- finalize vaccination 5 -----
+    #"Finalize vaccination 5" = Table.AddColumn(#"Finalize vaccination 4", "Vaccination Dte 5", each
+    if [Vaccination Dte 5 prep] <> null then [Vaccination Dte 5 prep]
+    else [Vaccination Dte 5 prep 2]),
+    
+    // ----- Cleanup -----
+    #"Cleaning Up" = Table.RemoveColumns(#"Finalize vaccination 5",{"Vaccination Dte 4", "Vaccination Dte 5 prep", "Vaccination Dte 4 prep 2", "Vaccination Dte 5 prep 2", "Vaccination Dte 4 prep"}),
+    #"Renamed Vaccination 4" = Table.RenameColumns(#"Cleaning Up",{{"Vaccination Dte 4 Final", "Vaccination Dte 4"}}),
+    #"Reordered Columns" = Table.ReorderColumns(#"Renamed Vaccination 4",{"Participant Id", "bl_cohort", "Vaccination Dte 1", "Vaccination Dte 2", "vac3dat", "T5_vac3dat", "T5_vac4dat", "T5_vacdat", "T6_vacdat", "T5_vac4name", "T6_vacnsname", "T9_vacdat", "T9_vacnsname", "Vaccination Dte 3", "Vaccination Dte 4", "Vaccination Dte 5", "Vaccination Dte 6"}),
+    #"Changed Type2" = Table.TransformColumnTypes(#"Reordered Columns",{{"Vaccination Dte 6", type date}, {"Vaccination Dte 5", type date}, {"Vaccination Dte 4", type date}}),
+
+    // ----- Brands -----
+    #"Added Vaccination Brand 1" = Table.AddColumn(#"Changed Type2", "Vaccination Brand 1", each 2),
+    #"Added Vaccination Brand 2" = Table.AddColumn(#"Added Vaccination Brand 1", "Vaccination Brand 2", each 2),
+    #"Added Vaccination Brand 3" = Table.AddColumn(#"Added Vaccination Brand 2", "Vaccination Brand 3", each 
+    if [Vaccination Dte 3] <> null and [Vaccination Dte 3] >= #date(2021, 9, 1) and [Vaccination Dte 3] <= #date(2021, 10, 31) then 2 else null),
+    
+    //Vaccination 4 brand
+    #"Added Vaccination Brand 4 prep" = Table.AddColumn(#"Added Vaccination Brand 3", "Vaccination Brand 4 prep", each 
+    if [T5_vac4name] <> null then [T5_vac4name] 
+    else if [T6_vacnsname] <> null then [T6_vacnsname]
+    else if [Vaccination Dte 4] <> null and [Vaccination Dte 4] >= #date(2021, 12, 1) and [Vaccination Dte 4] <= #date (2022, 2, 28) then 1
+    else null),
+    #"Added Vaccination Brand 4 prep 2" = Table.AddColumn(#"Added Vaccination Brand 4 prep", "Vaccination Brand 4 prep 2", each
+    if [T9_vacdat] = [Vaccination Dte 4] then [T9_vacnsname] else null),
+    #"Added Vaccination Brand 4" = Table.AddColumn(#"Added Vaccination Brand 4 prep 2", "Vaccination Brand 4", each
+    if [Vaccination Brand 4 prep] <> null then [Vaccination Brand 4 prep] 
+    else if [Vaccination Brand 4 prep 2] <> null then [Vaccination Brand 4 prep 2]
+    else null),
+  
+    //Vaccination 5 brand
+    #"Added Vaccination Brand 5" = Table.AddColumn(#"Added Vaccination Brand 4", "Vaccination Brand 5", each 
+    if [Vaccination Dte 5] = [T9_vacdat] and [T9_vacdat] <> null then [T9_vacnsname] else null),
+    
+    //Vaccination 6 brand
+    #"Added Vaccination Brand 6" = Table.AddColumn(#"Added Vaccination Brand 5", "Vaccination Brand 6", each 
+    if [Vaccination Dte 6] = [T9_vacdat] and [T9_vacdat] <> null then [T9_vacnsname] else null),
+    
+    
+    #"Changed Type3" = Table.TransformColumnTypes(#"Added Vaccination Brand 6",{{"Vaccination Brand 1", Int64.Type}, {"Vaccination Brand 2", Int64.Type}, {"Vaccination Brand 3", Int64.Type}, {"Vaccination Brand 4", Int64.Type}, {"Vaccination Brand 5", Int64.Type}, {"Vaccination Brand 6", Int64.Type}}),
+    #"Add Study Id" = Table.AddColumn(#"Changed Type3", "Study Id", each "COBRA KAI"),
+    #"Final Cleaning Up" = Table.RemoveColumns(#"Add Study Id",{"Vaccination Brand 4 prep", "Vaccination Brand 4 prep 2", "bl_cohort", "vac3dat", "T5_vac3dat", "T5_vac4dat", "T5_vacdat", "T6_vacdat", "T5_vac4name", "T6_vacnsname", "T9_vacdat", "T9_vacnsname"}),
+    #"Renamed Columns1" = Table.RenameColumns(#"Final Cleaning Up",{{"Vaccination Brand 1", "Vaccine Brand 1"}, {"Vaccination Brand 2", "Vaccine Brand 2"}, {"Vaccination Brand 3", "Vaccine Brand 3"}, {"Vaccination Brand 4", "Vaccine Brand 4"}, {"Vaccination Brand 5", "Vaccine Brand 5"}, {"Vaccination Brand 6", "Vaccine Brand 6"}})
+in
+    #"Renamed Columns1"
