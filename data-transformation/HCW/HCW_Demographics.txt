@@ -1,0 +1,11 @@
+let
+    Source = HCW,
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"StudyID", "Sex", "DOB"}),
+    #"Inserted Year" = Table.AddColumn(#"Removed Other Columns", "Birthyear", each Date.Year([DOB]), Int64.Type),
+    #"Removed DoB" = Table.RemoveColumns(#"Inserted Year",{"DOB"}),
+    #"Replaced F > 2" = Table.ReplaceValue(#"Removed DoB","F","2",Replacer.ReplaceText,{"Sex"}),
+    #"Replaced M > 1" = Table.ReplaceValue(#"Replaced F > 2","M","1",Replacer.ReplaceText,{"Sex"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Replaced M > 1",{{"StudyID", "Participant Id"}, {"Sex", "Gender"}}),
+    #"Added Study Id" = Table.AddColumn(#"Renamed Columns", "Study Id", each "HCW")
+in
+    #"Added Study Id"

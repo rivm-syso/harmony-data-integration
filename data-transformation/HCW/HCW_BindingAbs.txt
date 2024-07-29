@@ -1,0 +1,49 @@
+let
+    Source = HCW,
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"StudyID", "Vaccine", "Serum collection date Pre-Vx1 / V1", "Liaison IgG SARS-CoV-2 anti-S (BAU/ml) Pre-Vx1 / V1", "Serum collection date Pre-Vx2 / V2", "Liaison IgG SARS-CoV-2 anti-S (BAU/ml) Pre-Vx2 / V2", "Serum collection date 28 days post Vx1 (Janssen) or Vx2 / V3", "Liaison IgG SARS-CoV-2 anti-S (BAU/ml) 28 days post Vx1 (Janssen) or Vx2 / V3", "Serum collection date 2-3 months post Vx1 (Janssen) / V3B", "Liaison IgG SARS-CoV-2 anti-S (BAU/ml) 2-3 months post Vx1 (Janssen) / V3B", "Serum collection date 6 months post Vx1 (Janssen) or Vx2 / V4", "Liaison IgG SARS-CoV-2 anti-S (BAU/ml) 6 months post Vx1 (Janssen) or Vx2 / V4", "Serum collection date Pre-booster / B0#(lf)#(lf)#(lf)#(lf)", "Liaison IgG SARS-CoV-2 anti-S (BAU/ml) Pre-booster / B0#(lf)#(lf)#(lf)#(lf)", "Serum collection date 28 days post booster / B1", "Liaison IgG SARS-CoV-2 anti-S (BAU/ml) 28 days post booster / B1", "Serum collection date 6 months post booster or pre second booster / B2", "Liaison IgG SARS-CoV-2 anti-S (BAU/ml) 6 months post booster or pre second booster / B2", "Serum collection date 12 months  Vx1 (Janssen) or Vx2 / V5", "Liaison IgG SARS-CoV-2 anti-S (BAU/ml) 12 months  Vx1 (Janssen) or Vx2 / V5"}),
+    #"Merged Queries" = Table.NestedJoin(#"Removed Other Columns", {"StudyID"}, HCW_Vaccinations, {"Participant Id"}, "HCW_Vaccinations", JoinKind.LeftOuter),
+    #"Expanded HCW_Vaccinations" = Table.ExpandTableColumn(#"Merged Queries", "HCW_Vaccinations", {"Vaccination Dte 1", "Vaccination Dte 2", "Vaccination Dte 4", "Vaccination Dte 5"}, {"Vaccination Dte 1", "Vaccination Dte 2", "Vaccination Dte 4", "Vaccination Dte 5"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Expanded HCW_Vaccinations",{{"Serum collection date Pre-Vx1 / V1", "Sample Dte T0"}, {"Liaison IgG SARS-CoV-2 anti-S (BAU/ml) Pre-Vx1 / V1", "Anti S1 (T0)"}, {"Serum collection date Pre-Vx2 / V2", "Sample Dte T2.1"}, {"Liaison IgG SARS-CoV-2 anti-S (BAU/ml) Pre-Vx2 / V2", "Anti S1 (T2.1)"}, {"Serum collection date 2-3 months post Vx1 (Janssen) / V3B", "Sample Dte T1.3"}, {"Liaison IgG SARS-CoV-2 anti-S (BAU/ml) 2-3 months post Vx1 (Janssen) / V3B", "Anti S1 (T1.3)"}, {"Serum collection date Pre-booster / B0#(lf)#(lf)#(lf)#(lf)", "Sample Dte T13"}, {"Liaison IgG SARS-CoV-2 anti-S (BAU/ml) Pre-booster / B0#(lf)#(lf)#(lf)#(lf)", "Anti S1 (T13)"}, {"Serum collection date 28 days post booster / B1", "Sample Dte T15"}, {"Liaison IgG SARS-CoV-2 anti-S (BAU/ml) 28 days post booster / B1", "Anti S1 (T15)"}, {"Serum collection date 6 months post booster or pre second booster / B2", "Sample Dte T16"}, {"Liaison IgG SARS-CoV-2 anti-S (BAU/ml) 6 months post booster or pre second booster / B2", "Anti S1 (T16)"}, {"StudyID", "Participant Id"}}),
+    #"Added Sample Dte T2.2" = Table.AddColumn(#"Renamed Columns", "Sample Dte T2.2", each if [Vaccine] = "Janssen" then [#"Serum collection date 28 days post Vx1 (Janssen) or Vx2 / V3"] else null),
+    #"Added Sample Dte T4" = Table.AddColumn(#"Added Sample Dte T2.2", "Sample Dte T4", each if [Vaccine] <> "Janssen" then [#"Serum collection date 28 days post Vx1 (Janssen) or Vx2 / V3"] else null),
+    #"Added Anti S1 (T2.2)" = Table.AddColumn(#"Added Sample Dte T4", "Anti S1 (T2.2)", each if [Vaccine] = "Janssen" then [#"Liaison IgG SARS-CoV-2 anti-S (BAU/ml) 28 days post Vx1 (Janssen) or Vx2 / V3"] else null),
+    #"Added Anti S1 (T4)" = Table.AddColumn(#"Added Anti S1 (T2.2)", "Anti S1 (T4)", each if [Vaccine] <> "Janssen" then [#"Liaison IgG SARS-CoV-2 anti-S (BAU/ml) 28 days post Vx1 (Janssen) or Vx2 / V3"] else null),
+    #"Added Sample Dte T1.5" = Table.AddColumn(#"Added Anti S1 (T4)", "Sample Dte T1.5", each if [Vaccine] = "Janssen" then [#"Serum collection date 6 months post Vx1 (Janssen) or Vx2 / V4"] else null),
+    #"Added Sample Dte T5" = Table.AddColumn(#"Added Sample Dte T1.5", "Sample Dte T5", each if [Vaccine] <> "Janssen" then [#"Serum collection date 6 months post Vx1 (Janssen) or Vx2 / V4"] else null),
+    #"Added Anti S1 (T1.5)" = Table.AddColumn(#"Added Sample Dte T5", "Anti S1 (T1.5)", each if [Vaccine] = "Janssen" then [#"Liaison IgG SARS-CoV-2 anti-S (BAU/ml) 6 months post Vx1 (Janssen) or Vx2 / V4"] else null),
+    #"Added Anti S1 (T5)" = Table.AddColumn(#"Added Anti S1 (T1.5)", "Anti S1 (T5)", each if [Vaccine] <> "Janssen" then [#"Liaison IgG SARS-CoV-2 anti-S (BAU/ml) 6 months post Vx1 (Janssen) or Vx2 / V4"] else null),
+    #"Added Sample Dte T1.8" = Table.AddColumn(#"Added Anti S1 (T5)", "Sample Dte T1.8", each if [Vaccine] = "Janssen" then [#"Serum collection date 12 months  Vx1 (Janssen) or Vx2 / V5"] else null),
+    #"Added Sample Dte T6" = Table.AddColumn(#"Added Sample Dte T1.8", "Sample Dte T6", each if [Vaccine] <> "Janssen" then [#"Serum collection date 12 months  Vx1 (Janssen) or Vx2 / V5"] else null),
+    #"Added Anti S1 (T1.8)" = Table.AddColumn(#"Added Sample Dte T6", "Anti S1 (T1.8)", each if [Vaccine] = "Janssen" then [#"Liaison IgG SARS-CoV-2 anti-S (BAU/ml) 12 months  Vx1 (Janssen) or Vx2 / V5"] else null),
+    #"Added Anti S1 (T6)" = Table.AddColumn(#"Added Anti S1 (T1.8)", "Anti S1 (T6)", each if [Vaccine] <> "Janssen" then [#"Liaison IgG SARS-CoV-2 anti-S (BAU/ml) 12 months  Vx1 (Janssen) or Vx2 / V5"] else null),
+    #"Added Sample Dte T2" = Table.AddColumn(#"Added Anti S1 (T6)", "Sample Dte T2", each if [Sample Dte T2.1] <> null then [Sample Dte T2.1] else [Sample Dte T2.2]),
+    #"Added Anti S1 (T2)" = Table.AddColumn(#"Added Sample Dte T2", "Anti S1 (T2)", each if [#"Anti S1 (T2.1)"] <> null then [#"Anti S1 (T2.1)"] else [#"Anti S1 (T2.2)"]),
+    #"Removed Other Columns1" = Table.SelectColumns(#"Added Anti S1 (T2)",{"Participant Id", "Sample Dte T0", "Anti S1 (T0)", "Sample Dte T1.3", "Anti S1 (T1.3)", "Sample Dte T13", "Anti S1 (T13)", "Sample Dte T15", "Anti S1 (T15)", "Sample Dte T16", "Anti S1 (T16)", "Sample Dte T2.2", "Sample Dte T4", "Anti S1 (T2.2)", "Anti S1 (T4)", "Sample Dte T1.5", "Sample Dte T5", "Anti S1 (T1.5)", "Anti S1 (T5)", "Sample Dte T1.8", "Sample Dte T6", "Anti S1 (T1.8)", "Anti S1 (T6)", "Sample Dte T2", "Anti S1 (T2)"}),
+    
+    //Cleaning T13
+    #"Renamed Columns1" = Table.RenameColumns(#"Removed Other Columns1",{{"Anti S1 (T13)", "Anti S1 (T13)"}, {"Sample Dte T13", "ToClean_Sample Dte T13"}}),
+    #"Added Nw Sample Dte T13" = Table.AddColumn(#"Renamed Columns1", "Sample Dte T13", each if [#"Anti S1 (T13)"] = "6 months post Vx2 sample" then null else [ToClean_Sample Dte T13]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Added Nw Sample Dte T13",{{"Anti S1 (T13)", type number}}),
+    #"Replaced Errors" = Table.ReplaceErrorValues(#"Changed Type", {{"Anti S1 (T13)", null}}),
+    #"Removed Columns" = Table.RemoveColumns(#"Replaced Errors",{"ToClean_Sample Dte T13"}),
+
+    //Cleaning Anti S1 (T1.5)
+    #"Renamed Columns2" = Table.RenameColumns(#"Removed Columns",{{"Sample Dte T1.5", "ToClean_Sample Dte T1.5"}}),
+    #"Added Nw Sample Dte T1.5" = Table.AddColumn(#"Renamed Columns2", "Sample Dte T1.5", each if [#"Anti S1 (T1.5)"] = "pre-booster sample" then null else [ToClean_Sample Dte T1.5]),
+    #"Changed Type2" = Table.TransformColumnTypes(#"Added Nw Sample Dte T1.5",{{"Anti S1 (T1.5)", type number}}),
+    #"Replaced Errors2" = Table.ReplaceErrorValues(#"Changed Type2", {{"Anti S1 (T1.5)", null}}),
+    #"Removed Columns2" = Table.RemoveColumns(#"Replaced Errors2",{"ToClean_Sample Dte T1.5"}),
+
+    //Cleaning Anti S1 (T5)
+    #"Renamed Columns3" = Table.RenameColumns(#"Removed Columns2",{{"Sample Dte T5", "ToClean_Sample Dte T5"}}),
+    #"Added Nw Sample Dte T5" = Table.AddColumn(#"Renamed Columns3", "Sample Dte T5", each if [#"Anti S1 (T5)"] = "pre-booster sample" then null else [ToClean_Sample Dte T5]),
+    #"Changed Type3" = Table.TransformColumnTypes(#"Added Nw Sample Dte T5",{{"Anti S1 (T5)", type number}}),
+    #"Replaced Errors3" = Table.ReplaceErrorValues(#"Changed Type3", {{"Anti S1 (T5)", null}}),
+    #"Removed Columns3" = Table.RemoveColumns(#"Replaced Errors3",{"ToClean_Sample Dte T5"}),
+    #"Added Study Id" = Table.AddColumn(#"Removed Columns3", "Study Id", each "HCW"),
+    #"Added Unit" = Table.AddColumn(#"Added Study Id", "Unit", each "BAU/ml"),
+    #"Added Test Used" = Table.AddColumn(#"Added Unit", "Test Used", each "Liaison (Erasmus MC)"),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Added Test Used",{{"Sample Dte T2.2", type date}, {"Sample Dte T4", type date}, {"Sample Dte T1.8", type date}, {"Sample Dte T6", type date}, {"Sample Dte T2", type date}, {"Sample Dte T13", type date}, {"Sample Dte T1.5", type date}, {"Sample Dte T5", type date}})
+
+in
+    #"Changed Type1"

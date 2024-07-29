@@ -1,0 +1,7 @@
+let
+    Source = HCW,
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"StudyID", "Breakthrough infection"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Other Columns",{{"StudyID", "Participant Id"}, {"Breakthrough infection", "Infection Dte 1"}}),
+    #"Added Study Id" = Table.AddColumn(#"Renamed Columns", "Study Id", each "HCW")
+in
+    #"Added Study Id"
