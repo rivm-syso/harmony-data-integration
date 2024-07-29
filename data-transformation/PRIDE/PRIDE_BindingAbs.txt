@@ -1,0 +1,18 @@
+let
+    Source = #"230131 Harmonized data  PRIDE study_cleaned_bindingAbs",
+
+//=== remove empty or redundant cols
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"Particpant Id", "Sample Date T0", "Anti S1 (T0)", "Anti N (T0)", "Anti RBD (T0)", "Sample Date T2", "Anti S1 (T2)", "Anti N (T2)", "Anti RBD (T2)", "Sample Date T4", "Anti S1 (T4)", "Anti N (T4)", "Anti RBD (T4)", "Sample Date T13", "Anti S1 (T13)", "Anti N (T13)", "Anti RBD (T13)", "Sample Date T15", "Anti S1 (T15)", "Anti N (T15)", "Anti RBD (T15)", "Sample Date PRIDE T6", "Anti S1 (PRIDE T6)", "Anti N (PRIDE T6)", "Anti RBD (PRIDE T6)", "Sample Date PRIDE Td", "Anti S1 (PRIDE Td)", "Anti N (PRIDE Td)", "Anti RBD (PRIDE Td)", "Unit", "Test Used (Site)"}),
+    
+//=== correct 2x error dates 2022-07-12' with ' after day 
+    #"Replaced Errors rows 250/51" = Table.ReplaceErrorValues(#"Removed Other Columns", {{"Sample Date PRIDE T6", #date(2022, 7, 12)}}),
+    
+//=== rename cols to align w harmonized data
+    #"Renamed Columns" = Table.RenameColumns(#"Replaced Errors rows 250/51",{{"Sample Date T0", "Sample Dte (T0)"}, {"Sample Date T2", "Sample Dte (T2)"}, {"Sample Date T4", "Sample Dte (T4)"}, {"Sample Date T13", "Sample Dte (T13)"}, {"Sample Date T15", "Sample Dte (T15)"}, {"Sample Date PRIDE T6", "Sample Dte (T16-T18)"}, {"Anti S1 (PRIDE T6)", "Anti S1 (T16-T18)"}, {"Anti N (PRIDE T6)", "Anti N (T16-T18)"}, {"Anti RBD (PRIDE T6)", "Anti RBD (T16-T18)"}, {"Sample Date PRIDE Td", "Sample Dte (T20-T22)"}, {"Anti S1 (PRIDE Td)", "Anti S1 (T20-T22)"}, {"Anti N (PRIDE Td)", "Anti N (T20-T22)"}, {"Anti RBD (PRIDE Td)", "Anti RBD (T20-T22)"}, {"Test Used (Site)", "Test Used"}}),
+
+//=== added StudyID col
+    #"Added Custom" = Table.AddColumn(#"Renamed Columns", "Study Id", each "PRIDE"),
+    #"Changed Type" = Table.TransformColumnTypes(#"Added Custom",{{"Study Id", type text}})
+
+in
+    #"Changed Type"

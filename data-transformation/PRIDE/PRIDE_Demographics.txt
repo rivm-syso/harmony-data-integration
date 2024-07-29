@@ -1,0 +1,21 @@
+let
+    Source = #"230131 Harmonized data  PRIDE study_cleaned_demogr",
+
+//=== removed empty columns
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"Participant Id", "Birthyear", "Gender", "Subgroup"}),
+
+//=== Gender > recoded 0=female to 2=female
+    #"Replaced Value" = Table.ReplaceValue(#"Removed Other Columns",0,2,Replacer.ReplaceValue,{"Gender"}),
+
+//=== replace Subgroup abbreviations
+    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","DS","Down Syndrome",Replacer.ReplaceText,{"Subgroup"}),
+    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1","HC","Healthy Controls",Replacer.ReplaceText,{"Subgroup"}),
+
+//=== added StudyID col
+    #"Added Custom" = Table.AddColumn(#"Replaced Value2", "Study Id", each "PRIDE"),
+    
+//=== re-detect DataTypes
+    #"Changed Type" = Table.TransformColumnTypes(#"Added Custom",{{"Gender", Int64.Type}, {"Study Id", type text}})
+    
+in
+    #"Changed Type"

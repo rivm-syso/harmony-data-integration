@@ -1,0 +1,15 @@
+let
+    Source = #"230131 Harmonized data  PRIDE study_cleaned_neutralizingAbs",
+
+//=== remove empty or redundant cols
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"Particpant Id", "Sample Date T4", "against Wildtype (T4)", "Unit", "Test Used (Site)"}),
+
+//=== rename cols to align w harmonized data
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Other Columns",{{"Sample Date T4", "Sample Dte (T4)"}, {"against Wildtype (T4)", "IC50 Wildtype (T4)"}, {"Test Used (Site)", "Test Used"}}),
+
+//=== added StudyID col
+    #"Added Custom" = Table.AddColumn(#"Renamed Columns", "Study Id", each "PRIDE"),
+    #"Changed Type" = Table.TransformColumnTypes(#"Added Custom",{{"Study Id", type text}})
+
+in
+    #"Changed Type"

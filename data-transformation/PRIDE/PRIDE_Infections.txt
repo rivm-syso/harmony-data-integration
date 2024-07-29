@@ -1,0 +1,19 @@
+let
+    Source = #"230131 Harmonized data  PRIDE study_cleaned_infect",
+
+//=== remove empty col
+    #"Removed Columns" = Table.RemoveColumns(Source,{"Study Id"}),
+
+//=== replace errors (e.g. "2020--1")
+    #"Replaced Errors" = Table.ReplaceErrorValues(#"Removed Columns", {{"Infection Date 1", null}}),
+    #"Replaced Errors1" = Table.ReplaceErrorValues(#"Replaced Errors", {{"Infection Date 2", null}}),
+
+//=== rename cols to align w harmonized data
+    #"Renamed Columns" = Table.RenameColumns(#"Replaced Errors1",{{"Infection Date 1", "Infection Dte 1"}, {"Infection Date 2", "Infection Dte 2"}, {"Infection Date 3", "Infection Dte 3"}, {"Infection Date 4", "Infection Dte 4"}}),
+
+//=== added StudyID col
+    #"Added Custom" = Table.AddColumn(#"Renamed Columns", "Study Id", each "PRIDE"),
+    #"Changed Type" = Table.TransformColumnTypes(#"Added Custom",{{"Study Id", type text}})
+
+in
+    #"Changed Type"
