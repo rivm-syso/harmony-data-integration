@@ -1,0 +1,13 @@
+let
+    Source = Table.Combine({RIVM_Demographics, SWITCHON_Demographics, TARTB_Demographics, VOICE_Demographics, COBRAKAI_Demographics, PRIDE_Demographics, VACOPID_Demographics, COVALENT_Demographics, HCW_Demographics, RECOVAC_Demographics}),
+    
+    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Dropout Dte", type date}, {"Participant Id", type text}}),
+    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Changed Type", {{"Dropout Dte", type date}}, "en-GB"),
+    #"Merged Queries" = Table.NestedJoin(#"Changed Type with Locale", {"Participant Id", "Study Id"}, #"Harmony Id", {"Participant Id", "Study Id"}, "Harmony Id", JoinKind.LeftOuter),
+    #"Expanded Harmony Id" = Table.ExpandTableColumn(#"Merged Queries", "Harmony Id", {"Harmony Id"}, {"Harmony Id"}),
+    
+#"Reordered Columns" = Table.ReorderColumns(#"Expanded Harmony Id",{"Harmony Id", "Study Id", "Participant Id", "Birthyear", "Gender", "Subgroup", "Dropout Dte"}),
+    #"Sorted Rows" = Table.Sort(#"Reordered Columns",{{"Study Id", Order.Ascending}, {"Participant Id", Order.Ascending}}),
+    #"Added Index" = Table.AddIndexColumn(#"Sorted Rows", "Index", 0, 1, Int64.Type)
+in
+    #"Added Index"
