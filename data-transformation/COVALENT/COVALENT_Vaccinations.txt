@@ -1,0 +1,12 @@
+let
+    Source = COVALENT_regex_cleaned,
+
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"Participant Id", "Vaccination Dte", "Vaccine Brand"}),
+    #"Filtered Rows" = Table.SelectRows(#"Removed Other Columns", each ([Vaccination Dte] <> null)),
+    #"Replaced Value" = Table.ReplaceValue(#"Filtered Rows",1,2,Replacer.ReplaceValue,{"Vaccine Brand"}),
+    #"Grouped Rows" = Table.Group(#"Replaced Value", {"Participant Id"}, {{"Vaccination Dte 1", each List.Min([Vaccination Dte]), type nullable date}, {"Vaccine Brand 1", each List.Min([Vaccine Brand]), type nullable number}, {"Vaccination Dte 2", each List.Max([Vaccination Dte]), type nullable date}, {"Vaccine Brand 2", each List.Max([Vaccine Brand]), type nullable number}}),
+    #"Added Custom" = Table.AddColumn(#"Grouped Rows", "Study Id", each "COVALENT"),
+    #"Changed Type" = Table.TransformColumnTypes(#"Added Custom",{{"Vaccine Brand 1", Int64.Type}, {"Vaccine Brand 2", Int64.Type}, {"Study Id", type text}})
+
+in
+    #"Changed Type"
