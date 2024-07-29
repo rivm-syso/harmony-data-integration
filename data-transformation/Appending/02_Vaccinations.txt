@@ -1,0 +1,13 @@
+let
+    Source = Table.Combine({RIVM_Vaccinations, SWITCHON_Vaccinations, TARTB_Vaccinations, VOICE_Vaccinations, COBRAKAI_Vaccinations, PRIDE_Vaccinations, VACOPID_Vaccinations, COVALENT_Vaccinations, HCW_Vaccinations, RECOVAC_Vaccinations}),
+    #"Changed Type1" = Table.TransformColumnTypes(Source,{{"Participant Id", type text}}),
+    #"Merged Queries" = Table.NestedJoin(#"Changed Type1", {"Participant Id", "Study Id"}, HarmonyIds_20240506, {"Participant Id", "Study Id"}, "HarmonyIds_20240503", JoinKind.LeftOuter),
+    #"Expanded HarmonyIds_20240503" = Table.ExpandTableColumn(#"Merged Queries", "HarmonyIds_20240503", {"Harmony Id"}, {"Harmony Id"}),
+    
+//=== sort+reorder cols > to format for "Copy Entire Table" > save as CSV in LibreOffice 
+    #"Sorted Rows" = Table.Sort(#"Expanded HarmonyIds_20240503",{{"Study Id", Order.Ascending}, {"Participant Id", Order.Ascending}}),
+    #"Reordered Columns" = Table.ReorderColumns(#"Sorted Rows",{"Harmony Id", "Study Id", "Participant Id", "Vaccination Dte 1", "Vaccine Brand 1", "Vaccination Dte 2", "Vaccine Brand 2", "Vaccination Dte 3", "Vaccine Brand 3", "Vaccination Dte 4", "Vaccine Brand 4", "Vaccination Dte 5", "Vaccine Brand 5", "Vaccination Dte 6", "Vaccine Brand 6", "Vaccination Dte 7", "Vaccine Brand 7"}),
+    #"Changed Type" = Table.TransformColumnTypes(#"Reordered Columns",{{"Participant Id", type text}}),
+    #"Added Index" = Table.AddIndexColumn(#"Changed Type", "Index", 0, 1, Int64.Type)
+in
+    #"Added Index"

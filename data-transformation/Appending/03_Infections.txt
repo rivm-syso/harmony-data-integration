@@ -1,0 +1,15 @@
+let
+    Source = Table.Combine({RIVM_Infections, SWITCHON_Infections, TARTB_Infections, VOICE_Infections, COBRAKAI_Infections, PRIDE_Infections, VACOPID_Infections, COVALENT_Infections, HCW_Infections, RECOVAC_Infections}),
+    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Participant Id", type text}}),
+    
+    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Covid19 Test"}),
+    #"Merged Queries" = Table.NestedJoin(#"Removed Columns", {"Participant Id", "Study Id"}, HarmonyIds_20240506, {"Participant Id", "Study Id"}, "HarmonyIds_20240506", JoinKind.LeftOuter),
+    #"Expanded HarmonyIds_20240506" = Table.ExpandTableColumn(#"Merged Queries", "HarmonyIds_20240506", {"Harmony Id"}, {"Harmony Id"}),
+    
+//=== sort+reorder cols > to format for "Copy Entire Table" > save as CSV in LibreOffice    
+    #"Sorted Rows" = Table.Sort(#"Expanded HarmonyIds_20240506",{{"Study Id", Order.Ascending}, {"Participant Id", Order.Ascending}}),
+    #"Reordered Columns" = Table.ReorderColumns(#"Sorted Rows",{"Harmony Id", "Study Id", "Participant Id", "Infection Dte 1", "Infection Dte 1 (Remarks)", "Infection Dte 2", "Infection Dte 3", "Infection Dte 3 (Remarks)", "Infection Dte 4", "Infection Dte 5"}),
+    #"Added Index" = Table.AddIndexColumn(#"Reordered Columns", "Index", 0, 1, Int64.Type)
+
+in
+    #"Added Index"
