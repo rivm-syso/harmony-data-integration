@@ -1,0 +1,16 @@
+let
+    Source = COVALENT_regex_cleaned,
+
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"Participant Id", "Timepoint", "Age", "Gender", "Subgroup", "Dropout Dte"}),
+    #"Removed Duplicates" = Table.Distinct(#"Removed Other Columns", {"Participant Id", "Age", "Gender", "Subgroup", "Dropout Dte"}),
+    #"Replaced Value" = Table.ReplaceValue(#"Removed Duplicates", each [Participant Id], each if ([Age] and [Dropout Dte]) = null then null else [Participant Id], Replacer.ReplaceValue, {"Participant Id"}),
+    #"Filtered Rows" = Table.SelectRows(#"Replaced Value", each ([Participant Id] <> null)),
+    #"Grouped Rows" = Table.Group(#"Filtered Rows", {"Participant Id"}, {{"Count", each _, type table [Participant Id=number, Timepoint=nullable text, Age=nullable number, Gender=nullable number, Subgroup=nullable text, Dropout Dte=nullable date]}}),
+    #"Aggregated Count" = Table.AggregateTableColumn(#"Grouped Rows", "Count", {{"Age", List.Max, "Age"}, {"Gender", List.Max, "Gender"}, {"Subgroup", List.Max, "Subgroup"}, {"Dropout Dte", List.Max, "Dropout Dte"}}),
+    #"Added Custom" = Table.AddColumn(#"Aggregated Count", "Birthyear", each 2021 - [Age]),
+    #"Added Custom1" = Table.AddColumn(#"Added Custom", "Study Id", each "COVALENT"),
+    #"Removed Columns" = Table.RemoveColumns(#"Added Custom1",{"Age"}),
+    #"Changed Type" = Table.TransformColumnTypes(#"Removed Columns",{{"Participant Id", Int64.Type}, {"Gender", Int64.Type}, {"Subgroup", type text}, {"Dropout Dte", type date}, {"Birthyear", Int64.Type}, {"Study Id", type text}})
+
+in
+    #"Changed Type"

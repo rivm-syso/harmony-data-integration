@@ -1,0 +1,13 @@
+let
+    Source = COVALENT_regex_cleaned,
+
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"Participant Id", "Infection Dte 1", "Infection Dte 2", "Infection Dte 3"}),
+    #"Added Conditional Column" = Table.AddColumn(#"Removed Other Columns", "Custom", each if [Infection Dte 1] <> null then 1 else if [Infection Dte 2] <> null then 2 else if [Infection Dte 3] <> null then 3 else "Error"),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Added Conditional Column",{{"Custom", type number}}),
+    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Changed Type1", {"Custom"}),
+    #"Removed Columns" = Table.RemoveColumns(#"Removed Errors",{"Custom"}),
+    #"Added Custom" = Table.AddColumn(#"Removed Columns", "Study Id", each "COVALENT"),
+    #"Changed Type" = Table.TransformColumnTypes(#"Added Custom",{{"Participant Id", Int64.Type}, {"Infection Dte 1", type date}, {"Infection Dte 2", type date}, {"Infection Dte 3", type date}, {"Study Id", type text}})
+
+in
+    #"Changed Type"

@@ -1,0 +1,20 @@
+let
+    Source = COVALENT_regex_cleaned,
+
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"Participant Id", "Assay Location", "Timepoint", "Sample Dte", "PRNT50 Wildtype", "PRNT50 unit"}),
+    #"Filtered Rows" = Table.SelectRows(#"Removed Other Columns", each ([Sample Dte] <> null)),
+    #"Added Prefix" = Table.TransformColumns(#"Filtered Rows", {{"Assay Location", each "PRNT50 (" & _, type text}}),
+    #"Added Suffix" = Table.TransformColumns(#"Added Prefix", {{"Assay Location", each _ & ")", type text}}),
+    #"Renamed Columns" = Table.RenameColumns(#"Added Suffix",{{"Assay Location", "Test Used"}, {"PRNT50 unit", "PRNT50 Unit"}}),
+    #"Unpivoted Other Columns" = Table.UnpivotOtherColumns(#"Renamed Columns", {"Participant Id", "Test Used", "Timepoint", "PRNT50 Unit"}, "Attribute", "Value"),
+    #"Merged Columns Tn+Attribute" = Table.CombineColumns(#"Unpivoted Other Columns",{"Attribute", "Timepoint"},Combiner.CombineTextByDelimiter(" (", QuoteStyle.None),"Attribute_merged"),
+    #"Added Suffix1" = Table.TransformColumns(#"Merged Columns Tn+Attribute", {{"Attribute_merged", each _ & ")", type text}}),
+
+#"Pivoted Column" = Table.Pivot(#"Added Suffix1", List.Distinct(#"Added Suffix1"[Attribute_merged]), "Attribute_merged", "Value"),
+    #"Reordered Columns" = Table.ReorderColumns(#"Pivoted Column",{"Participant Id", "Test Used", "PRNT50 Unit", "Sample Dte (T0)", "Sample Dte (T2)", "Sample Dte (T4)", "PRNT50 Wildtype (T4)", "Sample Dte (T5)", "PRNT50 Wildtype (T5)", "Sample Dte (T10)", "Sample Dte (T6)", "Sample Dte (T_SOT_3_months)", "Sample Dte (T_SOT_6_months)"}),
+    #"Added Conditional Column" = Table.AddColumn(#"Reordered Columns", "Custom", each if [PRNT50 Unit] <> null then 1 else "Error"),
+    #"Changed Type" = Table.TransformColumnTypes(#"Added Conditional Column",{{"Custom", Int64.Type}}),
+    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Changed Type", {"Custom"}),
+    #"Removed Columns" = Table.RemoveColumns(#"Removed Errors",{"Sample Dte (T0)", "Sample Dte (T2)", "Sample Dte (T10)", "Sample Dte (T6)", "Sample Dte (T_SOT_3_months)", "Sample Dte (T_SOT_6_months)", "Custom"})
+in
+    #"Removed Columns"
