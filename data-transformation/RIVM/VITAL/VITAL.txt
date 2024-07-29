@@ -1,0 +1,91 @@
+let
+
+//==== default steps after Get > CSV > Transform data
+    Source = Csv.Document(File.Contents("Z:\QuickHMNY\data_in\VITAL\VITAL_mixed_data_1.csv"),[Delimiter=",", Columns=26, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"ID", Int64.Type}, {"Age_Vacc_COVID1", Int64.Type}, {"Gender", Int64.Type}, {"Vacc_COVID_Vaccine", type text}, {"Vacc_COVID_Date1", type date}, {"Vacc_COVID_Date2", type date}, {"Vacc_COVID_Booster1", type text}, {"Vacc_COVID_Booster1_Date", type date}, {"COVID_Positive_Date1", type date}, {"COVID_Positive_Date2", type date}, {"COVID_Positive_Date3", type date}, {"Serum_Date_Collect_Pre", type date}, {"MIA_CoV19_S1_BAU_Titer_Pre", type number}, {"MIA_CoV19_N_BAU_Titer_Pre", type number}, {"Serum_Date_Collect_Tb", type date}, {"MIA_CoV19_S1_BAU_Titer_Tb", type number}, {"MIA_CoV19_N_BAU_Titer_Tb", type number}, {"Serum_Date_Collect_Tc", type date}, {"MIA_CoV19_S1_BAU_Titer_Tc", type number}, {"MIA_CoV19_N_BAU_Titer_Tc", type number}, {"Serum_Date_Collect_B0", type date}, {"MIA_CoV19_S1_BAU_Titer_B0", type number}, {"MIA_CoV19_N_BAU_Titer_B0", type number}, {"Serum_Date_Collect_B1", type date}, {"MIA_CoV19_S1_BAU_Titer_B1", type number}, {"MIA_CoV19_N_BAU_Titer_B1", type number}}),
+    
+//1.1. select & remove columns not needed
+    
+//1.2. rename columns (not those that get removed after added 'Customs')    
+    #"Renamed Columns" = Table.RenameColumns(#"Changed Type",{
+        {"ID", "Participant Id"}, 
+        {"Age_Vacc_COVID1", "Age At Vacc"}, 
+        {"Vacc_COVID_Date1", "Vaccination Dte 1"}, 
+        {"Vacc_COVID_Date2", "Vaccination Dte 2"}, 
+        {"Vacc_COVID_Booster1_Date", "Vaccination Dte 4"}, 
+        {"COVID_Positive_Date1", "Infection Dte 1"}, 
+        {"COVID_Positive_Date2", "Infection Dte 2"}, 
+        {"COVID_Positive_Date3", "Infection Dte 3"}, 
+        {"Serum_Date_Collect_Pre", "Sample Dte (T0)"}, 
+        {"Serum_Date_Collect_B0", "Sample Dte (T13)"}, 
+        {"Serum_Date_Collect_B1", "Sample Dte (T15)"}, 
+        {"MIA_CoV19_S1_BAU_Titer_B0", "Anti S1 (T13)"}, 
+        {"MIA_CoV19_N_BAU_Titer_B0", "Anti N (T13)"}, 
+        {"MIA_CoV19_S1_BAU_Titer_B1", "Anti S1 (T15)"}, 
+        {"MIA_CoV19_N_BAU_Titer_B1", "Anti N (T15)"}, 
+        {"MIA_CoV19_S1_BAU_Titer_Pre", "Anti S1 (T0)"}, 
+        {"MIA_CoV19_N_BAU_Titer_Pre", "Anti N (T0)"}, 
+        {"MIA_CoV19_S1_BAU_Titer_Tb", "Anti S1 (T2)"}, 
+        {"MIA_CoV19_N_BAU_Titer_Tb", "Anti N (T2)"}, 
+        {"MIA_CoV19_S1_BAU_Titer_Tc", "Anti S1 (T4)"}, 
+        {"MIA_CoV19_N_BAU_Titer_Tc", "Anti N (T4)"}, 
+        {"Serum_Date_Collect_Tb", "Sample Dte (T2)"}, 
+        {"Serum_Date_Collect_Tc", "Sample Dte (T4)"}
+    }),
+
+//==== from here improve 'Column quality'
+    
+    //2. replace empty values (dates => keep "null", other blanks => "No Record", numbers/decimals => keep "null")  
+    #"Replaced AllBlanks" = Table.ReplaceValue(#"Renamed Columns","","No Record",Replacer.ReplaceValue,{"Participant Id", "Age At Vacc", "Gender", "Vacc_COVID_Vaccine", "Vaccination Dte 1", "Vaccination Dte 2", "Vacc_COVID_Booster1", "Vaccination Dte 4", "Infection Dte 1", "Infection Dte 2", "Infection Dte 3", "Sample Dte (T0)", "Anti S1 (T0)", "Anti N (T0)", "Sample Dte (T2)", "Anti S1 (T2)", "Anti N (T2)", "Sample Dte (T4)", "Anti S1 (T4)", "Anti N (T4)", "Sample Dte (T13)", "Anti S1 (T13)", "Anti N (T13)", "Sample Dte (T15)", "Anti S1 (T15)", "Anti N (T15)"}), 
+    
+    //3. remove duplicate rows > unique patientIDs 
+    #"Removed Duplicates" = Table.Distinct(#"Replaced AllBlanks", {"Participant Id"}),
+    
+// ==== from here improve 'Column profile/distribution' => if applicable, replace values to reduce uniques, variations, etc.
+    
+    //4. format text columns
+    #"Trimmed Text" = Table.TransformColumns(#"Removed Duplicates",{{"Vacc_COVID_Vaccine", Text.Trim, type text}, {"Vacc_COVID_Booster1", Text.Trim, type text}}),
+    #"Cleaned Text" = Table.TransformColumns(#"Trimmed Text",{{"Vacc_COVID_Vaccine", Text.Clean, type text}, {"Vacc_COVID_Booster1", Text.Clean, type text}}),
+    #"Capitalized Each Word" = Table.TransformColumns(#"Cleaned Text",{{"Vacc_COVID_Vaccine", Text.Proper, type text}, {"Vacc_COVID_Booster1", Text.Proper, type text}}),
+    
+    //5. replace operations to clean string differences
+    #"Replaced Value" = Table.ReplaceValue(#"Capitalized Each Word"," (Pfizer/Biontech)","",Replacer.ReplaceText,{"Vacc_COVID_Vaccine", "Vacc_COVID_Booster1"}),
+    #"Replaced Value6" = Table.ReplaceValue(#"Replaced Value","Spikevax (Moderna)","Moderna",Replacer.ReplaceText,{"Vacc_COVID_Vaccine", "Vacc_COVID_Booster1"}),
+
+//==== from here add 'Custom Column' => missing info (e.g. unit) + convert/re-code to same comparables (e.g. birthyear, vaccine brands)
+
+    //6. custom columns - extra info
+    #"Added Custom Unit" = Table.AddColumn(#"Replaced Value6", "Unit", each "BAU/ml"),
+    #"Added Custom TestUsed" = Table.AddColumn(#"Added Custom Unit", "Test Used", each "MIA (RIVM)"),
+    #"Added Custom StudyId" = Table.AddColumn(#"Added Custom TestUsed", "Study Id", each "Vital-Corona"),
+    
+    //7. custom columns - convert/re-code
+    #"Added Custom Birthyear" = Table.AddColumn(#"Added Custom StudyId", "Birthyear", 
+        each if [Vaccination Dte 1] = null or [Age At Vacc] = null then null
+        else Date.Year(Date.AddYears([Vaccination Dte 1], - [Age At Vacc]))),
+    
+    //vacc brands recoded (accord.to T2B => 1=Comirnaty, 2=Moderna, 3=Astrazeneca, 4=Janssen)
+    #"Added Custom VaccBrand1" = Table.AddColumn(#"Added Custom Birthyear", "Vaccine Brand 1", 
+        each if [Vacc_COVID_Vaccine] = "Comirnaty" then 1
+        else if [Vacc_COVID_Vaccine] = "Moderna" then 2
+        else if [Vacc_COVID_Vaccine] = "Astrazeneca" then 3
+        else if [Vacc_COVID_Vaccine] = "Janssen" then 4
+        else null),
+    #"Added Custom VaccBrand2" = Table.AddColumn(#"Added Custom VaccBrand1", "Vaccine Brand 2", each [Vaccine Brand 1]),
+    #"Added Custom VaccBrand3" = Table.AddColumn(#"Added Custom VaccBrand2", "Vaccine Brand 4", 
+        each if [Vacc_COVID_Booster1] = "Comirnaty" then 1
+        else if [Vacc_COVID_Booster1] = "Moderna" then 2
+        else if [Vacc_COVID_Booster1] = "Astrazeneca" then 3
+        else if [Vacc_COVID_Booster1] = "Janssen" then 4
+        else null),
+
+//==== from here additional/final steps to minimize DataSize 
+
+//8. eg. merge/remove (re-coded) columns
+    #"Removed RecodedColumns" = Table.RemoveColumns(#"Added Custom VaccBrand3",{"Vacc_COVID_Vaccine", "Vacc_COVID_Booster1"}),
+//9. re-detect data types > check if correct
+    #"Changed Type1" = Table.TransformColumnTypes(#"Removed RecodedColumns",{{"Participant Id", Int64.Type}, {"Age At Vacc", Int64.Type}, {"Gender", Int64.Type}, {"Vaccination Dte 1", type date}, {"Vaccination Dte 2", type date}, {"Vaccination Dte 4", type date}, {"Infection Dte 1", type date}, {"Infection Dte 2", type date}, {"Infection Dte 3", type date}, {"Sample Dte (T0)", type date}, {"Anti S1 (T0)", type number}, {"Anti N (T0)", type number}, {"Sample Dte (T2)", type date}, {"Anti S1 (T2)", type number}, {"Anti N (T2)", type number}, {"Sample Dte (T4)", type date}, {"Anti S1 (T4)", type number}, {"Anti N (T4)", type number}, {"Sample Dte (T13)", type date}, {"Anti S1 (T13)", type number}, {"Anti N (T13)", type number}, {"Sample Dte (T15)", type date}, {"Anti S1 (T15)", type number}, {"Anti N (T15)", type number}, {"Unit", type text}, {"Test Used", type text}, {"Study Id", type text}, {"Birthyear", Int64.Type}, {"Vaccine Brand 1", Int64.Type}, {"Vaccine Brand 2", Int64.Type}, {"Vaccine Brand 4", Int64.Type}})
+
+in
+    #"Changed Type1"
