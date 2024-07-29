@@ -1,0 +1,12 @@
+let
+    Source = HCW,
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"StudyID", "Vaccine", "Booster vaccine", "Second booster vaccine", "Date Vx1", "Date Vx2", "Date booster", "Date second booster"}),
+    #"Added Vaccine Brand 1" = Table.AddColumn(#"Removed Other Columns", "Vaccine Brand 1", each if [Vaccine] = "Pfizer" then 1 else if [Vaccine] = "Moderna" then 2 else if [Vaccine] = "AstraZeneca" then 3 else if [Vaccine] = "Janssen" then 4 else if [Vaccine] = "Janssen+Moderna" then 4 else null),
+    #"Added Vaccine Brand 2" = Table.AddColumn(#"Added Vaccine Brand 1", "Vaccine Brand 2", each if [Vaccine] = "Pfizer" then 1 else if [Vaccine] = "Moderna" then 2 else if [Vaccine] = "AstraZeneca" then 3 else if [Vaccine] = "Janssen" then null else if [Vaccine] = "Janssen+Moderna" then 2 else null),
+    #"Added Vaccine Brand 4" = Table.AddColumn(#"Added Vaccine Brand 2", "Vaccine Brand 4", each if [Booster vaccine] = "Pfizer" then 1 else if [Booster vaccine] = "Pfizer " then 1 else if [Booster vaccine] = "Moderna" then 2 else null),
+    #"Added Vaccine Brand 5" = Table.AddColumn(#"Added Vaccine Brand 4", "Vaccine Brand 5", each if [Second booster vaccine] = "Pfizer" then 1 else if [Second booster vaccine] = "Moderna" then 2 else null),
+    #"Removed Columns" = Table.RemoveColumns(#"Added Vaccine Brand 5",{"Vaccine", "Booster vaccine", "Second booster vaccine"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Date Vx1", "Vaccination Dte 1"}, {"Date Vx2", "Vaccination Dte 2"}, {"Date booster", "Vaccination Dte 4"}, {"Date second booster", "Vaccination Dte 5"}, {"StudyID", "Participant Id"}}),
+    #"Added Custom" = Table.AddColumn(#"Renamed Columns", "Study Id", each "HCW")
+in
+    #"Added Custom"
