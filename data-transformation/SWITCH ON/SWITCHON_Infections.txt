@@ -1,0 +1,6 @@
+let
+    Source = #"SWITCH ON 2024 01 31_infections",
+    #"Removed Columns" = Table.RemoveColumns(Source,{"Study Id", "Particpant Id"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Study Id.1", "Study Id"}, {"Particpant Id.1", "Participant Id"}, {"Infection Date 1", "Infection Dte 1"}, {"Infection Date 2", "Infection Dte 2"}, {"Infection Date 3", "Infection Dte 3"}, {"Infection Date 4", "Infection Dte 4"}})
+in
+    #"Renamed Columns"

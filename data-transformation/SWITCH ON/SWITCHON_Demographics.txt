@@ -1,0 +1,9 @@
+let
+    Source = #"SWITCH ON 2024 01 31_demogr",
+    #"Removed Columns" = Table.RemoveColumns(Source,{"Study Id", "Particpant Id"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Study Id.1", "Study Id"}, {"Particpant Id.1", "Participant Id"}, {"Dropout Date", "Dropout Dte"}}),
+    #"Replaced M > 1" = Table.ReplaceValue(#"Renamed Columns","M","1",Replacer.ReplaceText,{"Gender"}),
+    #"Replaced F > 2" = Table.ReplaceValue(#"Replaced M > 1","F","2",Replacer.ReplaceText,{"Gender"}),
+    #"Changed Type" = Table.TransformColumnTypes(#"Replaced F > 2",{{"Gender", Int64.Type}})
+in
+    #"Changed Type"
