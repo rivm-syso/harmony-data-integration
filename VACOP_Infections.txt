@@ -1,0 +1,22 @@
+let
+    Source = #"Harmonized data VACOPID_infections",
+
+//=== removed empty cols
+    #"Removed Columns" = Table.RemoveColumns(Source,{"Particpant Id", "Infection Date 3"}),
+
+//=== clean Infection dates format
+    #"Replaced Value" = Table.ReplaceValue(#"Removed Columns", each [Infection Date 1], each if Text.StartsWith([Infection Date 1], "Unknown") then "" else [Infection Date 1], Replacer.ReplaceText, {"Infection Date 1"}),
+    #"Extracted Text Before Delimiter" = Table.TransformColumns(#"Replaced Value", {{"Infection Date 1", each Text.BeforeDelimiter(_, " "), type text}}),
+    
+//=== re-detect DataTypes
+    #"Changed Type" = Table.TransformColumnTypes(#"Extracted Text Before Delimiter",{{"Study Id", type text}, {"Infection Date 1", type date}, {"Infection Date 2", type date}}),
+
+//=== rename cols to align w harmonized set
+    #"Renamed Columns" = Table.RenameColumns(#"Changed Type",{{"Study Id", "Participant Id"}, {"Infection Date 1", "Infection Dte 1"}, {"Infection Date 2", "Infection Dte 2"}}),
+    
+//=== added StudyID col
+    #"Added Custom" = Table.AddColumn(#"Renamed Columns", "Study Id", each "VACOPID"),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Added Custom",{{"Study Id", type text}})
+
+in
+    #"Changed Type1"

@@ -1,0 +1,23 @@
+let
+    Source = #"Harmonized data VACOPID_bindingAbsLuminex",
+
+//=== removed empty or redundant cols
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"Study Id", "Sample Date T0", "Sample Date T1", "Ai S1 (T2)", "Ai N (T2)", "Ai RBD (T2)", "Sample Date T4", "Ai S1 (T4)", "Ai N (T4)", "Ai RBD(T4)", "Sample Date T5", "Ai S1 (T5)", "Ai N (T5)", "Ai RBD(T5)", "Sample Date T10", "Ai S1 (T10)", "Ai N (T10)", "Ai RBD(T10)", "Sample Date T15", "Ai S1 (T15)", "Ai N (T15)", "Ai RBD(T15)", "Sample Date T20", "Ai S1 (T20)", "Ai N (T20)", "Ai RBD(T20)", "Unit", "Test Used (Site)"}),
+    
+//=== clean sample dates format + replace non-dateTypes
+    #"Extracted Text Before Delimiter" = Table.TransformColumns(#"Removed Other Columns", {{"Sample Date T0", each Text.BeforeDelimiter(_, " "), type text}, {"Sample Date T1", each Text.BeforeDelimiter(_, " "), type text}, {"Sample Date T4", each Text.BeforeDelimiter(_, " "), type text}, {"Sample Date T5", each Text.BeforeDelimiter(_, " "), type text}}),
+    #"Replaced Value" = Table.ReplaceValue(#"Extracted Text Before Delimiter","00:00:00","",Replacer.ReplaceText,{"Sample Date T4"}),
+    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","missing","",Replacer.ReplaceText,{"Sample Date T4"}),
+
+//=== re-detect DataTypes
+    #"Changed Type" = Table.TransformColumnTypes(#"Replaced Value1",{{"Study Id", type text}, {"Sample Date T0", type date}, {"Sample Date T1", type date}, {"Ai S1 (T2)", type number}, {"Ai N (T2)", type number}, {"Ai RBD (T2)", type number}, {"Sample Date T4", type date}, {"Ai S1 (T4)", type number}, {"Ai N (T4)", type number}, {"Ai RBD(T4)", type number}, {"Sample Date T5", type date}, {"Ai S1 (T5)", type number}, {"Ai N (T5)", type number}, {"Ai RBD(T5)", type number}, {"Sample Date T10", type date}, {"Ai S1 (T10)", type number}, {"Ai N (T10)", type number}, {"Ai RBD(T10)", type number}, {"Sample Date T15", type date}, {"Ai S1 (T15)", type number}, {"Ai N (T15)", type number}, {"Ai RBD(T15)", type number}, {"Sample Date T20", type date}, {"Ai S1 (T20)", type number}, {"Ai N (T20)", type number}, {"Ai RBD(T20)", type number}, {"Unit", type text}, {"Test Used (Site)", type text}}),
+
+//=== rename cols to align w harmonized set
+    #"Renamed Columns" = Table.RenameColumns(#"Changed Type",{{"Study Id", "Participant Id"}, {"Sample Date T0", "Sample Dte (T0)"}, {"Sample Date T1", "Sample Dte (T2)"}, {"Ai S1 (T2)", "Anti S1 (T2)"}, {"Ai N (T2)", "Anti N (T2)"}, {"Ai RBD (T2)", "Anti RBD (T2)"}, {"Sample Date T4", "Sample Dte (T4)"}, {"Ai S1 (T4)", "Anti S1 (T4)"}, {"Ai N (T4)", "Anti N (T4)"}, {"Ai RBD(T4)", "Anti RBD (T4)"}, {"Sample Date T5", "Sample Dte (T5)"}, {"Ai S1 (T5)", "Anti S1 (T5)"}, {"Ai N (T5)", "Anti N (T5)"}, {"Ai RBD(T5)", "Anti RBD (T5)"}, {"Sample Date T10", "Sample Dte (T8-T10.5)"}, {"Ai S1 (T10)", "Anti S1 (T8-T10.5)"}, {"Ai N (T10)", "Anti N (T8-T10.5)"}, {"Ai RBD(T10)", "Anti RBD (T8-T10.5)"}, {"Sample Date T15", "Sample Dte (T15-T16)"}, {"Ai S1 (T15)", "Anti S1 (T15-T16)"}, {"Ai N (T15)", "Anti N (T15-T16)"}, {"Ai RBD(T15)", "Anti RBD (T15-T16)"}, {"Sample Date T20", "Sample Dte (T20)"}, {"Ai S1 (T20)", "Anti S1 (T20)"}, {"Ai N (T20)", "Anti N (T20)"}, {"Ai RBD(T20)", "Anti RBD (T20)"}, {"Test Used (Site)", "Test Used"}}),
+
+//=== added StudyID col
+    #"Added Custom" = Table.AddColumn(#"Renamed Columns", "Study Id", each "VACOPID"),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Added Custom",{{"Study Id", type text}})
+
+in
+    #"Changed Type1"

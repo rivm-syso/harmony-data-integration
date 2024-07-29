@@ -1,0 +1,27 @@
+let
+    Source = #"Harmonized data VACOPID_vacc",
+
+//=== removed empty col
+    #"Removed Columns" = Table.RemoveColumns(Source,{"Particpant Id"}),
+
+//=== Dates > remove timestamps
+    #"Extracted Text Before Delimiter" = Table.TransformColumns(#"Removed Columns", {{"Vaccination Date 1", each Text.BeforeDelimiter(_, " "), type text}, {"Vaccination Date 2", each Text.BeforeDelimiter(_, " "), type text}, {"Booster Date 1", each Text.BeforeDelimiter(_, " "), type text}, {"Booster Date 2", each Text.BeforeDelimiter(_, " "), type text}}),
+    
+//=== Vaccine Brand N > reverse coding to 1=Comirnaty, 2=Moderna
+    #"Replaced Value" = Table.ReplaceValue(#"Extracted Text Before Delimiter", 2,0,Replacer.ReplaceValue,{"Vaccine Brand 1", "Vaccine Brand 2", "Vaccine Brand 3", "Booster Brand 1", "Booster Brand 2"}),
+    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value",1,2,Replacer.ReplaceValue,{"Vaccine Brand 1", "Vaccine Brand 2", "Vaccine Brand 3", "Booster Brand 1", "Booster Brand 2"}),
+    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1",0,1,Replacer.ReplaceValue,{"Vaccine Brand 1", "Vaccine Brand 2", "Vaccine Brand 3", "Booster Brand 1", "Booster Brand 2"}),
+    
+//=== re-detect DataTypes + adjust deviating dates (e.g. 2021-03-27) with Locale "en-NL"
+    #"Changed Type" = Table.TransformColumnTypes(#"Replaced Value2",{{"Study Id", type text}, {"Vaccination Date 1", type date}, {"Vaccine Brand 1", Int64.Type}, {"Vaccination Date 2", type date}, {"Vaccine Brand 2", Int64.Type}, {"Vaccination Date 3", type date}, {"Vaccine Brand 3", type number}, {"Booster Date 1", type text}, {"Booster Brand 1", type number}, {"Booster Date 2", type text}, {"Booster Brand 2", type number}}),
+    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Changed Type", {{"Booster Date 1", type date}, {"Booster Date 2", type date}}, "en-NL"),
+    
+//=== rename cols to align with harmonized set
+    #"Renamed Columns" = Table.RenameColumns(#"Changed Type with Locale",{{"Study Id", "Participant Id"}, {"Vaccination Date 2", "Vaccination Dte 2"}, {"Vaccination Date 3", "Vaccination Dte 3"}, {"Vaccination Date 1", "Vaccination Dte 1"}, {"Booster Date 1", "Vaccination Dte 4"}, {"Booster Brand 1", "Vaccine Brand 4"}, {"Booster Date 2", "Vaccination Dte 5"}, {"Booster Brand 2", "Vaccine Brand 5"}}),
+
+//=== added StudyID col 
+    #"Added Custom" = Table.AddColumn(#"Renamed Columns", "Study Id", each "VACOPID"),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Added Custom",{{"Study Id", type text}})
+
+in
+    #"Changed Type1"

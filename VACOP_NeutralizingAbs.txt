@@ -1,0 +1,23 @@
+let
+    Source = #"Harmonized data VACOPID_neutrAbs",
+
+//=== removed empty or redundant cols
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"Study Id", "Sample Date T4", "against Wildtype (T4)", "Sample Date T5", "against Wildtype (T5)", "Sample Date T15", "against Wildtype (T15)", "against Omicron BA.1 (T15)", "against Omicron BA.1 (T15).1", "Unit", "Test Used (Site)"}),
+    
+//=== clean sample dates format + replace non-dateTypes
+    #"Extracted Text Before Delimiter" = Table.TransformColumns(#"Removed Other Columns", {{"Sample Date T4", each Text.BeforeDelimiter(_, " "), type text}, {"Sample Date T5", each Text.BeforeDelimiter(_, " "), type text}}),
+    #"Replaced Value" = Table.ReplaceValue(#"Extracted Text Before Delimiter","00:00:00","",Replacer.ReplaceText,{"Sample Date T4"}),
+    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","missing","",Replacer.ReplaceText,{"Sample Date T4"}),
+    
+//=== re-detect DataTypes
+    #"Changed Type" = Table.TransformColumnTypes(#"Replaced Value1",{{"Study Id", type text}, {"Sample Date T4", type date}, {"against Wildtype (T4)", Int64.Type}, {"Sample Date T5", type date}, {"against Wildtype (T5)", Int64.Type}, {"Sample Date T15", type date}, {"against Wildtype (T15)", type text}, {"against Omicron BA.1 (T15)", type text}, {"against Omicron BA.1 (T15).1", type text}, {"Unit", type text}, {"Test Used (Site)", type text}}),
+
+//=== rename cols to align w harmonized set
+    #"Renamed Columns" = Table.RenameColumns(#"Changed Type",{{"Study Id", "Participant Id"}, {"Sample Date T4", "Sample Dte (T4)"}, {"against Wildtype (T4)", "ID50 Wildtype (T4)"}, {"Sample Date T5", "Sample Dte (T5)"}, {"against Wildtype (T5)", "ID50 Wildtype (T5)"}, {"Sample Date T15", "Sample Dte (T15-T16)"}, {"against Wildtype (T15)", "ID50 Wildtype (T15-T16)"}, {"against Omicron BA.1 (T15)", "ID50 Omicron BA.1 (T15-T16)"}, {"against Omicron BA.1 (T15).1", "ID50 Omicron BA.2 (T15-T16)"}, {"Test Used (Site)", "Test Used"}}),
+
+//=== added StudyID col
+    #"Added Custom" = Table.AddColumn(#"Renamed Columns", "Study Id", each "VACOPID"),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Added Custom",{{"Study Id", type text}})
+
+in
+    #"Changed Type1"

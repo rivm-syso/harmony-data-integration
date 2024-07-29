@@ -1,0 +1,29 @@
+let
+    Source = #"Harmonized data VACOPID_demogr",
+
+//=== remove redundant col
+    #"Removed Columns" = Table.RemoveColumns(Source,{"Study Id"}),
+    
+//=== excluded Subgroups due to various reasons
+    #"Filtered Rows" = Table.SelectRows(#"Removed Columns", each ([Subgroup] <> "H_Undefined abs" and [Subgroup] <> "J_Exclude" and [Subgroup] <> "J_Exclude_High B-cell numbers" and [Subgroup] <> "J_Exclude_Hyper IgM syndromes" and [Subgroup] <> "J_Exclude_Unknown Classification")),
+
+//=== correct date 'typo' (19553)
+    #"Replaced Value" = Table.ReplaceValue(#"Filtered Rows",19533,1953,Replacer.ReplaceValue,{"Birthyear"}),
+
+//=== re-code Gender (m=1,f=2)
+    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value", each [Gender], each if Text.StartsWith([Gender], "M") then 1 else 2, Replacer.ReplaceValue,{"Gender"}),
+    
+//=== clean Subgroup strings
+    #"Extracted Text After Delimiter" = Table.TransformColumns(#"Replaced Value1", {{"Subgroup", each Text.AfterDelimiter(_, "_"), type text}}),
+    #"Replaced Value2" = Table.ReplaceValue(#"Extracted Text After Delimiter","Healthy control","Healthy Controls",Replacer.ReplaceText,{"Subgroup"}),
+    
+//=== added StudyID col 
+    #"Added Custom" = Table.AddColumn(#"Replaced Value2", "Study Id", each "VACOPID"),
+   
+//=== correct DataTypes
+    #"Changed Type" = Table.TransformColumnTypes(#"Added Custom",{{"Participant Id", type text}, {"Birthyear", Int64.Type}, {"Gender", Int64.Type}, {"Subgroup", type text}, {"Dropout Date", type date}, {"Study Id", type text}}),
+    
+//=== rename header(s) to align 
+    #"Renamed Columns" = Table.RenameColumns(#"Changed Type",{{"Dropout Date", "Dropout Dte"}})
+in
+    #"Renamed Columns"

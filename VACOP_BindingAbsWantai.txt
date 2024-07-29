@@ -1,0 +1,23 @@
+let
+    Source = #"Harmonized data VACOPID_bindingAbsWantai",
+
+//=== remove empty or redundant cols
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"Study Id", "Sample Date T0", "Ai RBD (T0)", "Sample Date T1", "Ai RBD (T2)", "Sample Date T2", "Ai RBD(T4)", "Unit", "Test Used (Site)"}),
+
+//=== clean sample dates format + replace non-dateTypes
+    #"Extracted Text Before Delimiter" = Table.TransformColumns(#"Removed Other Columns", {{"Sample Date T0", each Text.BeforeDelimiter(_, " "), type text}, {"Sample Date T1", each Text.BeforeDelimiter(_, " "), type text}, {"Sample Date T2", each Text.BeforeDelimiter(_, " "), type text}}),
+    #"Replaced Value" = Table.ReplaceValue(#"Extracted Text Before Delimiter","00:00:00","",Replacer.ReplaceText,{"Sample Date T2"}),
+    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","missing","",Replacer.ReplaceText,{"Sample Date T2"}),
+
+//=== re-detect DataTypes
+    #"Changed Type" = Table.TransformColumnTypes(#"Replaced Value1",{{"Study Id", type text}, {"Sample Date T0", type date}, {"Ai RBD (T0)", type number}, {"Sample Date T1", type date}, {"Ai RBD (T2)", type number}, {"Sample Date T2", type date}, {"Ai RBD(T4)", type number}, {"Unit", type text}, {"Test Used (Site)", type text}}),
+    
+//=== rename cols to align w harmonized set
+    #"Renamed Columns" = Table.RenameColumns(#"Changed Type",{{"Study Id", "Participant Id"}, {"Sample Date T0", "Sample Dte (T0)"}, {"Ai RBD (T0)", "Anti RBD (T0)"}, {"Sample Date T1", "Sample Dte (T2)"}, {"Ai RBD (T2)", "Anti RBD (T2)"}, {"Sample Date T2", "Sample Dte (T4)"}, {"Ai RBD(T4)", "Anti RBD (T4)"}, {"Test Used (Site)", "Test Used"}}),
+
+//=== added StudyID col
+    #"Added Custom" = Table.AddColumn(#"Renamed Columns", "Study Id", each "VACOPID"),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Added Custom",{{"Study Id", type text}})
+
+in
+    #"Changed Type1"
