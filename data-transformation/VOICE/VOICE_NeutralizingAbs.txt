@@ -1,0 +1,11 @@
+let
+    Source = #"Harmony_VOICE_export_20230525 csv",
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"PARTICIPANT ID", "LBDAT_DAY28", "LBDAT_MONTH6", "LBDAT_DAY28_3RD", "V3_PRNT_ROUNDED", "V4_PRNT50_WT_D614G_CALU_EXACT", "V4_PRNT50_OMI_B_1_1_529_CALU_EXACT", "V5_PRNT50_WT_D614G_CALU_EXACT", "V5_PRNT50_OMI_B_1_1_529_CALU_EXACT"}),
+    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Removed Other Columns", {{"LBDAT_DAY28", type date}, {"LBDAT_MONTH6", type date}, {"LBDAT_DAY28_3RD", type date}}, "nl-NL"),
+    #"Replaced 1/1/2996" = Table.ReplaceValue(#"Changed Type with Locale",#date(2996, 1, 1),null,Replacer.ReplaceValue,{"LBDAT_DAY28", "LBDAT_MONTH6", "LBDAT_DAY28_3RD"}),
+    #"Replaced 1/1/2999" = Table.ReplaceValue(#"Replaced 1/1/2996",#date(2999, 1, 1),null,Replacer.ReplaceValue,{"LBDAT_DAY28", "LBDAT_MONTH6", "LBDAT_DAY28_3RD"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Replaced 1/1/2999",{{"PARTICIPANT ID", "Participant Id"}, {"LBDAT_DAY28", "Sample Dte (T4)"}, {"LBDAT_MONTH6", "Sample Dte (T5)"}, {"LBDAT_DAY28_3RD", "Sample Dte (T10)"}, {"V3_PRNT_ROUNDED", "PRNT50 Wildtype (T4)"}, {"V4_PRNT50_WT_D614G_CALU_EXACT", "PRNT50 Wildytpe (T5)"}, {"V4_PRNT50_OMI_B_1_1_529_CALU_EXACT", "PRNT50 Omicron (T5)"}, {"V5_PRNT50_WT_D614G_CALU_EXACT", "PRNT50 Wildtype (T10)"}, {"V5_PRNT50_OMI_B_1_1_529_CALU_EXACT", "PRNT50 Omicron (T10)"}}),
+    #"Added Study Id" = Table.AddColumn(#"Renamed Columns", "Study Id", each "Voice"),
+    #"Reordered Columns" = Table.ReorderColumns(#"Added Study Id",{"Study Id", "Participant Id", "Sample Dte (T4)", "Sample Dte (T5)", "Sample Dte (T10)", "PRNT50 Wildtype (T4)", "PRNT50 Wildytpe (T5)", "PRNT50 Omicron (T5)", "PRNT50 Wildtype (T10)", "PRNT50 Omicron (T10)"})
+in
+    #"Reordered Columns"

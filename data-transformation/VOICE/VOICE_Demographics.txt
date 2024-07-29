@@ -1,0 +1,11 @@
+let
+    Source = #"Harmony_VOICE_export_20230525 csv",
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"PARTICIPANT ID", "COHORT1", "SEX1", "BRTHYY", "LASTCONTDAT", "DSDECOD2"}),
+    #"Added Conditional Column" = Table.AddColumn(#"Removed Other Columns", "Dropout Dte", each if [DSDECOD2] = 1 then null else if [DSDECOD2] = 2 then [LASTCONTDAT] else if [DSDECOD2] = 99 then [LASTCONTDAT] else null),
+    #"Removed Columns" = Table.RemoveColumns(#"Added Conditional Column",{"DSDECOD2", "LASTCONTDAT"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"BRTHYY", "Birthyear"}, {"COHORT1", "Subgroup"}, {"PARTICIPANT ID", "Participant Id"}, {"SEX1", "Gender"}}),
+    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Renamed Columns", {{"Dropout Dte", type date}}, "nl-NL"),
+    #"Added Custom" = Table.AddColumn(#"Changed Type with Locale", "Study Id", each "Voice"),
+    #"Reordered Columns" = Table.ReorderColumns(#"Added Custom",{"Study Id", "Participant Id", "Birthyear", "Gender", "Subgroup", "Dropout Dte"})
+in
+    #"Reordered Columns"

@@ -1,0 +1,36 @@
+let
+    Source = #"Harmony_VOICE_export_20230525 csv",
+    //select only relevant columns
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"PARTICIPANT ID", "VACDAT", "VAC2DAT", "VACCAT_3RD", "VACDAT_3RD", "VACCAT_BOOST", "VACDAT_BOOST", "VACCAT_BOOST_18", "VACDAT_BOOST_18", "VACCAT_BOOST_18_2ND", "VACDAT_BOOST_18_2ND", "VACDAT_3"}),
+    
+    //fix dates
+    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Removed Other Columns", {{"VACDAT", type date}, {"VAC2DAT", type date}, {"VACDAT_3RD", type date}, {"VACDAT_BOOST", type date}, {"VACDAT_BOOST_18", type date}, {"VACDAT_BOOST_18_2ND", type date}, {"VACDAT_3", type date}}, "nl-NL"),
+    
+    //rename to correct varnames
+    #"Renamed Columns" = Table.RenameColumns(#"Changed Type with Locale",{{"PARTICIPANT ID", "Participant Id"}, {"VACDAT", "Vaccination Dte 1"}, {"VAC2DAT", "Vaccination Dte 2"}, {"VACCAT_3RD", "Vaccine Brand 3"}, {"VACDAT_3RD", "Vaccination Dte 3_rd"}, {"VACCAT_BOOST", "Vaccine Brand 4"}, {"VACDAT_BOOST", "Vaccination Dte 4"}, {"VACCAT_BOOST_18", "Vaccine Brand 5"}, {"VACDAT_BOOST_18", "Vaccination Dte 5"}, {"VACCAT_BOOST_18_2ND", "Vaccine Brand 6"}, {"VACDAT_BOOST_18_2ND", "Vaccination Dte 6"}, {"VACDAT_3", "Vaccination Dte 3"}}),
+    
+    /*replace missing values with 'null'
+    for dates '1/1/2996', '1/1/2998', '1/1/2999' were converted to 'null'
+    for brands '-96', '-97', '-98', '-99' were converted to 'null' */
+    #"Replaced 1/1/2996" = Table.ReplaceValue(#"Renamed Columns",#date(2996, 1, 1),null,Replacer.ReplaceValue,{"Vaccination Dte 1", "Vaccination Dte 2", "Vaccination Dte 3_rd", "Vaccination Dte 4", "Vaccination Dte 5", "Vaccination Dte 6", "Vaccination Dte 3"}),
+    #"Replaced 1/1/2998" = Table.ReplaceValue(#"Replaced 1/1/2996",#date(2998, 1, 1),null,Replacer.ReplaceValue,{"Vaccination Dte 1", "Vaccination Dte 2", "Vaccination Dte 3_rd", "Vaccination Dte 4", "Vaccination Dte 5", "Vaccination Dte 6", "Vaccination Dte 3"}),
+    #"Replaced 1/1/2999" = Table.ReplaceValue(#"Replaced 1/1/2998",#date(2999, 1, 1),null,Replacer.ReplaceValue,{"Vaccination Dte 1", "Vaccination Dte 2", "Vaccination Dte 3_rd", "Vaccination Dte 4", "Vaccination Dte 5", "Vaccination Dte 6", "Vaccination Dte 3"}),
+    #"Replaced -96" = Table.ReplaceValue(#"Replaced 1/1/2999",-96,null,Replacer.ReplaceValue,{"Vaccine Brand 3", "Vaccine Brand 4", "Vaccine Brand 5", "Vaccine Brand 6"}),
+    #"Replaced -97" = Table.ReplaceValue(#"Replaced -96",-97,null,Replacer.ReplaceValue,{"Vaccine Brand 3", "Vaccine Brand 4", "Vaccine Brand 5", "Vaccine Brand 6"}),
+    #"Replaced -98" = Table.ReplaceValue(#"Replaced -97",-98,null,Replacer.ReplaceValue,{"Vaccine Brand 3", "Vaccine Brand 4", "Vaccine Brand 5", "Vaccine Brand 6"}),
+    #"Replaced -99" = Table.ReplaceValue(#"Replaced -98",-99,null,Replacer.ReplaceValue,{"Vaccine Brand 3", "Vaccine Brand 4", "Vaccine Brand 5", "Vaccine Brand 6"}),
+    
+    //fixed vaccine brands, first 1 > 999, then 2 > 1, followed by 999 > 2
+    #"Replaced Brand 1 > 999" = Table.ReplaceValue(#"Replaced -99",1,999,Replacer.ReplaceValue,{"Vaccine Brand 3", "Vaccine Brand 4", "Vaccine Brand 5", "Vaccine Brand 6"}),
+    #"Replaced Brand 2 > 1" = Table.ReplaceValue(#"Replaced Brand 1 > 999",2,1,Replacer.ReplaceValue,{"Vaccine Brand 3", "Vaccine Brand 4", "Vaccine Brand 5", "Vaccine Brand 6"}),
+    #"Replaced Brand 999 > 2" = Table.ReplaceValue(#"Replaced Brand 2 > 1",999,2,Replacer.ReplaceValue,{"Vaccine Brand 3", "Vaccine Brand 4", "Vaccine Brand 5", "Vaccine Brand 6"}),
+    
+    //added new columns
+    #"Added Vaccine Brand 1" = Table.AddColumn(#"Replaced Brand 999 > 2", "Vaccine Brand 1 ", each 2),
+    #"Added Vaccine Brand 2" = Table.AddColumn(#"Added Vaccine Brand 1", "Vaccine Brand 2", each if [Vaccination Dte 2] = null then null else 2),
+    #"Addedd Study Id" = Table.AddColumn(#"Added Vaccine Brand 2", "Study Id", each "Voice"),
+    #"Reordered Columns" = Table.ReorderColumns(#"Addedd Study Id",{"Study Id", "Participant Id", "Vaccination Dte 1", "Vaccine Brand 1 ", "Vaccination Dte 2", "Vaccine Brand 2", "Vaccination Dte 3_rd", "Vaccine Brand 3", "Vaccination Dte 4", "Vaccine Brand 4", "Vaccination Dte 5", "Vaccine Brand 5", "Vaccination Dte 6", "Vaccine Brand 6", "Vaccination Dte 3"}),
+    #"Removed Columns" = Table.RemoveColumns(#"Reordered Columns",{"Vaccination Dte 3"}),
+    #"Renamed Columns1" = Table.RenameColumns(#"Removed Columns",{{"Vaccination Dte 3_rd", "Vaccination Dte 3"}})
+in
+    #"Renamed Columns1"

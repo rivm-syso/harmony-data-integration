@@ -1,0 +1,38 @@
+let
+    Source = #"Harmony_VOICE_Covid_vragenlijst_VOICE_studie_export_20230525 csv",
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"CASTOR PARTICIPANT ID", "POSITIEVETEST", "DATUMPOSITIEVETEST"}),
+
+    //Keep only positive tests with dates
+    #"Filtered Rows" = Table.SelectRows(#"Removed Other Columns", each ([POSITIEVETEST] = 1) and ([DATUMPOSITIEVETEST] <> "")),
+    #"Removed Columns" = Table.RemoveColumns(#"Filtered Rows",{"POSITIEVETEST"}),
+    
+    //Renamed columns
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"CASTOR PARTICIPANT ID", "Participant Id"}, {"DATUMPOSITIEVETEST", "Infection Dte"}}),
+    
+    //Fix dates
+    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Renamed Columns", {{"Infection Dte", type date}}, "nl-NL"),
+    #"Sorted Rows" = Table.Sort(#"Changed Type with Locale",{{"Participant Id", Order.Ascending}, {"Infection Dte", Order.Ascending}}),
+    
+    //Remove duplicate entries
+    #"Removed Duplicates" = Table.Distinct(#"Sorted Rows"),
+    
+    //Add index per participant
+    #"Grouped Rows" = Table.Group(#"Removed Duplicates", {"Participant Id"}, {{"Count", each _, type table [Participant Id=nullable text, Infection Dte=nullable date]}}),
+    #"Added Custom" = Table.AddColumn(#"Grouped Rows", "Custom", each Table.AddIndexColumn([Count], "Index", 1)),
+    #"Removed Columns1" = Table.RemoveColumns(#"Added Custom",{"Participant Id", "Count"}),
+    #"Expanded Custom" = Table.ExpandTableColumn(#"Removed Columns1", "Custom", {"Participant Id", "Infection Dte", "Index"}, {"Participant Id", "Infection Dte", "Index"}),
+    
+    //Fix types again
+    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Custom",{{"Infection Dte", type date}, {"Index", Int64.Type}, {"Participant Id", type text}}),
+    
+    //Pivot
+    #"Pivoted Column" = Table.Pivot(Table.TransformColumnTypes(#"Changed Type", {{"Index", type text}}, "en-US"), List.Distinct(Table.TransformColumnTypes(#"Changed Type", {{"Index", type text}}, "en-US")[Index]), "Index", "Infection Dte"),
+    
+    //Final names
+    #"Renamed Columns1" = Table.RenameColumns(#"Pivoted Column",{{"1", "Infection Dte 1"}, {"2", "Infection Dte 2"}}),
+    
+    //Added missing columns
+    #"Added Study Id" = Table.AddColumn(#"Renamed Columns1", "Study Id", each "Voice"),
+    #"Reordered Columns" = Table.ReorderColumns(#"Added Study Id",{"Study Id", "Participant Id", "Infection Dte 1", "Infection Dte 2"})
+in
+    #"Reordered Columns"
