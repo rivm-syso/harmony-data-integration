@@ -1,0 +1,45 @@
+let
+    
+//=== default steps after Get > CSV > Transform data
+    Source = Csv.Document(File.Contents("Z:\QuickHMNY\data_in\TARTB\T2B_immunity_against_SARS-CoV-2__export_20231013.csv"),[Delimiter=",", Columns=17, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Participant Id", type text}, {"Participant Status", type text}, {"Site Abbreviation", type text}, {"Participant Creation Date", type text}, {"BL_studygroup", Int64.Type}, {"vacc_brand_1", type text}, {"vacc_date_1", type text}, {"vacc_brand_2", Int64.Type}, {"vacc_date_2", type text}, {"vacc_brand_3", Int64.Type}, {"vacc_date_3", type text}, {"vacc_brand_4", Int64.Type}, {"vacc_date_4", type text}, {"EOS_dateofdeath", type text}, {"EOS_datelastcontact", type text}, {"EOS_date_consent_withdrawn", type text}, {"EOS_date_investigator_decision", type text}}),
+    
+//=== select & remove other columns not needed   
+    #"Removed Other Columns" = Table.SelectColumns(#"Changed Type",{"Participant Id", "vacc_brand_1", "vacc_date_1", "vacc_brand_2", "vacc_date_2", "vacc_brand_3", "vacc_date_3", "vacc_brand_4", "vacc_date_4"}),
+    
+//=== rename columns (not those that get removed after added 'Customs')
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Other Columns",{
+        {"vacc_brand_1", "Vaccine Brand 1"}, 
+        {"vacc_date_1", "Vaccination Dte 1"}, 
+        {"vacc_date_2", "Vaccination Dte 2"}, 
+        {"vacc_date_3", "Vaccination Dte 3"}, 
+        {"vacc_brand_2", "Vaccine Brand 2"}, 
+        {"vacc_brand_3", "Vaccine Brand 3"}, 
+        {"vacc_brand_4", "Vaccine Brand 4"}, 
+        {"vacc_date_4", "Vaccination Dte 4"}
+    }),
+    
+//=== format text columns    
+    #"Trimmed Text" = Table.TransformColumns(Table.TransformColumnTypes(#"Renamed Columns", {{"Vaccine Brand 2", type text}, {"Vaccine Brand 3", type text}, {"Vaccine Brand 4", type text}}, "en-US"),{{"Vaccine Brand 1", Text.Trim, type text}, {"Vaccine Brand 2", Text.Trim, type text}, {"Vaccine Brand 3", Text.Trim, type text}, {"Vaccine Brand 4", Text.Trim, type text}}),
+    #"Cleaned Text" = Table.TransformColumns(#"Trimmed Text",{{"Vaccine Brand 1", Text.Clean, type text}, {"Vaccine Brand 2", Text.Clean, type text}, {"Vaccine Brand 3", Text.Clean, type text}, {"Vaccine Brand 4", Text.Clean, type text}}),
+    #"Capitalized Each Word" = Table.TransformColumns(#"Cleaned Text",{{"Vaccine Brand 1", Text.Proper, type text}, {"Vaccine Brand 2", Text.Proper, type text}, {"Vaccine Brand 3", Text.Proper, type text}, {"Vaccine Brand 4", Text.Proper, type text}}),
+    
+//=== replacing Vaccine Brand's empty string and necessary re-coding (Comirnaty=1, Moderna=2, Astraz.=3, Janssen=4, 'Moderna/Pfizer'=99 --> source-error!!)    
+    #"Replaced Value VaccBrand1" = Table.ReplaceValue(#"Capitalized Each Word","No Record","",Replacer.ReplaceText,{"Vaccine Brand 1"}),
+    #"Replaced Value1 VaccBrand1" = Table.ReplaceValue(#"Replaced Value VaccBrand1","Moderna/Pfizer","99",Replacer.ReplaceText,{"Vaccine Brand 1"}),
+
+//=== cleaning date column (replace invalid dates) 
+    #"Replaced Value VaccDate1" = Table.ReplaceValue(#"Replaced Value1 VaccBrand1","-2001","-2021",Replacer.ReplaceText,{"Vaccination Dte 1"}),
+    
+//=== re-detect all DataTypes > check if correct
+    #"Changed Type1" = Table.TransformColumnTypes(#"Replaced Value VaccDate1",{{"Participant Id", type text}, {"Vaccine Brand 1", Int64.Type}, {"Vaccination Dte 1", type text}, {"Vaccine Brand 2", Int64.Type}, {"Vaccination Dte 2", type text}, {"Vaccine Brand 3", Int64.Type}, {"Vaccination Dte 3", type text}, {"Vaccine Brand 4", Int64.Type}, {"Vaccination Dte 4", type text}}),
+    
+//=== DateColumn(s) as text to unified date type (with Locale)    
+    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Changed Type1", {{"Vaccination Dte 1", type date}, {"Vaccination Dte 2", type date}, {"Vaccination Dte 3", type date}, {"Vaccination Dte 4", type date}}, "en-GB"),
+
+//=== additional column(s) e.g. Study Id    
+    #"Added Custom StudyId" = Table.AddColumn(#"Changed Type with Locale", "Study Id", each "TARTB")
+
+in
+    #"Added Custom StudyId"
