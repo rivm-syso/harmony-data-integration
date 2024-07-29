@@ -1,0 +1,17 @@
+let
+    Source = #"Binding Antibodies",
+    #"Removed Columns" = Table.RemoveColumns(Source,{"Study_Id_RECOVAC_IR", "Study_Id_RECOVAC_RV"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Participant_Id", "Participant Id"}, {"Sample_Date_T0", "Sample Dte T0"}, {"Anti_S1_T0", "Anti S1 (T0)"}, {"Anti_N_T0", "Anti N (T0)"}, {"Sample_Date_T2", "Sample Dte T2"}, {"Anti_S1_T2", "Anti S1 (T2)"}, {"Anti_N_T2", "Anti N (T2)"}, {"Sample_Date_T4", "Sample Dte T4"}, {"Anti_S1_T4", "Anti S1 (T4)"}, {"Anti_RBD_T4", "Anti RBD (T4)"}, {"Anti_N_T4", "Anti N (T4)"}, {"Sample_Date_T5", "Sample Dte T5"}, {"Anti_S1_T5", "Anti S1 (T5)"}, {"Anti_N_T5", "Anti N (T5)"}, {"Sample_Date_T7", "Sample Dte T7"}, {"Anti_S1_T7", "Anti S1 (T7)"}, {"Anti_N_T7", "Anti N (T7)"}, {"Sample_Date_T10", "Sample Dte T10"}, {"Anti_S1_T10", "Anti S1 (T10)"}, {"Anti_RBD_T10", "Anti RBD (T10)"}, {"Anti_N_T10", "Anti N (T10)"}, {"Sample_Date_T13", "Sample Dte T13"}, {"Anti_S1_T13", "Anti S1 (T13)"}, {"Anti_N_T13", "Anti N (T13)"}, {"Sample_Date_T15", "Sample Dte T15"}, {"Anti_S1_T15", "Anti S1 (T15)"}, {"Anti_N_T15", "Anti N (T15)"}, {"Anti_N_T4_1", "Anti N (T4) Qualitative"}, {"Anti_N_T10_1", "Anti N (T10) Qualitative"}}),
+    #"Changed Type" = Table.TransformColumnTypes(#"Renamed Columns",{{"Anti N (T10) Qualitative", type text}, {"Anti N (T4) Qualitative", type text}}),
+    #"Replaced Value" = Table.ReplaceValue(#"Changed Type","1","negative",Replacer.ReplaceText,{"Anti N (T4) Qualitative", "Anti N (T10) Qualitative"}),
+    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","2","positive",Replacer.ReplaceText,{"Anti N (T4) Qualitative", "Anti N (T10) Qualitative"}),
+    #"Added Test Used Anti S1" = Table.AddColumn(#"Replaced Value1", "Test Used Anti S1", each "MIA (RIVM)"),
+    #"Added Test Used Anti N" = Table.AddColumn(#"Added Test Used Anti S1", "Test Used Anti N", each "MIA (RIVM)"),
+    #"Added Test Used Anti RBD" = Table.AddColumn(#"Added Test Used Anti N", "Test Used Anti RBD", each "MIA (Sanquin)"),
+    #"Added Anti S1 Unit" = Table.AddColumn(#"Added Test Used Anti RBD", "Anti S1 Unit", each "BAU/ml"),
+    #"Added Anti N Unit" = Table.AddColumn(#"Added Anti S1 Unit", "Anti N Unit", each "AU/ml"),
+    #"Added RBD Unit" = Table.AddColumn(#"Added Anti N Unit", "Anti RBD Unit", each "BAU/ml"),
+    #"Added Study Id" = Table.AddColumn(#"Added RBD Unit", "Study Id", each "RECOVAC"),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Added Study Id",{{"Test Used Anti S1", type text}, {"Test Used Anti N", type text}, {"Test Used Anti RBD", type text}, {"Anti S1 Unit", type text}, {"Anti N Unit", type text}, {"Anti RBD Unit", type text}, {"Study Id", type text}})
+in
+    #"Changed Type1"

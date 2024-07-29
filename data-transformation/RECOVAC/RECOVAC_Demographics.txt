@@ -1,0 +1,12 @@
+let
+    Source = Demographics,
+    #"Removed Columns" = Table.RemoveColumns(Source,{"Study_Id_RECOVAC_IR", "Study_Id_RECOVAC_RV"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Participant_Id", "Participant Id"}}),
+    #"Replaced Value" = Table.ReplaceValue(#"Renamed Columns","Male","1",Replacer.ReplaceText,{"Gender"}),
+    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","Female","2",Replacer.ReplaceText,{"Gender"}),
+    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1","CKD 4-5, with eGFR &lt; 30 ml/min*1.73m2 by CKD-EPI","CKD 4-5, with eGFR < 30 ml/min*1.73m2 by CKD-EPI",Replacer.ReplaceText,{"Subgroup"}),
+    #"Renamed Columns1" = Table.RenameColumns(#"Replaced Value2",{{"Dropout_Date_RECOVAC_IR", "Dropout Dte RECOVAC IR"}, {"Dropout_Date_RECOVAC_RV", "Dropout Dte RECOVAC RV"}}),
+    #"Added Custom" = Table.AddColumn(#"Renamed Columns1", "Study Id", each "RECOVAC"),
+    #"Changed Type" = Table.TransformColumnTypes(#"Added Custom",{{"Study Id", type text}})
+in
+    #"Changed Type"

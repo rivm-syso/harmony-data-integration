@@ -1,0 +1,7 @@
+let
+    Source = #"Neutralizing Antibodies",
+    #"Removed Columns" = Table.RemoveColumns(Source,{"Study_Id_RECOVAC_IR", "Study_Id_RECOVAC_RV"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Sample_Date_T4", "Sample Dte T4"}, {"against_Wildtype_T4", "PRNT50 Wildtype (T4)"}, {"against_Omicron_T4", "PRNT50 Omicron (T4)"}, {"against_Delta_T4", "PRNT50 Delta (T4)"}, {"Sample_Date_T5", "Sample Dte T5"}, {"against_Wildtype_T5", "PRNT50 Wildtype (T5)"}, {"against_Delta_T5", "PRNT50 Delta (T5)"}, {"against_Omicron_T5", "PRNT50 Omicron (T5)"}, {"Sample_Date_T10", "Sample Dte T10"}, {"against_Wildtype_T10", "PRNT50 Wildtype (T10)"}, {"against_Delta_T10", "PRNT50 Delta (T10)"}, {"against_Omicron_T10", "PRNT50 Omicron (T10)"}, {"Sample_Date_T15", "Sample Dte T15"}, {"against_Wildtype_T15", "PRNT50 Wildtype (T15)"}, {"against_Delta_T15", "PRNT50 Delta (T15)"}, {"against_Omicron_T15", "PRNT50 Omicron (T15)"}, {"Participant_Id", "Participant Id"}}),
+    #"Added Custom" = Table.AddColumn(#"Renamed Columns", "Study Id", each "RECOVAC")
+in
+    #"Added Custom"
