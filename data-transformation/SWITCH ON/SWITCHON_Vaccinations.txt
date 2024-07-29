@@ -1,0 +1,22 @@
+let
+    Source = #"SWITCH ON 2024 01 31_vacc",
+    #"Removed Columns" = Table.RemoveColumns(Source,{"Study Id", "Particpant Id"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Study Id.1", "Study Id"}, {"Particpant Id.1", "Participant Id"}, {"Vaccination Date 1", "Vaccination Dte 1"}, {"Vaccination Date 2", "Vaccination Dte 2"}, {"Booster Date 1", "Vaccination Dte 4"}, {"Booster Brand 1", "Vaccine Brand 4"}, {"Booster Date 2", "Vaccination Dte 5"}, {"Booster Brand 2", "Vaccine Brand 5"}, {"Booster Date 3", "Vaccination Dte 6"}, {"Booster Brand 3", "Vaccine Brand 6"}, {"Booster Date 4", "Vaccination Dte 7"}, {"Booster Brand 4", "Vaccine Brand 7"}}),
+  
+  //Make numbers of vaccination brands
+    #"Replaced Value" = Table.ReplaceValue(#"Renamed Columns","BNT162b2.BA5","8",Replacer.ReplaceText,{"Vaccine Brand 1", "Vaccine Brand 2", "Vaccine Brand 4", "Vaccine Brand 5", "Vaccine Brand 6", "Vaccine Brand 7"}),
+    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","BNT162b2.BA1","7",Replacer.ReplaceText,{"Vaccine Brand 1", "Vaccine Brand 2", "Vaccine Brand 4", "Vaccine Brand 5", "Vaccine Brand 6", "Vaccine Brand 7"}),
+    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1","mRNA-1273.214","6",Replacer.ReplaceText,{"Vaccine Brand 1", "Vaccine Brand 2", "Vaccine Brand 4", "Vaccine Brand 5", "Vaccine Brand 6", "Vaccine Brand 7"}),
+    #"Replaced Value3" = Table.ReplaceValue(#"Replaced Value2","mRNA-1273.222","5",Replacer.ReplaceText,{"Vaccine Brand 1", "Vaccine Brand 2", "Vaccine Brand 4", "Vaccine Brand 5", "Vaccine Brand 6", "Vaccine Brand 7"}),
+    #"Replaced Value4" = Table.ReplaceValue(#"Replaced Value3","Ad26.COV2.S","4",Replacer.ReplaceText,{"Vaccine Brand 1", "Vaccine Brand 2", "Vaccine Brand 4", "Vaccine Brand 5", "Vaccine Brand 6", "Vaccine Brand 7"}),
+    #"Replaced Value5" = Table.ReplaceValue(#"Replaced Value4","AstraZeneca (?)","3",Replacer.ReplaceText,{"Vaccine Brand 1", "Vaccine Brand 2", "Vaccine Brand 4", "Vaccine Brand 5", "Vaccine Brand 6", "Vaccine Brand 7"}),
+    #"Replaced Value6" = Table.ReplaceValue(#"Replaced Value5","mRNA-1273","2",Replacer.ReplaceText,{"Vaccine Brand 1", "Vaccine Brand 2", "Vaccine Brand 4", "Vaccine Brand 5", "Vaccine Brand 6", "Vaccine Brand 7"}),
+    #"Replaced Value7" = Table.ReplaceValue(#"Replaced Value6","BNT162b2","1",Replacer.ReplaceText,{"Vaccine Brand 1", "Vaccine Brand 2", "Vaccine Brand 4", "Vaccine Brand 5", "Vaccine Brand 6", "Vaccine Brand 7"}),
+    
+    //Fix types
+    #"Changed Type" = Table.TransformColumnTypes(#"Replaced Value7",{{"Vaccine Brand 1", Int64.Type}, {"Vaccine Brand 2", Int64.Type}, {"Vaccine Brand 4", Int64.Type}, {"Vaccine Brand 5", Int64.Type}, {"Vaccine Brand 6", Int64.Type}, {"Vaccine Brand 7", Int64.Type}, {"Vaccination Dte 7", type date}, {"Vaccination Dte 4", type date}}),
+    
+    //Replace errors by null
+    #"Replaced Errors" = Table.ReplaceErrorValues(#"Changed Type", {{"Vaccination Dte 4", null}})
+in
+    #"Replaced Errors"
