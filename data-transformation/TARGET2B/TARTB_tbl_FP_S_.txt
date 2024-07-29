@@ -1,0 +1,22 @@
+let
+    
+    Source = Csv.Document(File.Contents("Z:\QuickHMNY\data_in\TARTB\tbl_report_T2B_FP_S_IgG_20230126.csv"),[Delimiter=",", Columns=6, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"sampleID", type text}, {"sampleID_Orig", type text}, {"micronicID", type text}, {"dateProcessed", type datetime}, {"titer_Final", type number}, {"testStatus", type text}}),
+
+//--> excluded all rows with [testStatus] <> OK
+    #"Filtered Rows" = Table.SelectRows(#"Changed Type", each ([testStatus] = "OK")),
+    
+    #"Removed Other Columns" = Table.SelectColumns(#"Filtered Rows",{"sampleID", "dateProcessed", "titer_Final"}),
+    
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Other Columns",{{"dateProcessed", "Sample Dte T? (S1)"}, {"titer_Final", "Anti S1 (T?)"}}),
+    
+    #"Added Custom Unit" = Table.AddColumn(#"Renamed Columns", "Unit", each "AU/ml"),
+    #"Added Custom TestUsed" = Table.AddColumn(#"Added Custom Unit", "Test Used", each "ELISA (AUMC)"),
+    #"Added Custom AddTestInfo" = Table.AddColumn(#"Added Custom TestUsed", "Additional Test Info", each "coat S -> anti-human-lgG-HRP -> TMB and H2SO4 -> titers"),
+    #"Added Custom StudyId" = Table.AddColumn(#"Added Custom AddTestInfo", "Study Id", each "TARTB"),
+    
+    #"Extracted Date" = Table.TransformColumns(#"Added Custom StudyId",{{"Sample Dte T? (S1)", DateTime.Date, type date}})
+
+in
+    #"Extracted Date"

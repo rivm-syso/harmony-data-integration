@@ -1,0 +1,22 @@
+let
+    Source = Csv.Document(File.Contents("Z:\QuickHMNY\data_in\TARTB\27_11_23 lijst Eileen T2B_Cryonummers.csv"),[Delimiter=",", Columns=11, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"REGISTRATION_ID", type text}, {"T0_Cryo.tube.ID", Int64.Type}, {"T1_Cryo.tube.ID", Int64.Type}, {"T2_Cryo.tube.ID", Int64.Type}, {"T3_Cryo.tube.ID", Int64.Type}, {"T4_cryo.number", type text}, {"T5_cryo.number", Int64.Type}, {"T6_cryo.number", Int64.Type}, {"six.month_vriesnr", Int64.Type}, {"post_booster(3)_vriesnr", Int64.Type}, {"post-booster(4)_vriesnr", Int64.Type}}),
+    #"Unpivoted Other Columns" = Table.UnpivotOtherColumns(#"Changed Type", {"REGISTRATION_ID"}, "Attribute", "Value"),
+    #"Renamed Columns" = Table.RenameColumns(#"Unpivoted Other Columns",{{"REGISTRATION_ID", "Participant Id"}, {"Value", "sampleID"}, {"Attribute", "Timepoint ??"}}),
+
+//--> make sampleIDs consistent
+    #"Extracted Text Before Delimiter" = Table.TransformColumns(#"Renamed Columns", {{"sampleID", each Text.BeforeDelimiter(Text.From(_, "en-US"), "."), type text}}),
+    #"Extracted Last Characters" = Table.TransformColumns(#"Extracted Text Before Delimiter", {{"sampleID", each Text.End(_, 6), type text}}),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Extracted Last Characters",{{"sampleID", Int64.Type}}),
+
+//--> extract T2B-specific TimepointNames
+    #"Replaced Value" = Table.ReplaceValue(#"Changed Type1","post_booster","post-booster",Replacer.ReplaceText,{"Timepoint ??"}),
+    #"Extracted Text Before Delimiter1" = Table.TransformColumns(#"Replaced Value", {{"Timepoint ??", each Text.BeforeDelimiter(_, "_"), type text}}),
+    
+//--!!-- still re-code Timepoints T2B vs Harmony !! (e.g. T0=T1 / T1=T1-T2 / ...) --> how best convert ? and verify !    
+    #"Replaced Value1" = Table.ReplaceValue(#"Extracted Text Before Delimiter1",
+        "six.month","T5", Replacer.ReplaceText,{"Timepoint ??"})
+
+in
+    #"Replaced Value1"

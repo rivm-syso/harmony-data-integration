@@ -1,0 +1,111 @@
+let
+    
+//"merge as new query" TubeNumbers with S titers via sampleID
+    Source = Table.NestedJoin(#"27_11_23 lijst Eileen T2B_Cryonummers", {"sampleID"}, tbl_report_T2B_PBMC_S_IgG_20230126, {"sampleID"}, "tbl_report_T2B_PBMC_S_IgG_20230126", JoinKind.FullOuter),
+    #"Expanded tbl_report_T2B_PBMC_S_IgG_20230126" = Table.ExpandTableColumn(Source, "tbl_report_T2B_PBMC_S_IgG_20230126", {"sampleID", "Sample Dte T? (S1)", "Anti S1 (T?)"}, {"sampleID.1", "Sample Dte T? (S1)", "Anti S1 (T?)"}),
+
+//nested merge > add RBD titers via sampleID 
+    #"Merged Queries" = Table.NestedJoin(#"Expanded tbl_report_T2B_PBMC_S_IgG_20230126", {"sampleID"}, tbl_report_T2B_PBMC_RBD_IgG_20230126, {"sampleID"}, "tbl_report_T2B_PBMC_RBD_IgG_20230126", JoinKind.FullOuter),
+    #"Expanded tbl_report_T2B_PBMC_RBD_IgG_20230126" = Table.ExpandTableColumn(#"Merged Queries", "tbl_report_T2B_PBMC_RBD_IgG_20230126", {"sampleID", "Sample Dte T? (RBD)", "Anti RBD (T?)"}, {"sampleID.2", "Sample Dte T? (RBD)", "Anti RBD (T?)"}),
+
+//nested merge > add NP ab via sampleID 
+    #"Merged Queries1" = Table.NestedJoin(#"Expanded tbl_report_T2B_PBMC_RBD_IgG_20230126", {"sampleID"}, #"20231127_T2B_PBMC_NP_ab", {"sampleID"}, "20231127_T2B_PBMC_NP_ab", JoinKind.FullOuter),
+    #"Expanded 20231127_T2B_PBMC_ NP_ab" = Table.ExpandTableColumn(#"Merged Queries1", "20231127_T2B_PBMC_NP_ab", {"sampleID", "Min Normalized OD (T?)", "Anti N (T?) Qualitative"}, {"sampleID.3", "Min Normalized OD (T?)", "Anti N (T?) Qualitative"}),
+
+//filter empty rows that cannot be matched to Participant Id
+    #"--Filtered Rows1" = Table.SelectRows(#"Expanded 20231127_T2B_PBMC_ NP_ab", each ([Participant Id] <> null and [Participant Id] <> "") ),
+
+//merge columns "sampleID.1/.2/.3" into new [Sample Id] 
+    #"--Changed Type" = Table.TransformColumnTypes(#"--Filtered Rows1",{{"sampleID", type text}, {"sampleID.1", type text}, {"sampleID.2", type text}, {"sampleID.3", type text}}),
+    #"Merged Columns sampleIDs" = Table.CombineColumns(#"--Changed Type",{"sampleID", "sampleID.1", "sampleID.2", "sampleID.3"},Combiner.CombineTextByDelimiter(";", QuoteStyle.None),"Sample Id"),
+    #"Extracted Text Before Delimiter" = Table.TransformColumns(#"Merged Columns sampleIDs", {{"Sample Id", each Text.BeforeDelimiter(_, ";"), type text}}),
+    
+//excl. sampleID rows that have 'null' results    
+    #"--Filtered Rows" = Table.SelectRows(#"Extracted Text Before Delimiter", each ([Sample Id] <> "")),
+
+//merge columns "Sample Dte T? (S1)..." into one unified [Sample Dte (T?)] -> timepoints follows later
+    #"Merged Columns SampleDates" = Table.CombineColumns(Table.TransformColumnTypes(#"--Filtered Rows", {{"Sample Dte T? (S1)", type text}, {"Sample Dte T? (RBD)", type text}}, "en-US"),{"Sample Dte T? (S1)", "Sample Dte T? (RBD)"},Combiner.CombineTextByDelimiter("_", QuoteStyle.None),"Sample Dte (T?)"),
+    #"Extracted Text After Delimiter" = Table.TransformColumns(#"Merged Columns SampleDates", {{"Sample Dte (T?)", each Text.AfterDelimiter(_, "_"), type text}}),
+    // re-coding T2B-timepoints to HarmonyTimepoints
+    #"Replaced Value1" = Table.ReplaceValue(#"Extracted Text After Delimiter",
+        "T1","T2",Replacer.ReplaceText,{"Timepoint ??"}),
+    #">> Replaced Value2" = Table.ReplaceValue(#"Replaced Value1",
+        "T2","T4",Replacer.ReplaceText,{"Timepoint ??"}),
+    #">> Replaced Value3" = Table.ReplaceValue(#">> Replaced Value2",
+        "T4","T4.5",Replacer.ReplaceText,{"Timepoint ??"}),
+    #">> Replaced Value4" = Table.ReplaceValue(#">> Replaced Value3",
+        "T5","T7",Replacer.ReplaceText,{"Timepoint ??"}),
+    #">> Replaced Value5" = Table.ReplaceValue(#">> Replaced Value4",
+        "T6","T8",Replacer.ReplaceText,{"Timepoint ??"}),
+    #">> Replaced Value6" = Table.ReplaceValue(#">> Replaced Value5","post-booster(3)","T10",Replacer.ReplaceText,{"Timepoint ??"}),
+    #">> Replaced Value7" = Table.ReplaceValue(#">> Replaced Value6","post-booster(4)","T15",Replacer.ReplaceText,{"Timepoint ??"}),
+
+//unpivot attribute columns (sample dates, titer values, etc.)
+    #"Unpivoted Other Columns" = Table.UnpivotOtherColumns(#">> Replaced Value7", {"Participant Id", "Sample Id", "Timepoint ??"}, "Attribute", "Value"),
+
+//merge Attributes column with Timepoints
+    #"Merged Columns TxPrefix" = Table.CombineColumns(#"Unpivoted Other Columns",{"Timepoint ??", "Attribute"},Combiner.CombineTextByDelimiter("_", QuoteStyle.None),"attribute_merged"),
+    
+//align timepoint headername to harmonized columnnames
+    #"Replaced Value" = Table.ReplaceValue(#"Merged Columns TxPrefix","T?",each Text.BeforeDelimiter([attribute_merged], "_"),Replacer.ReplaceText,{"attribute_merged"}),
+    #"Extracted Text After Delimiter2" = Table.TransformColumns(#"Replaced Value", {{"attribute_merged", each Text.AfterDelimiter(_, "_"), type text}}),
+
+//pivot back "attribute_merged" via value column
+    #"Pivoted back WideFormat" = Table.Pivot(#"Extracted Text After Delimiter2", List.Distinct(#"Extracted Text After Delimiter2"[attribute_merged]), "attribute_merged", "Value"),
+
+//group by unique [Participant Id] + aggregate into single row per participant
+    #"Removed Columns" = Table.RemoveColumns(#"Pivoted back WideFormat",{"Sample Id"}),
+    #"Grouped Rows byParticipantID" = Table.Group(#"Removed Columns", {"Participant Id"}, {{"newTable", each _, type table [Participant Id=nullable text, #"Sample Dte (T0)"=nullable text, #"Anti RBD (T0)"=nullable number, #"Sample Dte (T2)"=nullable text, #"Anti RBD (T2)"=nullable number, #"Anti S1 (T7)"=nullable number, #"Sample Dte (T7)"=nullable text, #"Anti RBD (T7)"=nullable number, #"Anti S1 (T4)"=nullable number, #"Sample Dte (T4)"=nullable text, #"Anti RBD (T4)"=nullable number, #"Min Normalized OD (T4)"=nullable number, #"Anti N (T4) Qualitative"=nullable text, #"Min Normalized OD (T2)"=nullable number, #"Anti N (T2) Qualitative"=nullable text, #"Min Normalized OD (T0)"=nullable number, #"Anti N (T0) Qualitative"=nullable text, #"Anti S1 (T0)"=nullable number, #"Min Normalized OD (T7)"=nullable number, #"Anti N (T7) Qualitative"=nullable text, #"Anti S1 (T10)"=nullable number, #"Sample Dte (T10)"=nullable text, #"Anti RBD (T10)"=nullable number, #"Min Normalized OD (T10)"=nullable number, #"Anti N (T10) Qualitative"=nullable text, #"Anti S1 (T13)"=nullable number, #"Sample Dte (T13)"=nullable text, #"Anti RBD (T13)"=nullable number, #"Min Normalized OD (T13)"=nullable number, #"Anti N (T13) Qualitative"=nullable text, #"Anti S1 (T15)"=any, #"Sample Dte (T15)"=any, #"Anti RBD (T15)"=any, #"Anti S1 (T2)"=nullable number, #"Sample Dte (T8)"=nullable text, #"Anti RBD (T8)"=nullable number, #"Anti S1 (T8)"=any, #"Min Normalized OD (T8)"=any, #"Anti N (T8) Qualitative"=any, #"Min Normalized OD (T15)"=any, #"Anti N (T15) Qualitative"=any]}}),
+    #"Aggregated newTable" = Table.AggregateTableColumn(#"Grouped Rows byParticipantID", "newTable", {
+        {"Sample Dte (T0)", List.Max, "Sample Dte (T0)"}, 
+        {"Anti RBD (T0)", List.Max, "Anti RBD (T0)"}, 
+        {"Sample Dte (T2)", List.Max, "Sample Dte (T2)"}, 
+        {"Anti RBD (T2)", List.Max, "Anti RBD (T2)"}, 
+        {"Anti S1 (T7)", List.Max, "Anti S1 (T7)"}, 
+        {"Sample Dte (T7)", List.Max, "Sample Dte (T7)"}, 
+        {"Anti RBD (T7)", List.Max, "Anti RBD (T7)"}, 
+        {"Anti S1 (T4)", List.Max, "Anti S1 (T4)"}, 
+        {"Sample Dte (T4)", List.Max, "Sample Dte (T4)"}, 
+        {"Anti RBD (T4)", List.Max, "Anti RBD (T4)"}, 
+        {"Min Normalized OD (T4)", List.Max, "Min Normalized OD (T4)"}, 
+        {"Anti N (T4) Qualitative", List.Max, "Anti N (T4) Qualitative"}, 
+        {"Min Normalized OD (T2)", List.Max, "Min Normalized OD (T2)"}, 
+        {"Anti N (T2) Qualitative", List.Max, "Anti N (T2) Qualitative"}, 
+        {"Min Normalized OD (T0)", List.Max, "Min Normalized OD (T0)"}, 
+        {"Anti N (T0) Qualitative", List.Max, "Anti N (T0) Qualitative"}, 
+        {"Anti S1 (T0)", List.Max, "Anti S1 (T0)"}, 
+        {"Min Normalized OD (T7)", List.Max, "Min Normalized OD (T7)"}, 
+        {"Anti N (T7) Qualitative", List.Max, "Anti N (T7) Qualitative"}, 
+        {"Anti S1 (T10)", List.Max, "Anti S1 (T10)"}, 
+        {"Sample Dte (T10)", List.Max, "Sample Dte (T10)"}, 
+        {"Anti RBD (T10)", List.Max, "Anti RBD (T10)"}, 
+        {"Min Normalized OD (T10)", List.Max, "Min Normalized OD (T10)"}, 
+        {"Anti N (T10) Qualitative", List.Max, "Anti N (T10) Qualitative"}, 
+        {"Anti S1 (T13)", List.Max, "Anti S1 (T13)"}, 
+        {"Sample Dte (T13)", List.Max, "Sample Dte (T13)"}, 
+        {"Anti RBD (T13)", List.Max, "Anti RBD (T13)"}, 
+        {"Min Normalized OD (T13)", List.Max, "Min Normalized OD (T13)"}, 
+        {"Anti N (T13) Qualitative", List.Max, "Anti N (T13) Qualitative"}, 
+        {"Anti S1 (T15)", List.Max, "Anti S1 (T15)"}, 
+        {"Sample Dte (T15)", List.Max, "Sample Dte (T15)"}, 
+        {"Anti RBD (T15)", List.Max, "Anti RBD (T15)"}, 
+        {"Anti S1 (T2)", List.Max, "Anti S1 (T2)"}, 
+        {"Sample Dte (T8)", List.Max, "Sample Dte (T8)"}, 
+        {"Anti RBD (T8)", List.Max, "Anti RBD (T8)"}, 
+        {"Anti S1 (T8)", List.Max, "Anti S1 (T8)"}, 
+        {"Min Normalized OD (T8)", List.Max, "Min Normalized OD (T8)"}, 
+        {"Anti N (T8) Qualitative", List.Max, "Anti N (T8) Qualitative"}, 
+        {"Min Normalized OD (T15)", List.Max, "Min Normalized OD (T15)"}, 
+        {"Anti N (T15) Qualitative", List.Max, "Anti N (T15) Qualitative"}
+    }),
+    
+//re-detect data type +adjust where necessary
+    #"Changed Type1" = Table.TransformColumnTypes(#"Aggregated newTable",{{"Participant Id", type text}, {"Sample Dte (T0)", type date}, {"Anti RBD (T0)", type number}, {"Sample Dte (T2)", type date}, {"Anti RBD (T2)", type number}, {"Anti S1 (T7)", type number}, {"Sample Dte (T7)", type date}, {"Anti RBD (T7)", type number}, {"Anti S1 (T4)", type number}, {"Sample Dte (T4)", type date}, {"Anti RBD (T4)", type number}, {"Min Normalized OD (T4)", type number}, {"Anti N (T4) Qualitative", type text}, {"Min Normalized OD (T2)", type number}, {"Anti N (T2) Qualitative", type text}, {"Min Normalized OD (T0)", type number}, {"Anti N (T0) Qualitative", type text}, {"Anti S1 (T0)", type number}, {"Min Normalized OD (T7)", type number}, {"Anti N (T7) Qualitative", type text}, {"Anti S1 (T10)", type number}, {"Sample Dte (T10)", type date}, {"Anti RBD (T10)", type number}, {"Min Normalized OD (T10)", type number}, {"Anti N (T10) Qualitative", type text}, {"Anti S1 (T13)", type number}, {"Sample Dte (T13)", type date}, {"Anti RBD (T13)", type number}, {"Min Normalized OD (T13)", type number}, {"Anti N (T13) Qualitative", type text}, {"Anti S1 (T15)", type number}, {"Sample Dte (T15)", type date}, {"Anti RBD (T15)", type number}, {"Anti S1 (T2)", type number}, {"Sample Dte (T8)", type date}, {"Anti RBD (T8)", type number}, {"Anti S1 (T8)", type number}, {"Min Normalized OD (T8)", type number}, {"Anti N (T8) Qualitative", type text}, {"Min Normalized OD (T15)", type number}, {"Anti N (T15) Qualitative", type text}}),
+    
+//add extra info colums
+    #"Added Custom Unit" = Table.AddColumn(#"Changed Type1", "Unit", each "AU/ml"),
+    #"Added Custom TestUsed" = Table.AddColumn(#"Added Custom Unit", "Test Used", each "ELISA (AUMC)"),
+    #"Added Custom StudyId" = Table.AddColumn(#"Added Custom TestUsed", "Study Id", each "TARTB (PBMC samples)")
+
+in
+    #"Added Custom StudyId"

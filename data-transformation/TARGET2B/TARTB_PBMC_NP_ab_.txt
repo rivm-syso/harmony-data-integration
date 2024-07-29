@@ -1,0 +1,21 @@
+let
+    Source = Csv.Document(File.Contents("Z:\QuickHMNY\data_in\TARTB\20231127_T2B_NP_ab.csv"),[Delimiter=",", Columns=3, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"sampleID", type text}, {"nod_min", type number}, {"result", type text}}),
+    
+//--> replaced inconsistent sampleIDs 
+    #"Replaced Value" = Table.ReplaceValue(#"Changed Type","98-","",Replacer.ReplaceText,{"sampleID"}),
+    
+//--> include only rows with IDs matchinng PBMC samples   
+    #"Changed Type1" = Table.TransformColumnTypes(#"Replaced Value",{{"sampleID", Int64.Type}}),
+    #"Replaced Errors" = Table.ReplaceErrorValues(#"Changed Type1", {{"sampleID", null}}),
+    #"Filtered Rows" = Table.SelectRows(#"Replaced Errors", each ([sampleID] <> null)),
+
+    #"Renamed Columns" = Table.RenameColumns(#"Filtered Rows",{{"result", "Anti N (T?) Qualitative"}, {"nod_min", "Min Normalized OD (T?)"}}),
+    
+    #"Added Custom TestUsed" = Table.AddColumn(#"Renamed Columns", "Test Used", each "ELISA (AUMC)"),
+    #"Added Custom AddTestInfo" = Table.AddColumn(#"Added Custom TestUsed", "Additional Test Info", each "coat NP -> NP-biotine -> streptavidine-HRP -> TMB and H2SO4 -> pos./neg."),
+    #"Added Custom StudyId" = Table.AddColumn(#"Added Custom AddTestInfo", "Study Id", each "TARTB")
+
+in
+    #"Added Custom StudyId"

@@ -1,0 +1,52 @@
+let
+
+//=== default steps after Get > CSV > Transform data
+    Source = Csv.Document(File.Contents("Z:\QuickHMNY\data_in\TARTB\Main excel file.csv"),[Delimiter=",", Columns=13, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Unnamed: 0", Int64.Type}, {"REGISTRATION_ID", type text}, {"group", type text}, {"AGE", Int64.Type}, {"SEX", type text}, {"RBD.Bridge.baseline", type text}, {"post_vaccination_NP", type text}, {"post_vaccination_IgG", type number}, {"Titer..AU.ml..baseline", type number}, {"Titer..AU.ml..VD1", type number}, {"Titer..AU.ml..VD2", type number}, {"VD1_date", type text}, {"VD2_date", type text}}),
+    
+//=== cleaning date column (replace invalid dates)
+    #"Replaced Value1 cleanVD1" = Table.ReplaceValue(#"Changed Type","-2121","-2021",Replacer.ReplaceText,{"VD1_date"}),
+    #"Replaced Value2 cleanVD1" = Table.ReplaceValue(#"Replaced Value1 cleanVD1","-2001","-2021",Replacer.ReplaceText,{"VD1_date"}),
+
+//=== DateColumn(s) as text to unified date type (with Locale)
+    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Replaced Value2 cleanVD1", {{"VD1_date", type date}, {"VD2_date", type date}}, "en-GB"),
+
+//=== select & remove columns not needed
+    #"Removed Columns" = Table.RemoveColumns(#"Changed Type with Locale",{"Unnamed: 0", "RBD.Bridge.baseline", "post_vaccination_NP", "post_vaccination_IgG", "Titer..AU.ml..baseline", "Titer..AU.ml..VD1", "Titer..AU.ml..VD2", "VD2_date"}),
+
+//=== rename columns (not those that get removed after added 'Customs')
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{
+        {"REGISTRATION_ID", "Participant Id"}, 
+        {"group", "Subgroup"}, 
+        {"SEX", "Gender"},
+        {"VD1_date", "Vaccination Dte 1"}
+    }),
+
+//=== replace empty values (dates => keep "null", other blanks => "No Record", numbers/decimals => keep "null")
+    #"Replaced Value" = Table.ReplaceValue(#"Renamed Columns","","No Record",Replacer.ReplaceValue,{"Participant Id", "Subgroup", "Gender"}),
+    #"Removed Duplicates" = Table.Distinct(#"Replaced Value", {"Participant Id"}),
+
+//=== format text columns
+    #"Trimmed Text" = Table.TransformColumns(#"Removed Duplicates",{{"Subgroup", Text.Trim, type text}, {"Gender", Text.Trim, type text}}),
+    #"Cleaned Text" = Table.TransformColumns(#"Trimmed Text",{{"Subgroup", Text.Clean, type text}, {"Gender", Text.Clean, type text}}),
+    #"Capitalized Each Word" = Table.TransformColumns(#"Cleaned Text",{{"Subgroup", Text.Proper, type text}, {"Gender", Text.Proper, type text}}),
+
+//=== re-code Gender column (male=1,female=2,other=3)
+    #"Replaced Value3 Gender" = Table.ReplaceValue(#"Capitalized Each Word","Male","1",Replacer.ReplaceText,{"Gender"}),
+    #"Replaced Value4 Gender" = Table.ReplaceValue(#"Replaced Value3 Gender","Female","2",Replacer.ReplaceText,{"Gender"}),
+
+//=== extra columms (e.g., StudyID, calc. Birthyear)
+    #"Added Custom StudyId" = Table.AddColumn(#"Replaced Value4 Gender", "Study Id", each "TARTB"),
+    #"Added Custom Birthyear" = Table.AddColumn(#"Added Custom StudyId", "Birthyear",
+        each if [Vaccination Dte 1] = null and [AGE] <> null then (2021 - [AGE])
+        else Date.Year(Date.AddYears([Vaccination Dte 1], - [AGE]))),
+    
+//=== merge/remove (re-coded) columns
+    #"Removed Columns ReCoded" = Table.RemoveColumns(#"Added Custom Birthyear",{"AGE", "Vaccination Dte 1"}),
+    
+ //=== re-detect all DataTypes > check if correct   
+    #"Changed Type1" = Table.TransformColumnTypes(#"Removed Columns ReCoded",{{"Participant Id", type text}, {"Subgroup", type text}, {"Gender", Int64.Type}, {"Study Id", type text}, {"Birthyear", Int64.Type}})
+
+in
+    #"Changed Type1"

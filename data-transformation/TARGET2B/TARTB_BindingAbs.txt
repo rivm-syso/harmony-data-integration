@@ -1,0 +1,6 @@
+let
+    Source = merge_FP_sampleIDs,
+    #"Appended Query" = Table.Combine({Source, merge_PBMC_sampleIDs}),
+    #"Replaced Errors" = Table.ReplaceErrorValues(#"Appended Query", {{"Sample Dte (T7)", null}})
+in
+    #"Replaced Errors"

@@ -1,0 +1,54 @@
+let
+
+//===    
+    Source = Csv.Document(File.Contents("Z:\QuickHMNY\data_in\TARTB\T2B_immunity_against_SARS-CoV-2__COVID_re-_infection_export_20231013.csv"),[Delimiter=",", Columns=7, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}, {"Column2", type text}, {"Column3", type text}, {"Column4", type text}, {"Column5", type text}, {"Column6", type text}, {"Column7", type text}}),
+    #"Promoted Headers" = Table.PromoteHeaders(#"Changed Type", [PromoteAllScalars=true]),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"Participant Id", type text}, {"Participant Status", type text}, {"Repeating Data Creation Date", type text}, {"Repeating data Name Custom", type text}, {"Repeating data Parent", type text}, {"RI_PCR_date", type text}, {"RI_selftest_date", type text}}),
+
+//===   
+    #"Removed Other Columns" = Table.SelectColumns(#"Changed Type1",{"Participant Id", "RI_PCR_date", "RI_selftest_date"}),
+    
+ //===   
+    #"Unpivoted Other Columns" = Table.UnpivotOtherColumns(#"Removed Other Columns", {"Participant Id"}, "Attribute", "Value"),
+    
+ //===   
+    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Unpivoted Other Columns", {{"Value", type date}}, "en-GB"),
+    
+//===    
+    #"Sorted Rows" = Table.Sort(#"Changed Type with Locale",{{"Participant Id", Order.Ascending}, {"Value", Order.Ascending}}),
+
+//===
+    #"Removed Duplicates" = Table.Distinct(#"Sorted Rows"),
+    #"Removed Duplicates1" = Table.Distinct(#"Removed Duplicates", {"Participant Id", "Value"}),
+    #"Filtered Rows" = Table.SelectRows(#"Removed Duplicates1", each ([Value] <> null)),
+
+//===
+    #"Grouped Rows" = Table.Group(#"Filtered Rows", {"Participant Id"}, {{"count", each _, type table [Participant Id=nullable text, Attribute=text, Value=nullable date]}}),
+    #"Added Custom" = Table.AddColumn(#"Grouped Rows", "Custom", each Table.AddIndexColumn([count],"index",1)),
+    #"Expanded Custom" = Table.ExpandTableColumn(#"Added Custom", "Custom", {"Attribute", "Value", "index"}, {"Custom.Attribute", "Custom.Value", "Custom.index"}),
+    #"Removed Columns" = Table.RemoveColumns(#"Expanded Custom",{"count"}),
+
+//===
+    #"Pivoted Column" = Table.Pivot(Table.TransformColumnTypes(#"Removed Columns", {{"Custom.index", type text}}, "en-US"), List.Distinct(Table.TransformColumnTypes(#"Removed Columns", {{"Custom.index", type text}}, "en-US")[Custom.index]), "Custom.index", "Custom.Value"),
+
+//===
+    #"Renamed Columns" = Table.RenameColumns(#"Pivoted Column",{
+        {"Custom.Attribute", "Covid19 Test"}, 
+        {"1", "Infection Dte 1"}, 
+        {"2", "Infection Dte 2"}, 
+        {"3", "Infection Dte 3"}
+    }),
+
+//===
+    #"Extracted Text Between Delimiters" = Table.TransformColumns(#"Renamed Columns", {{"Covid19 Test", each Text.BetweenDelimiters(_, "_", "_"), type text}}),
+    #"Replaced Value" = Table.ReplaceValue(#"Extracted Text Between Delimiters","selftest","Selftest",Replacer.ReplaceText,{"Covid19 Test"}),
+    
+//===    
+    #"Changed Type2" = Table.TransformColumnTypes(#"Replaced Value",{{"Participant Id", type text}, {"Covid19 Test", type text}, {"Infection Dte 1", type date}, {"Infection Dte 2", type date}, {"Infection Dte 3", type date}}),
+
+//===
+#"Added Custom1" = Table.AddColumn(#"Changed Type2", "Study Id", each "TARTB")
+
+in
+    #"Added Custom1"

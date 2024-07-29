@@ -1,0 +1,26 @@
+let
+    Source = Csv.Document(File.Contents("Z:\QuickHMNY\data_in\TARTB\MEMIC_Overview_Tubenumbers_20231013_11_34.csv"),[Delimiter=",", Columns=50, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"SUBJECT_ID", Int64.Type}, {"REGISTRATION_ID", type text}, {"BL Tube I Number", type text}, {"BL Tube I send", type text}, {"BL Tube I progress completed", type text}, {"BL Tube II Number", type text}, {"BL Tube II send", type text}, {"BL Tube II progress completed", type text}, {"VD1 Tube I Number", type text}, {"VD1 Tube I send", type text}, {"VD1 Tube I progress completed", type text}, {"VD1 Tube II Number", type text}, {"VD1 Tube II send", type text}, {"VD1 Tube II progress completed", type text}, {"FU1 Tube I Number", type text}, {"FU1 Tube I send", type text}, {"FU1 Tube I progress completed", type text}, {"FU1 Tube II Number", type text}, {"FU1 Tube II send", type text}, {"FU1 Tube II progress completed", type text}, {"PreVD3 Tube Number", type text}, {"PreVD3 Tube send", type text}, {"PreVD3 Tube progress completed", type text}, {"VD3+7 Tube Number", type text}, {"VD3+7 Tube send", type text}, {"VD3+7 Tube progress completed", type text}, {"VD3 Tube I Number", type text}, {"VD3 Tube I send", type text}, {"VD3 Tube I progress completed", type text}, {"VD3 Tube II Number", type text}, {"VD3 Tube II send", type text}, {"VD3 Tube II progress completed", type text}, {"PreBooster1 Tube Number", type text}, {"PreBooster1 Tube send", type text}, {"PreBooster1 Tube progress completed", type text}, {"Booster1 Tube I Number", type text}, {"Booster1 Tube I send", type text}, {"Booster1 Tube I progress completed", type text}, {"Booster1 Tube II Number", type text}, {"Booster1 Tube II send", type text}, {"Booster1 Tube II progress completed", type text}, {"Extra Tube Number", type text}, {"Extra Tube send", type text}, {"Extra Tube progress completed", type text}, {"Extension BL Tube Number", type text}, {"Extension BL Tube send", type text}, {"Extension BL Tube progress completed", type text}, {"Extension FU Tube Number", type text}, {"Extension FU Tube send", type text}, {"Extension FU Tube progress completed", type text}}),
+        
+    #"Removed Other Columns" = Table.SelectColumns(#"Changed Type",{"REGISTRATION_ID", "BL Tube I send", "BL Tube I progress completed", "BL Tube II send", "BL Tube II progress completed", "VD1 Tube I send", "VD1 Tube I progress completed", "VD1 Tube II send", "VD1 Tube II progress completed", "FU1 Tube I send", "FU1 Tube I progress completed", "FU1 Tube II send", "FU1 Tube II progress completed", "PreVD3 Tube send", "PreVD3 Tube progress completed", "VD3+7 Tube send", "VD3+7 Tube progress completed", "VD3 Tube I send", "VD3 Tube I progress completed", "VD3 Tube II send", "VD3 Tube II progress completed", "PreBooster1 Tube send", "PreBooster1 Tube progress completed", "Booster1 Tube I send", "Booster1 Tube I progress completed", "Booster1 Tube II send", "Booster1 Tube II progress completed"}),
+    
+    #"Unpivoted Other Columns" = Table.UnpivotOtherColumns(#"Removed Other Columns", {"REGISTRATION_ID"}, "Attribute", "Value"),
+    #"Extracted Text Before Delimiter1" = Table.TransformColumns(#"Unpivoted Other Columns", {{"Value", each Text.BeforeDelimiter(_, " "), type text}}),
+    #"Filtered Rows1" = Table.SelectRows(#"Extracted Text Before Delimiter1", each ([Value] <> "")),
+    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Filtered Rows1", {{"Value", type date}}, "en-GB"),
+
+#"Renamed Columns" = Table.RenameColumns(#"Changed Type with Locale",{{"REGISTRATION_ID", "Participant Id"}, {"Attribute", "Timepoint ??"}, {"Value", "Tube Dte"}}),
+
+//--> extract T2B-specific TimepointNames
+    #"Extracted Text Before Delimiter" = Table.TransformColumns(#"Renamed Columns", {{"Timepoint ??", each Text.BeforeDelimiter(_, " Tube"), type text}}),
+    #"Sorted Rows" = Table.Sort(#"Extracted Text Before Delimiter",{{"Participant Id", Order.Ascending}}),
+    #"--Merged Queries" = Table.NestedJoin(#"Sorted Rows", {"Participant Id"}, #"vd1+vd3+booster1", {"Participant Id"}, "vd1+vd3+booster1", JoinKind.LeftOuter),
+    #"--Expanded vd1+vd3+booster1" = Table.ExpandTableColumn(#"--Merged Queries", "vd1+vd3+booster1", {"Vaccination Dte 1", "Vaccination Dte 3", "Vaccination Dte 4"}, {"Vaccination Dte 1", "Vaccination Dte 3", "Vaccination Dte 4"}),
+    #"Added Custom" = Table.AddColumn(#"--Expanded vd1+vd3+booster1", "Tube after VD1", each [Tube Dte] - [Vaccination Dte 1]),
+    #"Added Custom1" = Table.AddColumn(#"Added Custom", "Tube after VD3", each [Tube Dte] - [Vaccination Dte 3]),
+    #"Added Custom2" = Table.AddColumn(#"Added Custom1", "Tube after Booster1", each [Tube Dte] - [Vaccination Dte 4]),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Added Custom2",{{"Tube after VD1", Int64.Type}, {"Tube after VD3", Int64.Type}, {"Tube after Booster1", Int64.Type}}),
+    #"-->> Filtered Rows" = Table.SelectRows(#"Changed Type1", each ([#"Timepoint ??"] = "Booster1"))
+in
+    #"-->> Filtered Rows"

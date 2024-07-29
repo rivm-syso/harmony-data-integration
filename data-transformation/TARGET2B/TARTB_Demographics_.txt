@@ -1,0 +1,31 @@
+let
+    
+//=== "merge as new query" Main excel.. with MEMIC_..active_subjects_ via Participatn Id    
+    Source = Table.NestedJoin(#"Main excel file", {"Participant Id"}, #"MEMIC_Overview_ active subjects_20231013_12_03", {"Participant Id"}, "MEMIC_Overview_ active subjects_20231013_12_03", JoinKind.FullOuter),
+    #"Expanded MEMIC_Overview_ active subjects_20231013_12_03" = Table.ExpandTableColumn(Source, "MEMIC_Overview_ active subjects_20231013_12_03", {"Participant Id", "LOF date"}, {"Participant Id.1", "LOF date"}),
+    
+//=== nested merge > add other dropout dates from EOS_dates via Participant Id
+    #"Merged Queries" = Table.NestedJoin(#"Expanded MEMIC_Overview_ active subjects_20231013_12_03", {"Participant Id"}, #"T2B_immunity_against_SARS-CoV-2__export_20231013", {"Participant Id"}, "T2B_immunity_against_SARS-CoV-2__export_20231013", JoinKind.FullOuter),
+    #"Expanded T2B_immunity_against_SARS-CoV-2__export_20231013" = Table.ExpandTableColumn(#"Merged Queries", "T2B_immunity_against_SARS-CoV-2__export_20231013", {"Participant Id", "EOS_dateofdeath", "EOS_datelastcontact", "EOS_date_consent_withdrawn"}, {"Participant Id.2", "EOS_dateofdeath", "EOS_datelastcontact", "EOS_date_consent_withdrawn"}),
+    
+//=== merge IDs & Date columns, then extract 1x string per row (if not empty)
+    #"Merged Columns ParticipantIDs" = Table.CombineColumns(#"Expanded T2B_immunity_against_SARS-CoV-2__export_20231013",{"Participant Id", "Participant Id.1", "Participant Id.2"},Combiner.CombineTextByDelimiter(";", QuoteStyle.None),"Merged"),
+    #"Merged Columns DropoutDates" = Table.CombineColumns(Table.TransformColumnTypes(#"Merged Columns ParticipantIDs", {{"LOF date", type text}, {"EOS_dateofdeath", type text}, {"EOS_datelastcontact", type text}, {"EOS_date_consent_withdrawn", type text}}, "en-US"),{"LOF date", "EOS_dateofdeath", "EOS_datelastcontact", "EOS_date_consent_withdrawn"},Combiner.CombineTextByDelimiter(";", QuoteStyle.None),"Merged.1"),
+    #"Extracted Text Before Delimiter" = Table.TransformColumns(#"Merged Columns DropoutDates", {{"Merged", each Text.BeforeDelimiter(_, ";"), type text}, {"Merged.1", each Text.BeforeDelimiter(_, ";"), type text}}),
+    
+//=== rename merged columns 
+    #"Renamed Columns" = Table.RenameColumns(#"Extracted Text Before Delimiter",{
+        {"Merged", "Participant Id"}, 
+        {"Merged.1", "Dropout Dte"}
+    }),
+    
+//=== trim/clean strings in Participant Id, then filter out empty rows
+    #"Trimmed Text ParticipantId" = Table.TransformColumns(#"Renamed Columns",{{"Participant Id", Text.Trim, type text}}),
+    #"Cleaned Text ParticipantId" = Table.TransformColumns(#"Trimmed Text ParticipantId",{{"Participant Id", Text.Clean, type text}}),
+    #"Filtered Rows ParticipantId" = Table.SelectRows(#"Cleaned Text ParticipantId", each [Participant Id] <> null and [Participant Id] <> ""),
+    
+//=== change Dropout back to DateType    
+    #"Changed Type" = Table.TransformColumnTypes(#"Filtered Rows ParticipantId",{{"Dropout Dte", type date}})
+
+in
+    #"Changed Type"
