@@ -1,0 +1,56 @@
+let
+    Source = COBRA_mixed_data_1,
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"participant_id", "T2_rivmdate", "T4_rivmdate", "T6_rivmdate", "WT_T2", "WT_T4", "WT_T6", "OBA1_T2", "OBA1_T4", "OBA1_T6", "OBA4_T2", "OBA4_T4", "OBA4_T6", "Delta_T2", "Delta_T4"}),
+    #"Merged Queries" = Table.NestedJoin(#"Removed Other Columns", {"participant_id"}, COBRAKAI_Vaccinations, {"Participant Id"}, "COBRAKAI_Vaccinations", JoinKind.LeftOuter),
+    #"Expanded COBRAKAI_Vaccinations" = Table.ExpandTableColumn(#"Merged Queries", "COBRAKAI_Vaccinations", {"Vaccination Dte 1", "Vaccination Dte 2", "Vaccination Dte 3", "Vaccination Dte 4", "Vaccination Dte 5", "Vaccination Dte 6"}, {"Vaccination Dte 1", "Vaccination Dte 2", "Vaccination Dte 3", "Vaccination Dte 4", "Vaccination Dte 5", "Vaccination Dte 6"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Expanded COBRAKAI_Vaccinations",{{"T2_rivmdate", "Sample Dte T4"}, {"WT_T2", "ID50 Wildtype (T4)"}, {"OBA1_T2", "ID50 Omicron BA.1 (T4)"}, {"OBA4_T2", "ID50 Omicron BA.4 (T4)"}, {"Delta_T2", "ID50 Delta (T4)"}, {"participant_id", "Participant Id"}}),
+
+    //--splitsing T4_rivmdate in T5 en T10
+    #"Added Sample Dte T5" = Table.AddColumn(#"Renamed Columns", "Sample Dte T5", each if [Vaccination Dte 3] = null then [T4_rivmdate] else null),    
+    //Sample Dte T10 if vacc 3 is not empty, then "T4_rivmdate"
+    #"Added Sample Dte T10" = Table.AddColumn(#"Added Sample Dte T5", "Sample Dte T10", each if [Vaccination Dte 3] <> null then [T4_rivmdate] else null),
+
+    //--T6_rivmdate (Cobra Kai's T6) splitsing in T6, T11, en T15--
+    //Sample Dte T6 if vacc 3 and vacc 4 empty, then "T6_rivmdate"
+    #"Added Sample Dte T6" = Table.AddColumn(#"Added Sample Dte T10", "Sample Dte T6", each if [Vaccination Dte 3] = null and [Vaccination Dte 4] = null then [T6_rivmdate] else null),
+    #"Added Sample Dte T11" = Table.AddColumn(#"Added Sample Dte T6", "Sample Dte T11", each if [Vaccination Dte 3] <> null and [Vaccination Dte 4] = null then [T6_rivmdate] else null),
+    //Sample Dte T10 if vacc 4 is not empty, then "T4_rivmdate"
+    #"Added Sample Dte T15" = Table.AddColumn(#"Added Sample Dte T11", "Sample Dte T15", each if [Vaccination Dte 4] <> null then [T6_rivmdate] else null),
+
+    //WT_T4
+    #"Added ID50 Wildtype (T5)" = Table.AddColumn(#"Added Sample Dte T15", "ID50 Wildtype (T5)", each if [Sample Dte T5] <> null then [WT_T4] else null),
+    #"Added ID50 Wildtype (T10)" = Table.AddColumn(#"Added ID50 Wildtype (T5)", "ID50 Wildtype (T10)", each if [Sample Dte T10] <> null then [WT_T4] else null),
+    
+    //WT_T6
+    #"Added ID50 Wildtype (T6)" = Table.AddColumn(#"Added ID50 Wildtype (T10)", "ID50 Wildtype (T6)", each if [Sample Dte T6] <> null then [WT_T6] else null),
+    #"Added ID50 Wildtype (T11)" = Table.AddColumn(#"Added ID50 Wildtype (T6)", "ID50 Wildtype (T11)", each if [Sample Dte T11] <> null then [WT_T6] else null),
+    #"Added ID50 Wildtype (T15)" = Table.AddColumn(#"Added ID50 Wildtype (T11)", "ID50 Wildtype (T15)", each if [Sample Dte T15] <> null then [WT_T6] else null),
+
+    //OBA1_T4
+    #"Added ID50 Omicron BA.1 (T5)" = Table.AddColumn(#"Added ID50 Wildtype (T15)", "ID50 Omicron BA.1 (T5)", each if [Sample Dte T5] <> null then [OBA1_T4] else null),
+    #"Added ID50 Omicron BA.1 (T10)" = Table.AddColumn(#"Added ID50 Omicron BA.1 (T5)", "ID50 Omicron BA.1 (T10)", each if [Sample Dte T10] <> null then [OBA1_T4] else null),
+    
+    //OBA1_T6
+    #"Added ID50 Omicron BA.1 (T6)" = Table.AddColumn(#"Added ID50 Omicron BA.1 (T10)", "ID50 Omicron BA.1 (T6)", each if [Sample Dte T6] <> null then [OBA1_T6] else null),
+    #"Added ID50 Omicron BA.1 (T11)" = Table.AddColumn(#"Added ID50 Omicron BA.1 (T6)", "ID50 Omicron BA.1 (T11)", each if [Sample Dte T11] <> null then [OBA1_T6] else null),
+    #"Added ID50 Omicron BA.1 (T15)" = Table.AddColumn(#"Added ID50 Omicron BA.1 (T11)", "ID50 Omicron BA.1 (T15)", each if [Sample Dte T15] <> null then [OBA1_T6] else null),
+
+    //OBA4_T4
+    #"Added ID50 Omicron BA.4 (T5)" = Table.AddColumn(#"Added ID50 Omicron BA.1 (T15)", "ID50 Omicron BA.4 (T5)", each if [Sample Dte T5] <> null then [OBA4_T4] else null),
+    #"Added ID50 Omicron BA.4 (T10)" = Table.AddColumn(#"Added ID50 Omicron BA.4 (T5)", "ID50 Omicron BA.4 (T10)", each if [Sample Dte T10] <> null then [OBA4_T4] else null),
+    
+    //OBA4_T6
+    #"Added ID50 Omicron BA.4 (T6)" = Table.AddColumn(#"Added ID50 Omicron BA.4 (T10)", "ID50 Omicron BA.4 (T6)", each if [Sample Dte T6] <> null then [OBA4_T6] else null),
+    #"Added ID50 Omicron BA.4 (T11)" = Table.AddColumn(#"Added ID50 Omicron BA.4 (T6)", "ID50 Omicron BA.4 (T11)", each if [Sample Dte T11] <> null then [OBA4_T6] else null),
+    #"Added ID50 Omicron BA.4 (T15)" = Table.AddColumn(#"Added ID50 Omicron BA.4 (T11)", "ID50 Omicron BA.4 (T15)", each if [Sample Dte T15] <> null then [OBA4_T6] else null),
+
+    //Delta_T4
+    #"Added ID50 Delta (T5)" = Table.AddColumn(#"Added ID50 Omicron BA.4 (T15)", "ID50 Delta (T5)", each if [Sample Dte T5] <> null then [Delta_T4] else null),
+    #"Added ID50 Delta (T10)" = Table.AddColumn(#"Added ID50 Delta (T5)", "ID50 Delta (T10)", each if [Sample Dte T10] <> null then [Delta_T4] else null),
+    #"Removed Other Columns1" = Table.SelectColumns(#"Added ID50 Delta (T10)",{"Participant Id", "Sample Dte T4", "ID50 Wildtype (T4)", "ID50 Omicron BA.1 (T4)", "ID50 Omicron BA.4 (T4)", "ID50 Delta (T4)", "Sample Dte T5", "Sample Dte T10", "Sample Dte T6", "Sample Dte T11", "Sample Dte T15", "ID50 Wildtype (T5)", "ID50 Wildtype (T10)", "ID50 Wildtype (T6)", "ID50 Wildtype (T11)", "ID50 Wildtype (T15)", "ID50 Omicron BA.1 (T5)", "ID50 Omicron BA.1 (T10)", "ID50 Omicron BA.1 (T6)", "ID50 Omicron BA.1 (T11)", "ID50 Omicron BA.1 (T15)", "ID50 Omicron BA.4 (T5)", "ID50 Omicron BA.4 (T10)", "ID50 Omicron BA.4 (T6)", "ID50 Omicron BA.4 (T11)", "ID50 Omicron BA.4 (T15)", "ID50 Delta (T5)", "ID50 Delta (T10)"}),
+    #"Changed Type" = Table.TransformColumnTypes(#"Removed Other Columns1",{{"Sample Dte T5", type number}, {"ID50 Delta (T4)", type number}, {"ID50 Omicron BA.4 (T4)", type number}, {"ID50 Omicron BA.1 (T4)", type number}, {"ID50 Wildtype (T4)", type number}, {"Sample Dte T10", type date}, {"Sample Dte T6", type date}, {"Sample Dte T11", type date}, {"Sample Dte T15", type date}, {"ID50 Wildtype (T5)", type number}, {"ID50 Wildtype (T10)", type number}, {"ID50 Wildtype (T6)", type number}, {"ID50 Wildtype (T11)", type number}, {"ID50 Wildtype (T15)", type number}, {"ID50 Omicron BA.1 (T5)", type number}, {"ID50 Omicron BA.1 (T10)", type number}, {"ID50 Omicron BA.1 (T6)", type number}, {"ID50 Omicron BA.1 (T11)", type number}, {"ID50 Omicron BA.1 (T15)", type number}, {"ID50 Omicron BA.4 (T5)", type number}, {"ID50 Omicron BA.4 (T10)", type number}, {"ID50 Omicron BA.4 (T6)", type number}, {"ID50 Omicron BA.4 (T11)", type number}, {"ID50 Omicron BA.4 (T15)", type number}, {"ID50 Delta (T5)", type number}, {"ID50 Delta (T10)", type number}}),
+    #"Added Study Id" = Table.AddColumn(#"Changed Type", "Study Id", each "COBRA KAI"),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Added Study Id",{{"Study Id", type text}, {"Sample Dte T5", type date}}),
+    #"Renamed Columns1" = Table.RenameColumns(#"Changed Type1",{{"Sample Dte T4", "Sample Dte (T4)"}, {"Sample Dte T5", "Sample Dte (T5)"}, {"Sample Dte T10", "Sample Dte (T10)"}, {"Sample Dte T6", "Sample Dte (T6)"}, {"Sample Dte T11", "Sample Dte (T11)"}, {"Sample Dte T15", "Sample Dte (T15)"}})
+in
+    #"Renamed Columns1"

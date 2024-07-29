@@ -1,0 +1,12 @@
+let
+    Source = COBRA_mixed_data_1,
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"participant_id", "bl_cohort", "bl_sex", "reg_brthyy", "eosdat"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Other Columns",{{"participant_id", "Participant Id"}, {"bl_cohort", "Subgroup"}, {"bl_sex", "Gender"}, {"reg_brthyy", "Birthyear"}, {"eosdat", "Dropout Dte"}}),
+    #"Changed Type" = Table.TransformColumnTypes(#"Renamed Columns",{{"Dropout Dte", type date}}),
+    #"Added Custom" = Table.AddColumn(#"Changed Type", "Study Id", each "COBRA KAI"),
+    #"Added Conditional Column" = Table.AddColumn(#"Added Custom", "Subgroup_string", each if [Subgroup] = 1 then "B-cell non-Hodgkin lymphoma during R-chemo" else if [Subgroup] = 2 then "B-cell non-Hodgkin lymphoma less than 9 months after R-chemo" else if [Subgroup] = 3 then "Multiple myeloma and 1st line remission induction" else if [Subgroup] = 4 then "Multiple myeloma and daratumaumab containing therapy with or without lenalidomide" else if [Subgroup] = 5 then "Multiple myeloma and therapy containing immunomodulatory drugs" else if [Subgroup] = 6 then "Chronic lymphocytic leukemia and ibrutinib containing therapy" else if [Subgroup] = 7 then "Chronic lymphocytic leukemia and wait & see" else if [Subgroup] = 8 then "Sickle cell disease or thalassemia and hydrea containing therapy" else if [Subgroup] = 9 then "Chronic myeloid leukemia with therapies containing tyrosine kinase inhibitors" else if [Subgroup] = 10 then "AML or MDS and hypomethylating therapy" else if [Subgroup] = 11 then "AML or MDS and AML consolidation course" else if [Subgroup] = 12 then "Myeloproliferative disease and ruxolitinib" else if [Subgroup] = 13 then "Autologous SCT with BEAM < 9 months" else if [Subgroup] = 14 then "Autologous SCT with high dose melphalan (HDM)" else if [Subgroup] = 15 then "Allogeneic SCT < 6 months" else if [Subgroup] = 16 then "Allogeneic chronic graft versus host disease (cGvHD)" else if [Subgroup] = 17 then "Car T-cell therapy (CD19- directed CAR T)" else null),
+    #"Removed Columns" = Table.RemoveColumns(#"Added Conditional Column",{"Subgroup"}),
+    #"Renamed Columns1" = Table.RenameColumns(#"Removed Columns",{{"Subgroup_string", "Subgroup"}}),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Renamed Columns1",{{"Subgroup", type text}})
+in
+    #"Changed Type1"

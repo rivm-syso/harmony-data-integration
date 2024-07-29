@@ -1,0 +1,7 @@
+let
+    Source = COBRA_mixed_data_1,
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"participant_id", "sarsdiagdat.1", "sarsdiagdat.2"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Other Columns",{{"participant_id", "Participant Id"}, {"sarsdiagdat.1", "Infection Dte 1"}, {"sarsdiagdat.2", "Infection Dte 2"}}),
+    #"Added Custom" = Table.AddColumn(#"Renamed Columns", "Study Id", each "COBRA KAI")
+in
+    #"Added Custom"

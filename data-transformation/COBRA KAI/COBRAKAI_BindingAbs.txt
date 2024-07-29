@@ -1,0 +1,83 @@
+let
+    Source = COBRA_mixed_data_1,
+    #"Removed Other Columns" = Table.SelectColumns(Source,{"participant_id", "T0_rivmdate", "T0_rivms1_bauml", "T0_rivmrbd_auml", "T0_rivmn_auml", "T1_rivmdate", "T1_rivms1_bauml", "T1_rivmrbd_auml", "T1_rivmn_auml", "T2_rivmdate", "T2_rivms1_bauml", "T2_rivmrbd_auml", "T2_rivmn_auml", "T3_rivmdate", "T3_rivms1_bauml", "T3_rivmrbd_auml", "T3_rivmn_auml", "T4_rivmdate", "T4_rivms1_bauml", "T4_rivmrbd_auml", "T4_rivmn_auml", "T5_rivmdate", "T5_rivms1_bauml", "T5_rivmrbd_auml", "T5_rivmn_auml", "T6_rivmdate", "T6_rivms1_bauml", "T6_rivmrbd_auml", "T6_rivmn_auml", "T7_rivmdate", "T7_rivms1_bauml", "T7_rivmrbd_auml", "T7_rivmn_auml", "T8_rivmdate", "T8_rivms1_bauml", "T8_rivmrbd_auml", "T8_rivmn_auml", "T9_rivmdate", "T9_rivms1_bauml", "T9_rivmrbd_auml", "T9_rivmn_auml"}),
+    #"Merged Queries" = Table.NestedJoin(#"Removed Other Columns", {"participant_id"}, COBRAKAI_Vaccinations, {"Participant Id"}, "COBRAKAI_Vaccinations", JoinKind.LeftOuter),
+    #"Expanded COBRAKAI_Vaccinations" = Table.ExpandTableColumn(#"Merged Queries", "COBRAKAI_Vaccinations", {"Vaccination Dte 1", "Vaccination Dte 2", "Vaccination Dte 3", "Vaccination Dte 4", "Vaccination Dte 5", "Vaccination Dte 6"}, {"Vaccination Dte 1", "Vaccination Dte 2", "Vaccination Dte 3", "Vaccination Dte 4", "Vaccination Dte 5", "Vaccination Dte 6"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Expanded COBRAKAI_Vaccinations",{{"participant_id", "Participant Id"}, {"T0_rivmdate", "Sample Dte T0"}, {"T0_rivms1_bauml", "Anti S1 (T0)"}, {"T0_rivmrbd_auml", "Anti RBD (T0)"}, {"T0_rivmn_auml", "Anti N (T0)"}, {"T1_rivmdate", "Sample Dte T2"}, {"T1_rivms1_bauml", "Anti S1 (T2)"}, {"T1_rivmrbd_auml", "Anti RBD (T2)"}, {"T1_rivmn_auml", "Anti N (T2)"}, {"T2_rivmdate", "Sample Dte T4"}, {"T2_rivms1_bauml", "Anti S1 (T4)"}, {"T2_rivmrbd_auml", "Anti RBD (T4)"}, {"T2_rivmn_auml", "Anti N (T4)"}, {"T3_rivmdate", "Sample Dte T7"}, {"T3_rivms1_bauml", "Anti S1 (T7)"}, {"T3_rivmrbd_auml", "Anti RBD (T7)"}, {"T3_rivmn_auml", "Anti N (T7)"}}),
+    
+    
+    //--T4_rivmdate (Cobra Kai's T4) splitsing in T5 en T10--
+    //Sample Dte T5 if vacc 3 is empty, then "T4_rivmdate"
+    #"Added Sample Dte T5_1" = Table.AddColumn(#"Renamed Columns", "Sample Dte T5_1", each if [Vaccination Dte 3] = null then [T4_rivmdate] else null),
+    
+    //Sample Dte T10 if vacc 3 is not empty, then "T4_rivmdate"
+    #"Added Sample Dte T10" = Table.AddColumn(#"Added Sample Dte T5_1", "Sample Dte T10", each if [Vaccination Dte 3] <> null then [T4_rivmdate] else null),
+    //--T5_rivmdate splitsing in T5_2, T11 en T13--
+    #"Added Sample Dte T5_2" = Table.AddColumn(#"Added Sample Dte T10", "Sample Dte T5_2", each if [Vaccination Dte 2] <> null and [Vaccination Dte 3] = null and [Vaccination Dte 4] = null then [T5_rivmdate] else null),
+    #"Added Sample Dte T11_1" = Table.AddColumn(#"Added Sample Dte T5_2", "Sample Dte T11_1", each if [Vaccination Dte 2] <> null and [Vaccination Dte 3] <> null and [Vaccination Dte 4] = null then [T5_rivmdate] else null),
+    #"Added Sample Dte T13_1" = Table.AddColumn(#"Added Sample Dte T11_1", "Sample Dte T13_1", each if [Vaccination Dte 2] <> null and [Vaccination Dte 4] <> null then [T5_rivmdate] else null),
+    
+    
+    //--T6_rivmdate (Cobra Kai's T6) splitsing in T6, T11, en T15--
+    //Sample Dte T6 if vacc 3 and vacc 4 empty, then "T6_rivmdate"
+    #"Added Sample Dte T6" = Table.AddColumn(#"Added Sample Dte T13_1", "Sample Dte T6", each if [Vaccination Dte 3] = null and [Vaccination Dte 4] = null then [T6_rivmdate] else null),
+    #"Added Sample Dte T11_2" = Table.AddColumn(#"Added Sample Dte T6", "Sample Dte T11_2", each if [Vaccination Dte 3] <> null and [Vaccination Dte 4] = null then [T6_rivmdate] else null),
+    //Sample Dte T10 if vacc 4 is not empty, then "T4_rivmdate"
+    #"Added Sample Dte T15_1" = Table.AddColumn(#"Added Sample Dte T11_2", "Sample Dte T15_1", each if [Vaccination Dte 4] <> null then [T6_rivmdate] else null),
+
+  //--T7_rivmdate (Cobra Kai's T7) splitsing in T12, T13, en T18--
+    #"Added Sample Dte T12_1" = Table.AddColumn(#"Added Sample Dte T15_1", "Sample Dte T12_1", each if [Vaccination Dte 3] <> null and [Vaccination Dte 4] = null then [T7_rivmdate] else null),
+    #"Added Sample Dte T13_2" = Table.AddColumn(#"Added Sample Dte T12_1", "Sample Dte T13_2", each if [Vaccination Dte 4] <> null and [Vaccination Dte 5] = null then [T7_rivmdate] else null),
+    #"Added Sample Dte T18" = Table.AddColumn(#"Added Sample Dte T13_2", "Sample Dte T18", each if [Vaccination Dte 5] <> null then [T7_rivmdate] else null),
+
+    //--T8_rivmdate (Cobra Kai's T8) splitsing in T12 en T20--
+    #"Added Sample Dte T12_2" = Table.AddColumn(#"Added Sample Dte T18", "Sample Dte T12_2", each if [Vaccination Dte 3] <> null and [Vaccination Dte 4] = null then [T8_rivmdate] else null),
+    #"Added Sample Dte T15_2" = Table.AddColumn(#"Added Sample Dte T12_2", "Sample Dte T15_2", each if [Vaccination Dte 4] <> null then [T8_rivmdate] else null),
+    
+    //--joining T's--
+    #"Added Sample Dte T5" = Table.AddColumn(#"Added Sample Dte T15_2", "Sample Dte T5", each if [Sample Dte T5_1] <> null then [Sample Dte T5_1] else [Sample Dte T5_2]),
+    #"Added Sample Dte T11" = Table.AddColumn(#"Added Sample Dte T5", "Sample Dte T11", each if [Sample Dte T11_1] <> null then [Sample Dte T11_1] else [Sample Dte T11_2]),
+    #"Added Sample Dte T12" = Table.AddColumn(#"Added Sample Dte T11", "Sample Dte T12", each if [Sample Dte T12_1] <> null then [Sample Dte T12_1] else [Sample Dte T12_2]),
+    #"Added Sample Dte T13" = Table.AddColumn(#"Added Sample Dte T12", "Sample Dte T13", each if [Sample Dte T13_1] <> null then [Sample Dte T13_1] else [Sample Dte T13_2]),
+    #"Added Sample Dte T15" = Table.AddColumn(#"Added Sample Dte T13", "Sample Dte T15", each if [Sample Dte T15_1] <> null then [Sample Dte T15_1] else [Sample Dte T15_2]),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Added Sample Dte T15",{{"Sample Dte T15", type date}, {"Sample Dte T13", type date}, {"Sample Dte T12", type date}, {"Sample Dte T11", type date}, {"Sample Dte T5", type date}, {"Sample Dte T15_2", type date}, {"Sample Dte T12_2", type date}, {"Sample Dte T18", type date}, {"Sample Dte T13_2", type date}, {"Sample Dte T12_1", type date}, {"Sample Dte T15_1", type date}, {"Sample Dte T11_2", type date}, {"Sample Dte T6", type date}, {"Sample Dte T13_1", type date}, {"Sample Dte T11_1", type date}, {"Sample Dte T5_2", type date}, {"Sample Dte T10", type date}, {"Sample Dte T5_1", type date}}),
+
+    //-- adding labdata --
+    #"Added Anti S1 (T5)" = Table.AddColumn(#"Changed Type1", "Anti S1 (T5)", each if [T4_rivmdate] = [Sample Dte T5] then [T4_rivms1_bauml] else if [T5_rivmdate] = [Sample Dte T5] then [T5_rivms1_bauml] else null),
+    #"Added Anti N (T5)" = Table.AddColumn(#"Added Anti S1 (T5)", "Anti N (T5)", each if [T4_rivmdate] = [Sample Dte T5] then [T4_rivmn_auml] else if [T5_rivmdate] = [Sample Dte T5] then [T5_rivmn_auml] else null),
+    #"Added Anti RBD (T5)" = Table.AddColumn(#"Added Anti N (T5)", "Anti RBD (T5)", each if [T4_rivmdate] = [Sample Dte T5] then [T4_rivmrbd_auml] else if [T5_rivmdate] = [Sample Dte T5] then [T5_rivmrbd_auml] else null),
+
+    #"Added Anti S1 (T6)" = Table.AddColumn(#"Added Anti RBD (T5)", "Anti S1 (T6)", each if [Sample Dte T6] <> null then [T6_rivms1_bauml] else null),
+    #"Added Anti N (T6)" = Table.AddColumn(#"Added Anti S1 (T6)", "Anti N (T6)", each if [Sample Dte T6] <> null then [T6_rivmn_auml] else null),
+    #"Added Anti RBD (T6)" = Table.AddColumn(#"Added Anti N (T6)", "Anti RBD (T6)", each if [Sample Dte T6] <> null then [T6_rivmrbd_auml] else null),
+
+    #"Added Anti S1 (T10)" = Table.AddColumn(#"Added Anti RBD (T6)", "Anti S1 (T10)", each if [Sample Dte T10] <> null then [T4_rivms1_bauml] else null),
+    #"Added Anti N (T10)" = Table.AddColumn(#"Added Anti S1 (T10)", "Anti N (T10)", each if [Sample Dte T10] <> null then [T4_rivmn_auml] else null),
+    #"Added Anti RBD (T10)" = Table.AddColumn(#"Added Anti N (T10)", "Anti RBD (T10)", each if [Sample Dte T10] <> null then [T4_rivmrbd_auml] else null),
+
+    #"Added Anti S1 (T11)" = Table.AddColumn(#"Added Anti RBD (T10)", "Anti S1 (T11)", each if [Sample Dte T11] = [T5_rivmdate] then [T5_rivms1_bauml] else if [Sample Dte T11] = [T6_rivmdate] then [T6_rivms1_bauml] else null),
+    #"Added Anti N (T11)" = Table.AddColumn(#"Added Anti S1 (T11)", "Anti N (T11)", each if [Sample Dte T11] = [T5_rivmdate] then [T5_rivmn_auml] else if [Sample Dte T11] = [T6_rivmdate] then [T6_rivmn_auml] else null),
+    #"Added Anti RBD (T11)" = Table.AddColumn(#"Added Anti N (T11)", "Anti RBD (T11)", each if [Sample Dte T11] = [T5_rivmdate] then [T5_rivmrbd_auml] else if [Sample Dte T11] = [T6_rivmdate] then [T6_rivmrbd_auml] else null),
+
+    #"Added Anti S1 (T12)" = Table.AddColumn(#"Added Anti RBD (T11)", "Anti S1 (T12)", each if [Sample Dte T12] = [T7_rivmdate] then [T7_rivms1_bauml] else if [Sample Dte T12] = [T8_rivmdate] then [T8_rivms1_bauml] else null),
+    #"Added Anti N (T12)" = Table.AddColumn(#"Added Anti S1 (T12)", "Anti N (T12)", each if [Sample Dte T12] = [T7_rivmdate] then [T7_rivmn_auml] else if [Sample Dte T12] = [T8_rivmdate] then [T8_rivmn_auml] else null),
+    #"Added Anti RBD (T12)" = Table.AddColumn(#"Added Anti N (T12)", "Anti RBD (T12)", each if [Sample Dte T12] = [T7_rivmdate] then [T7_rivmrbd_auml] else if [Sample Dte T12] = [T8_rivmdate] then [T8_rivmrbd_auml] else null),
+
+    #"Added Anti S1 (T13)" = Table.AddColumn(#"Added Anti RBD (T12)", "Anti S1 (T13)", each if [Sample Dte T13] = [T5_rivmdate] then [T5_rivms1_bauml] else if [Sample Dte T13] = [T7_rivmdate] then [T7_rivms1_bauml] else null),
+    #"Added Anti N (T13)" = Table.AddColumn(#"Added Anti S1 (T13)", "Anti N (T13)", each if [Sample Dte T13] = [T5_rivmdate] then [T5_rivmn_auml] else if [Sample Dte T13] = [T7_rivmdate] then [T7_rivmn_auml] else null),
+    #"Added Anti RBD (T13)" = Table.AddColumn(#"Added Anti N (T13)", "Anti RBD (T13)", each if [Sample Dte T13] = [T5_rivmdate] then [T5_rivmrbd_auml] else if [Sample Dte T13] = [T7_rivmdate] then [T7_rivmrbd_auml] else null),    
+
+    #"Added Anti S1 (T15)" = Table.AddColumn(#"Added Anti RBD (T13)", "Anti S1 (T15)", each if [Sample Dte T15] = [T6_rivmdate] then [T6_rivms1_bauml] else if [Sample Dte T15] = [T8_rivmdate] then [T8_rivms1_bauml] else null),
+    #"Added Anti N (T15)" = Table.AddColumn(#"Added Anti S1 (T15)", "Anti N (T15)", each if [Sample Dte T15] = [T6_rivmdate] then [T6_rivmn_auml] else if [Sample Dte T15] = [T8_rivmdate] then [T8_rivmn_auml] else null),
+    #"Added Anti RBD (T15)" = Table.AddColumn(#"Added Anti N (T15)", "Anti RBD (T15)", each if [Sample Dte T15] = [T6_rivmdate] then [T6_rivmrbd_auml] else if [Sample Dte T15] = [T8_rivmdate] then [T8_rivmrbd_auml] else null),
+    #"Renamed T99" = Table.RenameColumns(#"Added Anti RBD (T15)",{{"T9_rivmdate", "Sample Dte (T99)"}, {"T9_rivms1_bauml", "Anti S1 (T99)"}, {"T9_rivmrbd_auml", "Anti RBD (T99)"}, {"T9_rivmn_auml", "Anti N (T99)"}}),
+    #"Keep relevant columns" = Table.SelectColumns(#"Renamed T99",{"Participant Id", "Sample Dte T0", "Anti S1 (T0)", "Anti RBD (T0)", "Anti N (T0)", "Sample Dte T2", "Anti S1 (T2)", "Anti RBD (T2)", "Anti N (T2)", "Sample Dte T4", "Anti S1 (T4)", "Anti RBD (T4)", "Anti N (T4)", "Sample Dte T7", "Anti S1 (T7)", "Anti RBD (T7)", "Anti N (T7)", "Sample Dte (T99)", "Anti S1 (T99)", "Anti RBD (T99)", "Anti N (T99)", "Sample Dte T10", "Sample Dte T6", "Sample Dte T5", "Sample Dte T11", "Sample Dte T12", "Sample Dte T13", "Sample Dte T15", "Anti S1 (T5)", "Anti N (T5)", "Anti RBD (T5)", "Anti S1 (T6)", "Anti N (T6)", "Anti RBD (T6)", "Anti S1 (T10)", "Anti N (T10)", "Anti RBD (T10)", "Anti S1 (T11)", "Anti N (T11)", "Anti RBD (T11)", "Anti S1 (T12)", "Anti N (T12)", "Anti RBD (T12)", "Anti S1 (T13)", "Anti N (T13)", "Anti RBD (T13)", "Anti S1 (T15)", "Anti N (T15)", "Anti RBD (T15)"}),
+    #"Added Study Id" = Table.AddColumn(#"Keep relevant columns", "Study Id", each "COBRA KAI"),
+    #"Added Anti S1 Unit" = Table.AddColumn(#"Added Study Id", "Anti S1 Unit", each "BAU/ml"),
+    #"Added Anti N Unit" = Table.AddColumn(#"Added Anti S1 Unit", "Anti N Unit", each "AU/ml"),
+    #"Added Anti RBD Unit" = Table.AddColumn(#"Added Anti N Unit", "Anti RBD Unit", each "AU/ml"),
+    #"Added Test Used" = Table.AddColumn(#"Added Anti RBD Unit", "Test Used", each "MIA (RIVM)"),
+    #"Changed Type" = Table.TransformColumnTypes(#"Added Test Used",{{"Anti RBD (T15)", type number}, {"Anti N (T15)", type number}, {"Anti S1 (T15)", type number}, {"Anti RBD (T13)", type number}, {"Anti N (T13)", type number}, {"Anti S1 (T13)", type number}, {"Anti RBD (T12)", type number}, {"Anti N (T12)", type number}, {"Anti S1 (T12)", type number}, {"Anti RBD (T11)", type number}, {"Anti N (T11)", type number}, {"Anti S1 (T11)", type number}, {"Anti RBD (T10)", type number}, {"Anti N (T10)", type number}, {"Anti S1 (T10)", type number}, {"Anti RBD (T6)", type number}, {"Anti N (T6)", type number}, {"Anti S1 (T6)", type number}, {"Anti RBD (T5)", type number}, {"Anti N (T5)", type number}, {"Anti S1 (T5)", type number}, {"Test Used", type text}, {"Anti RBD Unit", type text}, {"Anti N Unit", type text}, {"Anti S1 Unit", type text}, {"Study Id", type text}}),
+    #"Renamed Columns1" = Table.RenameColumns(#"Changed Type",{{"Sample Dte T0", "Sample Dte (T0)"}, {"Sample Dte T2", "Sample Dte (T2)"}, {"Sample Dte T4", "Sample Dte (T4)"}, {"Sample Dte T7", "Sample Dte (T7)"}, {"Sample Dte T10", "Sample Dte (T10)"}, {"Sample Dte T6", "Sample Dte (T6)"}, {"Sample Dte T5", "Sample Dte (T5)"}, {"Sample Dte T11", "Sample Dte (T11)"}, {"Sample Dte T12", "Sample Dte (T12)"}, {"Sample Dte T13", "Sample Dte (T13)"}, {"Sample Dte T15", "Sample Dte (T15)"}})
+in
+    #"Renamed Columns1"
