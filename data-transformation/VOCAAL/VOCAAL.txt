@@ -1,0 +1,158 @@
+let
+
+//==== default steps after Get > CSV > Transform data
+    Source = Csv.Document(File.Contents("Z:\QuickHMNY\data_in\VOCAL\VOCAL_mixed_data_1.csv"),[Delimiter=",", Columns=40, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"id_patient", Int64.Type}, {"dn_randomisatienr", Int64.Type}, {"age_on_vac1", Int64.Type}, {"dn_geslacht", Int64.Type}, {"1e vaccinatie datum", type date}, {"1e vaccinatie vaccin", type text}, {"2e vaccinatie datum", type date}, {"2e vaccinatie vaccin", type text}, {"3e vaccinatie datum", type date}, {"3e vaccinatie vaccin", type text}, {"1e boostervaccinatie datum", type date}, {"1e boostervaccinatie vaccin", type text}, {"T0_algdatumvinger", type date}, {"final_timepoint.1", type text}, {"IgG_S1_BAU/ml.1", type number}, {"IgG_N_BAU/ml.1", type number}, {"T1_algdatumvinger", type date}, {"T1_zij_algdatumvinger", type date}, {"final_timepoint.2", type text}, {"IgG_S1_BAU/ml.2", type number}, {"IgG_N_BAU/ml.2", type number}, {"T2_algdatumvinger", type date}, {"T2_zij_algdatumvinger", type date}, {"final_timepoint.3", type text}, {"IgG_S1_BAU/ml.3", type number}, {"IgG_N_BAU/ml.3", type number}, {"B0_algdatumvinger", type date}, {"final_timepoint.5", type text}, {"IgG_S1_BAU/ml.5", type number}, {"IgG_N_BAU/ml.5", type number}, {"final_timepoint.6", type text}, {"IgG_S1_BAU/ml.6", type number}, {"IgG_N_BAU/ml.6", type number}, {"Posdate_1", type date}, {"Posdate_2", type date}, {"Posdate_opmerkingen", type text}}),
+    
+//1.1. select & remove columns not needed
+    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"dn_randomisatienr", "final_timepoint.1", "final_timepoint.2", "final_timepoint.3", "final_timepoint.5", "final_timepoint.6", "", "_1", "_2"}),
+    
+//1.2. rename columns (not those that get removed after added 'Customs')
+    #"Renamed Columns1" = Table.RenameColumns(#"Removed Columns",{
+        {"id_patient", "Participant Id"}, 
+        {"age_on_vac1", "Age At Vacc"}, 
+        {"dn_geslacht", "Gender"}, 
+        {"1e vaccinatie datum", "Vaccination Dte 1"}, 
+        {"2e vaccinatie datum", "Vaccination Dte 2"}, 
+        {"3e vaccinatie datum", "Vaccination Dte 3"}, 
+        {"1e boostervaccinatie datum", "Vaccination Dte 4"}, 
+        {"T0_algdatumvinger", "Sample Dte (T0)"}, 
+        {"T1_algdatumvinger", "Sample Dte (T1)"}, 
+        {"T1_zij_algdatumvinger", "Sample Dte (T1) (2)"}, 
+        {"IgG_S1_BAU/ml.1", "Anti S1 (T0)"}, 
+        {"IgG_N_BAU/ml.1", "Anti N (T0)"}, 
+        {"IgG_S1_BAU/ml.2", "Anti S1 (T1)"}, 
+        {"IgG_N_BAU/ml.2", "Anti N (T1)"}, 
+        {"T2_algdatumvinger", "Sample Dte (T2)"}, 
+        {"T2_zij_algdatumvinger", "Sample Dte (T2) (2)"}, 
+        {"IgG_S1_BAU/ml.3", "Anti S1 (T2)"}, 
+        {"IgG_N_BAU/ml.3", "Anti N (T2)"}, 
+        {"B0_algdatumvinger", "Sample Dte (T13)"}, 
+        {"IgG_S1_BAU/ml.5", "Anti S1 (T13)"}, 
+        {"IgG_N_BAU/ml.5", "Anti N (T13)"}, 
+        {"IgG_S1_BAU/ml.6", "Anti S1 (T15)"}, 
+        {"IgG_N_BAU/ml.6", "Anti N (T15)"}, 
+        {"Posdate_1", "Infection Dte 1"}, 
+        {"Posdate_2", "Infection Dte 2"},
+        {"Posdate_opmerkingen", "Infection Dte 3"}, 
+        {"B1_algdatumvinger", "Sample Dte (T15)"}
+    }),
+    
+//==== from here improve 'Column quality'
+    
+    //2. replace empty values (dates => keep "null", other blanks => "No Record", numbers/decimals => keep "null")
+    #"Replaced AllBlanks" = Table.ReplaceValue(#"Renamed Columns1","","No Record",Replacer.ReplaceValue,{"Participant Id", "Age At Vacc", "Gender", "Vaccination Dte 1", "1e vaccinatie vaccin", "Vaccination Dte 2", "2e vaccinatie vaccin", "Vaccination Dte 3", "3e vaccinatie vaccin", "Vaccination Dte 4", "1e boostervaccinatie vaccin", "Sample Dte (T0)", "Anti S1 (T0)", "Anti N (T0)", "Sample Dte (T1)", "Sample Dte (T1) (2)", "Anti S1 (T1)", "Anti N (T1)", "Sample Dte (T2)", "Sample Dte (T2) (2)", "Anti S1 (T2)", "Anti N (T2)", "Sample Dte (T13)", "Anti S1 (T13)", "Anti N (T13)", "Anti S1 (T15)", "Anti N (T15)", "Infection Dte 1", "Infection Dte 2"}),
+    
+    //3. remove duplicate rows > unique patientIDs 
+    #"Removed Duplicates" = Table.Distinct(#"Replaced AllBlanks", {"Participant Id"}),
+    
+//==== from here improve 'Column profile/distribution' => if applicable, replace values to reduce uniques, variations, etc.
+    
+    //4. format text columns
+    #"Trimmed Text" = Table.TransformColumns(#"Removed Duplicates",{{"1e vaccinatie vaccin", Text.Trim, type text}, {"2e vaccinatie vaccin", Text.Trim, type text}, {"3e vaccinatie vaccin", Text.Trim, type text}, {"1e boostervaccinatie vaccin", Text.Trim, type text}}),
+    #"Cleaned Text" = Table.TransformColumns(#"Trimmed Text",{{"1e vaccinatie vaccin", Text.Clean, type text}, {"2e vaccinatie vaccin", Text.Clean, type text}, {"3e vaccinatie vaccin", Text.Clean, type text}, {"1e boostervaccinatie vaccin", Text.Clean, type text}}),
+    #"Capitalized Each Word" = Table.TransformColumns(#"Cleaned Text",{{"1e vaccinatie vaccin", Text.Proper, type text}, {"2e vaccinatie vaccin", Text.Proper, type text}, {"3e vaccinatie vaccin", Text.Proper, type text}, {"1e boostervaccinatie vaccin", Text.Proper, type text}}),
+    
+    //5. replacing to clean string differences
+    #"Replaced Value" = Table.ReplaceValue(#"Capitalized Each Word","(Pfizer/Biontech)","",Replacer.ReplaceText,{"1e vaccinatie vaccin", "2e vaccinatie vaccin", "3e vaccinatie vaccin", "1e boostervaccinatie vaccin"}),
+    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value"," (Biontech/Pfizer)","",Replacer.ReplaceText,{"1e vaccinatie vaccin", "2e vaccinatie vaccin", "3e vaccinatie vaccin", "1e boostervaccinatie vaccin"}),
+    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1","Astrazeneca Vaccin","Astrazeneca",Replacer.ReplaceText,{"1e vaccinatie vaccin", "2e vaccinatie vaccin", "3e vaccinatie vaccin", "1e boostervaccinatie vaccin"}),
+    #"Replaced Value3" = Table.ReplaceValue(#"Replaced Value2","Covid-19 Vaccine Moderna","Moderna",Replacer.ReplaceText,{"1e vaccinatie vaccin", "2e vaccinatie vaccin", "3e vaccinatie vaccin", "1e boostervaccinatie vaccin"}),
+    #"Replaced Value4" = Table.ReplaceValue(#"Replaced Value3","Astrazeneca/Oxford","Astrazeneca",Replacer.ReplaceText,{"1e vaccinatie vaccin", "2e vaccinatie vaccin", "3e vaccinatie vaccin", "1e boostervaccinatie vaccin"}),
+    #"Replaced Value5" = Table.ReplaceValue(#"Replaced Value4",".","No Record",Replacer.ReplaceText,{"1e vaccinatie vaccin", "2e vaccinatie vaccin", "3e vaccinatie vaccin", "1e boostervaccinatie vaccin"}),
+    #"Replaced Value6" = Table.ReplaceValue(#"Replaced Value5","Spikevax (Moderna)","Moderna",Replacer.ReplaceText,{"1e vaccinatie vaccin", "2e vaccinatie vaccin", "3e vaccinatie vaccin", "1e boostervaccinatie vaccin"}),
+    #"Replaced Value7" = Table.ReplaceValue(#"Replaced Value6","ComirnatyC","Comirnaty",Replacer.ReplaceText,{"1e vaccinatie vaccin", "2e vaccinatie vaccin", "3e vaccinatie vaccin", "1e boostervaccinatie vaccin"}),
+    #"Replaced Value8" = Table.ReplaceValue(#"Replaced Value7","Pfizer","Comirnaty",Replacer.ReplaceText,{"1e vaccinatie vaccin", "2e vaccinatie vaccin", "3e vaccinatie vaccin", "1e boostervaccinatie vaccin"}),
+
+//==== from here add 'Custom Column' => missing info (e.g. unit) + convert/re-code to same comparables (e.g. birthyear, vaccine brands)
+
+    //6. custom columns - extra info
+    #"Added Custom Unit" = Table.AddColumn(#"Replaced Value8", "Unit", each "BAU/ml"),
+    #"Added Custom TestUsed" = Table.AddColumn(#"Added Custom Unit", "Test Used", each "MIA (RIVM)"),
+    #"Added Custom StudyId" = Table.AddColumn(#"Added Custom TestUsed", "Study Id", each "VOCAAL"),
+    
+    //7. custom columns - convert/re-code
+    #"Added Custom Birthyear" = Table.AddColumn(#"Added Custom StudyId", "Birthyear", 
+        each if [Vaccination Dte 1] = null or [Age At Vacc] = null then null
+        else Date.Year(Date.AddYears([Vaccination Dte 1], - [Age At Vacc]))
+    ),
+    
+    //vacc brands recoded (accord.to T2B => 1=Comirnaty, 2=Moderna, 3=Astrazeneca, 4=Janssen)
+    #"Added Custom VaccBrand1" = Table.AddColumn(#"Added Custom Birthyear", "Vaccine Brand 1", 
+        each if [1e vaccinatie vaccin] = "Comirnaty" then 1
+        else if [1e vaccinatie vaccin] = "Moderna" then 2
+        else if [1e vaccinatie vaccin] = "Astrazeneca" then 3
+        else if [1e vaccinatie vaccin] = "Janssen" then 4
+        else null),
+    #"Added Custom VaccBrand2" = Table.AddColumn(#"Added Custom VaccBrand1", "Vaccine Brand 2", 
+        each if [2e vaccinatie vaccin] = "Comirnaty" then 1
+        else if [1e vaccinatie vaccin] = "Moderna" then 2
+        else if [1e vaccinatie vaccin] = "Astrazeneca" then 3
+        else if [1e vaccinatie vaccin] = "Janssen" then 4
+        else null),
+    #"Added Custom VaccBrand3" = Table.AddColumn(#"Added Custom VaccBrand2", "Vaccine Brand 3", 
+        each if [3e vaccinatie vaccin] = "Comirnaty" then 1
+        else if [1e vaccinatie vaccin] = "Moderna" then 2
+        else if [1e vaccinatie vaccin] = "Astrazeneca" then 3
+        else if [1e vaccinatie vaccin] = "Janssen" then 4
+        else null),
+    #"Added Custom BoosterBrand1" = Table.AddColumn(#"Added Custom VaccBrand3", "Vaccine Brand 4", 
+        each if [1e boostervaccinatie vaccin] = "Comirnaty" then 1
+        else if [1e vaccinatie vaccin] = "Moderna" then 2
+        else if [1e vaccinatie vaccin] = "Astrazeneca" then 3
+        else if [1e vaccinatie vaccin] = "Janssen" then 4
+        else null),
+
+//==== from here additional/final steps to minimize DataSize 
+
+    //8. eg. merge/remove (re-coded) columns
+    #"Merged Columns" = Table.CombineColumns(Table.TransformColumnTypes(#"Added Custom BoosterBrand1", {{"Sample Dte (T1)", type text}, {"Sample Dte (T1) (2)", type text}}, "en-US"),{"Sample Dte (T1)", "Sample Dte (T1) (2)"},Combiner.CombineTextByDelimiter("", QuoteStyle.None),"Sample Dte (T1)"),
+    #"Replaced Value9" = Table.ReplaceValue(#"Merged Columns","5/10/20215/10/2021","5/10/2021",Replacer.ReplaceText,{"Sample Dte (T1)"}),
+    #"Merged Columns1" = Table.CombineColumns(Table.TransformColumnTypes(#"Replaced Value9", {{"Sample Dte (T2)", type text}, {"Sample Dte (T2) (2)", type text}}, "en-US"),{"Sample Dte (T2)", "Sample Dte (T2) (2)"},Combiner.CombineTextByDelimiter("", QuoteStyle.None),"Sample Dte (T2)"),
+    #"Removed RecodedColumns" = Table.RemoveColumns(#"Merged Columns1",{"1e vaccinatie vaccin", "2e vaccinatie vaccin", "3e vaccinatie vaccin", "1e boostervaccinatie vaccin"}),
+    
+    //9. change to DateType + replace 1900 dates by null
+    #"Changed Type2" = Table.TransformColumnTypes(#"Removed RecodedColumns",{
+        {"Sample Dte (T0)", type date}, 
+        {"Sample Dte (T1)", type date}, 
+        {"Sample Dte (T2)", type date}, 
+        {"Sample Dte (T13)", type date},
+        {"Sample Dte (T15)", type date}
+    }),
+    #"Replaced 1900Dates T0" = Table.ReplaceValue(#"Changed Type2",
+        each [#"Sample Dte (T0)"],
+        each if [#"Sample Dte (T0)"] < #date(1901,1,1) then null else [#"Sample Dte (T0)"],
+        Replacer.ReplaceValue,{"Sample Dte (T0)"}),
+    #"Replaced 1900Dates T1" = Table.ReplaceValue(#"Replaced 1900Dates T0",
+        each [#"Sample Dte (T1)"],
+        each if [#"Sample Dte (T1)"] < #date(1901,1,1) then null else [#"Sample Dte (T1)"],
+        Replacer.ReplaceValue,{"Sample Dte (T1)"}),
+    #"Replaced 1900Dates T2" = Table.ReplaceValue(#"Replaced 1900Dates T1",
+        each [#"Sample Dte (T2)"],
+        each if [#"Sample Dte (T2)"] < #date(1999,1,1) then null else [#"Sample Dte (T2)"],
+        Replacer.ReplaceValue,{"Sample Dte (T2)"}),
+    #"Replaced 1900Dates T13" = Table.ReplaceValue(#"Replaced 1900Dates T2",
+        each [#"Sample Dte (T1)"],
+        each if [#"Sample Dte (T1)"] < #date(1901,1,1) then null else [#"Sample Dte (T1)"],
+        Replacer.ReplaceValue,{"Sample Dte (T1)"}),
+    #"Replaced 1900Dates T15" = Table.ReplaceValue(#"Replaced 1900Dates T13",
+        each [#"Sample Dte (T1)"],
+        each if [#"Sample Dte (T1)"] < #date(1901,1,1) then null else [#"Sample Dte (T1)"],
+        Replacer.ReplaceValue,{"Sample Dte (T1)"}),
+    
+    //10. clean inconsistent DateColumn(s) as text to date type (with Locale)
+    #"Added Custom DateRemarks" = Table.AddColumn(#"Replaced 1900Dates T15", "Infection Dte 3 (Remarks)", 
+        each if Text.Length([Infection Dte 3]) > 10 or Text.Length([Infection Dte 3]) < 8 or Text.Length(Text.Select([Infection Dte 3],{"A".."Z","a".."z"})) > 0 then [Infection Dte 3] else ""),
+    #"Replaced Value10" = Table.ReplaceValue(#"Added Custom DateRemarks",
+        each [Infection Dte 3],
+        each if Text.Length([Infection Dte 3]) > 10 or Text.Length([Infection Dte 3]) < 8 or Text.Length(Text.Select([Infection Dte 3],{"A".."Z","a".."z"})) > 0 then "" else [Infection Dte 3],
+        Replacer.ReplaceText,{"Infection Dte 3"}),
+    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Replaced Value10", 
+        {{"Infection Dte 3", type date}}, "en-GB"),
+    
+    //11. re-detect all DataTypes > check if correct
+    #"Changed Type1" = Table.TransformColumnTypes(#"Changed Type with Locale",{{"Participant Id", Int64.Type}, {"Age At Vacc", Int64.Type}, {"Gender", Int64.Type}, {"Vaccination Dte 1", type date}, {"Vaccination Dte 2", type date}, {"Vaccination Dte 3", type date}, {"Vaccination Dte 4", type date}, {"Sample Dte (T0)", type date}, {"Anti S1 (T0)", type number}, {"Anti N (T0)", type number}, {"Sample Dte (T1)", type date}, {"Anti S1 (T1)", type number}, {"Anti N (T1)", type number}, {"Sample Dte (T2)", type date}, {"Anti S1 (T2)", type number}, {"Anti N (T2)", type number}, {"Sample Dte (T13)", type date}, {"Anti S1 (T13)", type number}, {"Anti N (T13)", type number}, {"Sample Dte (T15)", type date}, {"Anti S1 (T15)", type number}, {"Anti N (T15)", type number}, {"Infection Dte 1", type date}, {"Infection Dte 2", type date}, {"Infection Dte 3", type date}, {"Unit", type text}, {"Test Used", type text}, {"Birthyear", Int64.Type}, {"Study Id", type text}, {"Vaccine Brand 1", Int64.Type}, {"Vaccine Brand 2", Int64.Type}, {"Vaccine Brand 3", Int64.Type}, {"Vaccine Brand 4", Int64.Type}})
+
+in
+    #"Changed Type1"
