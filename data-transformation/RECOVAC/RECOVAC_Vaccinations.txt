@@ -1,0 +1,13 @@
+let
+    Source = Vaccinations,
+    #"Removed Columns" = Table.RemoveColumns(Source,{"Study_Id_RECOVAC_IR", "Study_Id_RECOVAC_RV"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Participant_Id", "Participant Id"}, {"Vaccination_Date_1", "Vaccination Dte 1"}, {"Vaccine_Brand_1", "Vaccine Brand 1"}, {"Vaccination_Date_2", "Vaccination Dte 2"}, {"Vaccine_Brand_2", "Vaccine Brand 2"}, {"Vaccination_Date_3", "Vaccination Dte 3"}, {"Vaccine_Brand_3", "Vaccine Brand 3"}, {"Booster_Date_1", "Vaccination Dte 4"}, {"Booster_Brand_1", "Vaccine Brand 4"}}),
+    #"Replaced Moderna" = Table.ReplaceValue(#"Renamed Columns","Moderna","2",Replacer.ReplaceText,{"Vaccine Brand 1", "Vaccine Brand 2", "Vaccine Brand 3", "Vaccine Brand 4"}),
+    #"Replaced Pfizer" = Table.ReplaceValue(#"Replaced Moderna","Pfizer","1",Replacer.ReplaceText,{"Vaccine Brand 1", "Vaccine Brand 2", "Vaccine Brand 3", "Vaccine Brand 4"}),
+    #"Replaced Janssen" = Table.ReplaceValue(#"Replaced Pfizer","Janssen","4",Replacer.ReplaceText,{"Vaccine Brand 1", "Vaccine Brand 2", "Vaccine Brand 3", "Vaccine Brand 4"}),
+    #"Replaced Unknown" = Table.ReplaceValue(#"Replaced Janssen","Unknown",null,Replacer.ReplaceValue,{"Vaccine Brand 1", "Vaccine Brand 2", "Vaccine Brand 3", "Vaccine Brand 4"}),
+    #"Changed Type" = Table.TransformColumnTypes(#"Replaced Unknown",{{"Vaccine Brand 4", Int64.Type}, {"Vaccine Brand 3", Int64.Type}, {"Vaccine Brand 2", Int64.Type}, {"Vaccine Brand 1", Int64.Type}}),
+    #"Added Study Id" = Table.AddColumn(#"Changed Type", "Study Id", each "RECOVAC"),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Added Study Id",{{"Study Id", type text}})
+in
+    #"Changed Type1"
