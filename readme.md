@@ -15,7 +15,7 @@ For more information on this project, please see the entry at the [Data Station 
 ```docs```: the docs folder contains a broad overview of the architecture that was used in the project. For more documentation, please see our record in the [Data Station for Life Sciences](https://doi.org/10.17026/LS/8HWQUW).
 
 ## Data
-The raw data used in the M scripts is not publicly available due to GDPR constraints. 
+The raw data used in the M scripts is not publicly available due to GDPR constraints. Access to the resulting datasets can be requested in the [Data Station for Life Sciences](https://doi.org/10.17026/LS/8HWQUW).
 
 ## Usage
 The raw files first went through the scripts in ```data-prep-scripts``` in order to create standardized .csv files. Subsequently, the data was loaded into Power BI and modified according to the M-scripts in ```data-transformation``` in the respective study folders (i.e. the raw RECOVAC files were processed by the scripts in the RECOVAC folder). Once all study files had been standardized, they were loaded into a Power BI file with the scripts in the ```data-transformation > appending``` folder. 
